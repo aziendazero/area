@@ -1,0 +1,58 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:js="http://www.3di.it/thymeleaf/springJsDecorator">
+
+	<head>
+		<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+	    <title>VdV-Punteggio per Area</title>
+	   
+	   	<link th:substituteby="common :: dojo"/>
+	   	<link th:substituteby="common :: spring-js"/>
+	   	<link th:substituteby="common :: spring-js-decorator"/>
+
+		<!-- Page custom CSS -->
+		<link type="text/css" rel="stylesheet" th:href="@{/resources/css/index.css}"/>
+	</head>
+	
+  	<body class="claro">
+  
+	  	<div style="width:1000px;">			  	
+
+			<form method="POST" id="repValRg" th:object="${pageBean}" th:action="${flowExecutionUrl}">
+		
+				<!-- header videata -->
+				<div class="form-caption-container">
+					<span class="form-caption-text">VdV-Punteggio per Area</span>
+				</div>
+					
+				<!-- tabella report area -->
+				<div style="margin-left: 0px;" class="lista_holder">
+					<!-- form-frames-container -->
+					<!-- lista holder -->
+					<div class="fixed_height_scrollable_table">
+						<table class="lista" style="width:100%">
+							<tbody>
+								<tr>
+									<td style="width:200px;" class="listTableHeader">Area</td>
+									<td style="width:150px;" class="listTableHeader" th:if="*{containReqSoglia}">Media Soglia</td>
+									<td style="width:150px;" class="listTableHeader" th:if="*{containReqSiNo}">Numero Si/No</td>
+								</tr>
+								<tr th:each="area:*{areaReportInfoBeanL}">
+									<!-- Area --><td th:text="${area.nome}"></td>
+									<!-- Media Soglia --><td th:if="*{containReqSoglia}"><span th:if="${area.containReqSoglia}" th:text="${#numbers.formatDecimal(area.mediaSoglia, 0, 'POINT', 2, 'COMMA') + '%'}"></span></td>
+									<!-- Numero Si/No --><td th:if="*{containReqSiNo}"><span th:if="${area.containReqSiNo}" th:text="${theUtilService.getTextSiNoMedia(area.getTotSi(), area.getTotNo())}"></span></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<input
+						js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Esporta Vdv-Punteggio per Area in Csv'}"
+						js:ajax="formId:'form',event:'onClick',params:{_eventId:'esportreportVerificaArea'}"
+						id="esportreportVerificaArea"
+						name="_eventId_esportreportVerificaArea" value="Esporta VdV-Punteggio per Area in Csv" type="submit" />
+			</form>
+			
+	  	</div>
+  
+	</body>
+</html>

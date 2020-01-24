@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xsi:schemaLocation="http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.2.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa-1.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+
+	<!--
+		Enables @Transactional annotation processing for all the beans inside this application context. 
+	 -->
+	<tx:annotation-driven transaction-manager="txManager" />
+	
+	<context:component-scan base-package="it.tredi.auac.dao" />
+	
+	<bean id="applicationProperties" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	    <property name="location" value="classpath:auac.properties"/>
+	</bean>	
+	<!-- 
+		JPA entity manager configuration.
+		"packagesToScan" tells where to look for Entity annotated classes.
+		"jpaVendorAdapter" specifies the JPA implementation to use.
+		"dataSource" set the underlying data-source.
+		
+		Entity-annotated classes have been generated in a different Eclipse project using the JPA Diagram Editor ("Dali Java Persistence Tool" project) 
+	 -->
+	<bean id="emf" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" 
+		p:dataSource-ref="oraDataSource">
+		<property name="packagesToScan">
+         <array>
+              <value>it.tredi.auac.orm.entity</value>
+         </array>
+     	</property>  
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.EclipseLinkJpaVendorAdapter" />
+		</property>
+		<property name="jpaProperties">
+			<props>
+				<prop key="eclipselink.logging.logger">ServerLogger</prop>
+	            <!-- Per abilitare il log delle query settare i 2 parametri seguenti a FINE -->
+	            <!-- Per abilitare il log delle query settare i 2 parametri seguenti a OFF -->
+	            <prop key="eclipselink.logging.level">OFF</prop>
+	            <prop key="eclipselink.logging.level.sql">OFF</prop>
+	            <prop key="eclipselink.logging.parameters">true</prop>
+	            <prop key="eclipselink.cache.shared.default">false</prop>
+	            
+	            <!-- Per abilitare il log abilitare questo -->
+	            <!-- prop key="eclipselink.logging.file">c:\logs\EclipseLink.log</prop -->
+	            <!-- prop key="eclipselink.profiler">PerformanceProfiler</prop -->
+	            
+            <prop key="eclipselink.logging.exceptions">true</prop>
+			<!--
+	            <prop key="eclipselink.query-results-cache">false</prop>
+
+				<prop key="eclipselink.logging.logger">ServerLogger</prop>
+				possibili valori per value
+				JavaLogger: Uses java.util.logging
+				ServerLogger: Integrates with the application server's logging
+				DefaultLogger: (Default) Uses EclipseLink's native logger, DefaultSessionLog scritti in console
+
+			Per loggare su file mettere i 2 seguenti
+				<prop key="eclipselink.logging.logger">ServerLogger</prop>
+				<prop key="eclipselink.logging.file">c:\logs\EclipseLink.log</prop>
+
+            <prop key="eclipselink.logging.level">OFF</prop>
+            <prop key="eclipselink.logging.level.sql">OFF</prop>          
+            <prop key="eclipselink.logging.level.cache">OFF</prop>          
+            Level 	Description
+			OFF 	This setting disables the generation of the log output. You may want to set logging to OFF during production to avoid the overhead of logging.
+			SEVERE 	This level enables reporting of failure cases only. Usually, if the failure occurs, the application stops.
+			WARNING 	This level enables logging of issues that have a potential to cause problems. For example, a setting that is picked by the application and not by the user.
+			INFO 	This level enables the standard output. The contents of this output is very limited. It is the default logging level if a logging level is not set.
+			CONFIG 	This level enables logging of such configuration details as your database login information and some metadata information. You may want to use the CONFIG log level at deployment time.
+			FINE 	This level enables logging of the first level of the debugging information and SQL. You may want to use this log level during debugging and testing, but not at production.
+			FINER 	This level enables logging of more debugging information than the FINE setting. For example, the transaction information is logged at this level. You may want to use this log level during debugging and testing, but not at production.
+			FINEST 	This level enables logging of more debugging information than the FINER setting, such as a very detailed information about certain features (for example, sequencing). You may want to use this log level during debugging and testing, but not at production.
+			ALL 	This level currently logs at the same level as FINEST. 
+            
+            <prop key="eclipselink.logging.parameters">true</prop>
+
+            <property name="eclipselink.logging.exceptions" value="true" />
+            <property name="eclipselink.logging.thread" value="true"/>
+
+			Per abilitare il profiler con info nel file di log            
+	            <prop key="eclipselink.profiler">PerformanceProfiler</prop>
+             -->
+			</props>
+		</property>
+	</bean>	
+	
+	<!-- 
+		Spring's JpaTransactionManager
+	 -->
+	<bean id="txManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+    	<property name="entityManagerFactory" ref="emf"/>
+  	</bean>
+  	<tx:annotation-driven transaction-manager="txManager" />
+ 
+	<bean id="oraDataSource"
+        class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+	    <property name="driverClassName" value="${db.driverClassName}"/>
+	    <property name="url" value="${db.url}"/>
+	    <property name="username" value="${db.username}"/>
+	    <property name="password" value="${db.password}"/>
+	</bean>
+</beans>

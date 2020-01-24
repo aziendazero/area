@@ -1,0 +1,85 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:js="http://www.3di.it/thymeleaf/springJsDecorator">
+
+	<head>
+		<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+	    <title>AV-Punteggio per RG</title>
+	   
+	   	<link th:substituteby="common :: dojo"/>
+	   	<link th:substituteby="common :: spring-js"/>
+	   	<link th:substituteby="common :: spring-js-decorator"/>
+
+		<!-- Page custom CSS -->
+		<link type="text/css" rel="stylesheet" th:href="@{/resources/css/index.css}"/>
+	</head>
+	
+  	<body class="claro">
+  
+	  	<div style="width:1000px;">			  	
+
+			<form method="POST" id="repValRg" th:object="${pageBean}" th:action="${flowExecutionUrl}">
+		
+				<!-- header videata -->
+				<div class="form-caption-container">
+					<span class="form-caption-text">AV-Punteggio per RG</span>
+				</div>
+					
+				<!-- tabella elenco requisiti -->
+				<div style="margin-left: 0px;" class="lista_holder">
+					<!-- form-frames-container -->
+					<!-- lista holder -->
+					<div class="fixed_height_scrollable_table">
+						<table class="lista" style="width:100%">
+							<tbody>
+								<tr>
+									<td style="width:200px;" class="listTableHeader">Id Univoco REQ</td>
+									<td class="listTableHeader">Testo Requisito</td>
+									<td style="width:150px;" class="listTableHeader" th:if="*{containReqSoglia}">Valutazione Soglia</td>
+									<td style="width:150px;" class="listTableHeader" th:if="*{containReqSiNo}">Valutazionec Si/No</td>
+								</tr>
+								<th:block th:each="requisitoInst:*{requisitoInstL}">
+									<!-- se di tipo titolo o soglia o sino creo la riga -->
+									<tr th:if="${not (requisitoInst.requisitoTempl.tipoRisposta != null and (requisitoInst.requisitoTempl.tipoRisposta.nome eq 'Quantitativo' or requisitoInst.requisitoTempl.tipoRisposta.nome eq 'Quantitativa'))}">
+										<!-- Id Univoco REQ --><td th:text="${requisitoInst.requisitoTempl.nome}"></td>
+										<!-- Testo requisito --><td th:style="${requisitoInst.requisitoTempl.tipoRisposta != null and requisitoInst.requisitoTempl.tipoRisposta.nome eq 'Titolo'}?'font-weight:bold;'" th:text="${requisitoInst.requisitoTempl.testo}"></td>
+										
+										
+										<!-- autovalutazione di tipo 'Titolo o non impostato' -->
+										<th:block th:if="${requisitoInst.requisitoTempl.tipoRisposta == null or requisitoInst.requisitoTempl.tipoRisposta.nome == 'Titolo'}">
+										<!-- Valutazione Soglia --><td th:if="*{containReqSoglia}"></td>
+										<!-- Valutazionec Si/No --><td th:if="*{containReqSiNo}"></td>
+										</th:block>
+										<!-- autovalutazione di tipo 'Soglia' -->
+										<th:block th:if="${requisitoInst.requisitoTempl.tipoRisposta != null and requisitoInst.requisitoTempl.tipoRisposta.nome eq 'Soglia'}">
+										<!-- Valutazione Soglia --><td th:if="*{containReqSoglia}" th:text="${theUtilService.getValutazioneFormattedText(requisitoInst,T(it.tredi.auac.TypeViewEnum).WEB)}"></td>
+										<!-- Valutazionec Si/No --><td th:if="*{containReqSiNo}"></td>
+										</th:block>
+										<!-- autovalutazione di tipo 'Si/No' -->
+										<th:block th:if="${requisitoInst.requisitoTempl.tipoRisposta != null and requisitoInst.requisitoTempl.tipoRisposta.nome eq 'Si/No'}">
+										<!-- Valutazione Soglia --><td th:if="*{containReqSoglia}"></td>
+										<!-- Valutazionec Si/No --><td th:if="*{containReqSiNo}" th:text="${theUtilService.getValutazioneFormattedText(requisitoInst,T(it.tredi.auac.TypeViewEnum).WEB)}"></td>
+										</th:block>
+									</tr>
+								</th:block>
+								<tr>
+									<!-- Id Univoco REQ --><td></td>
+									<!-- Testo requisito --><td></td>
+									<!-- th:text="*{#numbers.formatDecimal(mediaSoglia, 0, 'POINT', 2, 'COMMA') + '%'}" -->
+									<!-- Valutazione Soglia --><td th:if="*{containReqSoglia}" style="font-weight:bold;"><span th:if="*{mediaSoglia != null}" th:text="*{mediaSoglia + '%'}"></span></td>
+									<!-- Valutazionec Si/No --><td th:if="*{containReqSiNo}" style="font-weight:bold;" th:text="${theUtilService.getTextSiNoMedia(pageBean.getTotSi(), pageBean.getTotNo())}"></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<input
+						js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Esporta AV-Punteggio per RG in Csv'}"
+						js:ajax="formId:'form',event:'onClick',params:{_eventId:'esportreportValutazioneRG'}"
+						id="esportreportValutazioneRG"
+						name="_eventId_esportreportValutazioneRG" value="AV-Punteggio per RG Esporta in Csv" type="submit" />
+			</form>
+			
+	  	</div>
+  
+	</body>
+</html>

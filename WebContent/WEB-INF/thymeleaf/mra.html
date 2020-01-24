@@ -1,0 +1,73 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:js="http://www.3di.it/thymeleaf/springJsDecorator" 
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+		layout:decorator="templateFHMBWithForm">
+			
+	<head>
+	    <title>MRA </title>
+		<!-- CSS per layout con menu -->
+		<link th:substituteby="common :: menuCSS" />
+    </head>
+
+  	<body class="claro">
+
+		<div layout:fragment="header" th:remove="tag">
+			<div th:substituteby="common :: defaultHeader"></div>
+		</div>
+	
+		<div layout:fragment="menu" th:remove="tag">
+			<div th:substituteby="common :: defaultMenu"></div>
+		</div>
+
+	<div layout:fragment="body" th:remove="tag">
+		<div>			
+			<div class="lista_holder">
+				<div id="fileMraPanel">
+					<!-- header videata -->
+					<div class="form-caption-container" >
+						<span class="form-caption-text">File MRA</span>
+					</div>
+					<table class="row" th:if="*{mraModel}">
+						<tbody>
+							<tr>
+								<td style="width: 180px;" class="label">File Titolari</td>
+								<td><a class="anchor" th:utext="*{mraModel.xmlTitolari.nome}"
+									th:href="@{/download(id=*{mraModel.xmlTitolari.clientidBase64},title=*{mraModel.xmlTitolari.nomeBase64},sessionId=*{sessionId},isBinaryAttachmentsAppl=true)}">titolari.xml</a></td>
+							</tr>
+							<tr>
+								<td style="width: 180px;" class="label">File Centri di Responsablità</td>
+								<td><a class="anchor" th:utext="*{mraModel.xmlCentriResponsabilita.nome}"
+									th:href="@{/download(id=*{mraModel.xmlCentriResponsabilita.clientidBase64},title=*{mraModel.xmlCentriResponsabilita.nomeBase64},sessionId=*{sessionId},isBinaryAttachmentsAppl=true)}">titolari.xml</a></td>
+							</tr>
+
+							<tr>
+								<td style="width: 180px;" class="label">File Punti Fisici</td>
+								<td><a class="anchor" th:utext="*{mraModel.xmlPuntiFisici.nome}"
+									th:href="@{/download(id=*{mraModel.xmlPuntiFisici.clientidBase64},title=*{mraModel.xmlPuntiFisici.nomeBase64},sessionId=*{sessionId},isBinaryAttachmentsAppl=true)}">titolari.xml</a></td>
+							</tr>
+							<tr>
+								<td style="width: 180px;" class="label">File Triplette</td>
+								<td><a class="anchor" th:utext="*{mraModel.xmlTriplette.nome}"
+									th:href="@{/download(id=*{mraModel.xmlTriplette.clientidBase64},title=*{mraModel.xmlTriplette.nomeBase64},sessionId=*{sessionId},isBinaryAttachmentsAppl=true)}">titolari.xml</a></td>
+							</tr>
+						</tbody>
+					</table>
+					<table class="row" th:if="not *{mraModel}">
+						<tbody>
+							<tr>
+								<td style="width: 180px;" class="label">Nessun file MRA presente</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div> 		
+	</div>
+
+	<div layout:fragment="footer" th:remove="tag">
+		<div th:substituteby="common :: defaultFooter"></div>
+	</div>
+	</body>
+</html>
+
+

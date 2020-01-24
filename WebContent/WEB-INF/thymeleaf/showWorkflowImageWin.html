@@ -1,0 +1,49 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:js="http://www.3di.it/thymeleaf/springJsDecorator">
+
+	<head>
+		<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+	    <title>Workflow</title>
+	   
+	   	<link th:substituteby="common :: dojo"/>
+	   	<link th:substituteby="common :: spring-js"/>
+	   	<link th:substituteby="common :: spring-js-decorator"/>
+
+	   	<!-- Page custom JS -->
+		<script type="text/javascript" th:src="@{/resources/js/custom.js}"></script>
+		<script type="text/javascript" th:src="@{/resources/js/jquery-1.11.2.min.js}"></script>
+
+		<!-- Page custom CSS -->
+	    <link rel="stylesheet" type="text/css" th:href="@{/resources/css/rd3.css}"/>
+	    <link rel="stylesheet" type="text/css" th:href="@{/resources/css/custom.css}"/>   
+		
+		<script th:if="${workflowProcessInstanceImageOnWindow.isState()}"  type="text/javascript">
+			$(function(){
+				displayOpenwaitmsg();
+				setBonitaWorkflowImageSize();
+			    $('#bonitaiframe').on('load', function(){
+			        //alert('caricato iframe');
+			        hideOpenwaitmsg()
+			    });
+			    $(window).on('resize', function(){
+			    	setBonitaWorkflowImageSize();
+			    });
+			});
+			
+		</script>
+	</head>
+	
+  	<body class="claro">
+		<!-- header videata -->
+		<div id="bonitaheader" class="form-caption-container">
+			<span class="form-caption-text">Visualizzazione workflow</span>
+		</div>
+		<iframe th:if="${workflowProcessInstanceImageOnWindow.isState()}" id="bonitaiframe" class="bonitaiframeImageWin" th:src="${workflowProcessInstanceImageOnWindow.imageWorkflowUrl}"></iframe> 
+  
+		<img th:if="${!workflowProcessInstanceImageOnWindow.isState()}" border="0" th:src="${'images/wf/' + workflowProcessInstanceImageOnWindow.imageWorkflowUrl}" /> 
+  		
+		<!-- gif animata per evidenza di caricamento ajax e blocco dell'interattività sulla pagina -->
+		<div th:substituteby="common :: waitmsg"></div>		
+  
+	</body>
+</html>

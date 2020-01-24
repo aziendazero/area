@@ -1,0 +1,112 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:js="http://www.3di.it/thymeleaf/springJsDecorator">
+
+	<head>
+		<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+	    <title>Storia Requisito</title>
+	   
+	   	<link th:substituteby="common :: dojo"/>
+	   	<link th:substituteby="common :: spring-js"/>
+	   	<link th:substituteby="common :: spring-js-decorator"/>
+
+		<!-- Page custom CSS -->
+		<link type="text/css" rel="stylesheet" th:href="@{/resources/css/index.css}"/>
+	</head>
+	
+  	<body class="claro">
+  
+	  	<div style="width:700px;">			  	
+
+			<form method="POST" id="show_storia_requisito_form" th:object="${showStoriaRequisitoPageBean}" th:action="${flowExecutionUrl}">
+		
+				<!-- header videata -->
+				<div class="form-caption-container">
+					<span class="form-caption-text">Storia Requisito</span>
+				</div>
+					
+				<!-- tabella storia -->
+				<div style="margin-left: 0px;" class="lista_holder">
+					<div class="form-frames-container">
+						<div class="frame-container">
+							<div class="frame-toolbar-container">
+								<span class="panel-toolbar-zone"> <span
+									class="frame-toolbar-caption">Elenco Attività</span>
+								</span>
+							</div>
+						</div>
+					</div>
+					<!-- form-frames-container -->
+
+					<!-- lista holder -->
+					<div class="fixed_height_scrollable_table">
+						<table class="lista" style="width:100%">
+							<tbody>
+								<tr>
+									<td class="listTableHeader">Azione</td>
+									<td style="width:120px;" class="listTableHeader">Operatore</td>
+									<td style="width:100px;text-align:center;" class="listTableHeader">Data</td>
+								</tr>
+								<tr th:each="storyEntry:*{storicoRisposteRequisitiL}">
+									<td>
+										<div th:if="${!#strings.isEmpty(storyEntry.evidenze)}">
+											<div><b>Evidenze:</b></div>
+											<textarea readonly="readonly" th:id="${#ids.seq('storyEntryEvidenze')}" js:widget="widgetType:'dijit.form.Textarea',widgetAttrs:{class:'dijitReset'}"
+												th:text="${storyEntry.evidenze}">&nbsp;
+											</textarea>										
+										</div>
+										<div th:if="${!#strings.isEmpty(storyEntry.note)}">
+											<div><b>Note:</b></div>
+											<textarea readonly="readonly" th:id="${#ids.seq('storyEntryNote')}" js:widget="widgetType:'dijit.form.Textarea',widgetAttrs:{class:'dijitReset'}"
+												th:text="${storyEntry.note}">&nbsp;
+											</textarea>										
+										</div>								
+										<div th:if="${!#strings.isEmpty(storyEntry.assegnatario)}">
+											<div><b>Assegnatario:</b></div>
+											<textarea readonly="readonly" th:id="${#ids.seq('storyEntryAssegnatario')}" js:widget="widgetType:'dijit.form.Textarea',widgetAttrs:{class:'dijitReset'}"
+												th:text="${storyEntry.assegnatario}">&nbsp;
+											</textarea>										
+										</div>									
+										<div th:if="${!#strings.isEmpty(storyEntry.valutazione)}">
+											<div><b>Valutazione:</b></div>
+											<textarea readonly="readonly" th:id="${#ids.seq('storyEntryValutazione')}" js:widget="widgetType:'dijit.form.Textarea',widgetAttrs:{class:'dijitReset'}"
+												th:text="${storyEntry.valutazione}">&nbsp;
+											</textarea>										
+										</div>									
+
+										<div th:if="${!#strings.isEmpty(storyEntry.noteVerificatore)}">
+											<div><b>Note Verificatore:</b></div>
+											<textarea readonly="readonly" th:id="${#ids.seq('storyEntryNoteVerificatore')}" js:widget="widgetType:'dijit.form.Textarea',widgetAttrs:{class:'dijitReset'}"
+												th:text="${storyEntry.noteVerificatore}">&nbsp;
+											</textarea>										
+										</div>								
+										<div th:if="${!#strings.isEmpty(storyEntry.verificatore)}">
+											<div><b>Verificatore:</b></div>
+											<textarea readonly="readonly" th:id="${#ids.seq('storyEntryVerificatore')}" js:widget="widgetType:'dijit.form.Textarea',widgetAttrs:{class:'dijitReset'}"
+												th:text="${storyEntry.verificatore}">&nbsp;
+											</textarea>										
+										</div>									
+										<div th:if="${!#strings.isEmpty(storyEntry.valutazioneVerificatore)}">
+											<div><b>Valutazione Verificatore:</b></div>
+											<textarea readonly="readonly" th:id="${#ids.seq('storyEntryValutazioneVerificatore')}" js:widget="widgetType:'dijit.form.Textarea',widgetAttrs:{class:'dijitReset'}"
+												th:text="${storyEntry.valutazioneVerificatore}">&nbsp;
+											</textarea>										
+										</div>									
+									</td>
+									<td style="width:120px;">
+										<span th:if="${storyEntry.admin} == 'S'" th:title="${storyEntry.operatore} + ' - Delega Admin'" style="width:120px;display:inline-block;white-space:nowrap;overflow:hidden !important;text-overflow:ellipsis;" th:text="${storyEntry.operatore} + ' - Delega Admin'"></span>
+										<span th:if="${storyEntry.admin} != 'S'" th:title="${storyEntry.operatore}" style="width:120px;display:inline-block;white-space:nowrap;overflow:hidden !important;text-overflow:ellipsis;" th:text="${storyEntry.operatore}"></span>
+									</td>
+									<td style="width:100px;text-align:center" th:text="${#dates.format(storyEntry.timeStamp, 'dd/MM/yyyy - HH:mm')}"></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<!-- tabella dei documenti -->					
+					
+			</form>
+			
+	  	</div>
+  
+	</body>
+</html>

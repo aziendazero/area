@@ -1,0 +1,47 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:js="http://www.3di.it/thymeleaf/springJsDecorator">
+
+	<head>
+		<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+	    <title>Note verifica</title>
+	   
+	   	<link th:substituteby="common :: dojo"/>
+	   	<link th:substituteby="common :: spring-js"/>
+	   	<link th:substituteby="common :: spring-js-decorator"/>
+
+		<!-- Page custom CSS -->
+		<link type="text/css" rel="stylesheet" th:href="@{/resources/css/index.css}"/>
+		
+		
+	</head>
+	
+  	<body class="claro">
+  
+	  	<div style="width:500px;">			  	
+
+			<form method="POST" id="edit_note_verifica_form" th:object="${editNoteVerificaPageBean}" th:action="${flowExecutionUrl}">
+		
+				<!-- header videata -->
+				<div class="form-caption-container">
+					<span class="form-caption-text">Nota verifica</span>
+				</div>
+				
+				<textarea style="width:494px;" th:readonly="*{readonly}"
+					th:field="*{note}"
+					js:widget="widgetType:'dijit.form.SimpleTextarea',widgetAttrs:{class:'dijitReset',rows:10}"
+					js:errors="true">&#160;</textarea>
+					
+				<div style="width:100%;text-align:center;margin-top:10px;">
+					<input th:if="*{!readonly}"
+						js:confirm="event:'onClick',message:'Confermare l\'operazione?'"
+						js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Salva'}"
+						js:ajax="formId:'edit_note_verifica_form',event:'onClick',params:{_eventId:'saveNoteVerifica'}"
+						id="saveNoteVerificaButton" name="_eventId_saveNoteVerifica" value="Salva" type="submit" />
+				</div>					
+					
+			</form>
+
+	  	</div>
+  
+	</body>
+</html>

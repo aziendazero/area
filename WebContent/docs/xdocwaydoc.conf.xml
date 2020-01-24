@@ -1,0 +1,483 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE xway_cfg SYSTEM "http://www.3di.it/extraway/xway_20020215.dtd">
+<xway_cfg>
+ <primary_node ud_name="doc" ud_container="list_of_doc">
+  <unique_rule search_rule="[XML,/doc/@nrecord] or [XML,/doc/@num_prot] or [XML,/doc/extra/raccomandata/@numero]"/>
+  <key name="XML,/doc/@nrecord" serial_id="nrecord"/>
+  <key name="XML,/doc/@num_prot" serial_id="num_protocollo"/>
+  <key name="XML,/doc/@anno" global="yes"/>
+  <key name="XML,/doc/repertorio/@numero" serial_id="num_repertorio" empty_key="yes"/>
+  <key name="XML,/doc/oggetto/" global="yes"/>
+  <key name="XML,/doc/riferimenti/" global="yes"/>
+  <key name="XML,/doc/keywords/" global="yes"/>
+  <key name="XML,/doc/minuta/classif/" key_style="double"/>
+  <key name="XML,//@xml:space" key_style="skip"/>
+  <key name="XML,/doc/allegato/" key_style="double" global="yes"/>
+  <key name="XML,/doc/autore/" key_style="double" global="yes"/>
+  <key name="XML,/doc/storia/assegnazione_cc/@nome_uff/" key_style="double"/>
+  <key name="XML,/doc/storia/assegnazione_cc/@nome_persona/" key_style="double"/>
+  <key name="XML,/doc/storia/assegnazione_cc/@data" value_type="date"/>
+  <key name="XML,/doc/storia/assegnazione_cc/@data_scarto" value_type="date"/>
+  <key name="XML,/doc/storia/assegnazione_cc/@data_visto" value_type="date"/>
+  <key name="XML,/doc/storia/assegnazione_cds/@data" value_type="date"/>
+  <key name="XML,/doc/storia/assegnazione_cds/@data_visto" value_type="date"/>
+  <key name="XML,/doc/storia/assegnazione_op/@data" value_type="date"/>
+  <key name="XML,/doc/storia/assegnazione_op/@data_visto" value_type="date"/>
+  <key name="XML,/doc/sede/indirizzo/@comune" key_style="double"/>
+  <key name="XML,/doc/@data_prot" value_type="date"/>
+  <key name="XML,/doc/postit" global="yes"/>
+  <key name="XML,/doc/postit/@data" value_type="date"/>
+  <key name="XML,/doc/storia/annullamento/@data" value_type="date"/>
+  <key name="XML,/doc/prot_differito/@data_arrivo" value_type="date"/>
+  <key name="XML,/doc/@data_valutazione_scarto" value_type="date"/>
+  <key name="XML,/doc/pubblicazione/@dal" value_type="date"/>
+  <key name="XML,/doc/pubblicazione/@al" value_type="date"/>
+  <key name="XML,/doc/pubblicazione/@preavviso_dal" value_type="date"/>
+  <key name="XML,/doc/visibilita/@fino_al" value_type="date"/>
+  <key name="XML,/doc/storia/responsabilita/@data" value_type="date"/>
+  <key name="XML,/doc/storia/responsabilita/@data_visto" value_type="date"/>
+  <key name="XML,/doc/storia/responsabilita_minuta/@data" value_type="date"/>
+  <key name="XML,/doc/postit/@operatore" key_style="double"/>
+  <key name="XML,/doc/rif_interni/rif" instance="yes" attr_collate='#dirittonomeuff:$@diritto@$$|^| @nome_uff|s" ,b@$#dirittonomepersona:$@diritto@$$|^| @nome_persona@$#dirittocodpersonacodfasc:$@diritto@$|$@cod_persona@$|$@cod_fasc@$#dirittocoduffcodfasc:$@diritto@$|$@cod_uff@$|$@cod_fasc@$#dirittocoduffscartato:$@diritto@$|$@cod_uff@$|$@scartato@$#dirittocodpersonascartato:$@diritto@$|$@cod_persona@$|$@scartato@$'/>
+  <key name="XML,/doc/rif_interni/rif/@operatore" key_style="double"/>
+  <key name="XML,/doc/rif_interni/rif/@nome_uff" key_style="double"/>
+  <key name="XML,/doc/rif_interni/rif/@nome_persona" key_style="double"/>
+  <key name="XML,/doc/rif_interni/rif/@data" value_type="date"/>
+  <key name="XML,/doc/rif_interni/rif/@data_visto" value_type="date"/>
+  <key name="XML,/doc/rif_esterni/rif/nome" key_style="double" key_also="XML,/doc/extra/richiedente/nome" empty_key="yes" global="yes"/>
+  <key name="XML,/doc/rif_esterni/rif/referente/@nominativo" key_style="double" global="yes"/>
+  <key name="XML,/doc/rif_esterni/rif/referente/@ruolo" key_style="double"/>
+  <key name="XML,/doc/rif_esterni/rif/@data_prot" value_type="date"/>
+  <key name="XML,/doc/rif_esterni/rif/@n_prot" global="yes"/>
+  <key name="XML,/doc/rif_esterni/rif/interoperabilita/@name" attach="yes"/>
+  <key name="XML,/doc/storia/azione_workflow/@operatore" key_style="double"/>
+  <key name="XML,/doc/storia/azione_workflow/@data" value_type="date"/>
+  <key name="XML,/doc/storia/creazione" attr_collate='#codopernomeoperuffoper:$@cod_oper@$$|@oper@$$ (@uff_oper@)$'/>
+  <key name="XML,/doc/storia/creazione/@cod_oper"/>
+  <key name="XML,/doc/storia/creazione/@oper" key_style="double"/>
+  <key name="XML,/doc/storia/creazione/@uff_oper" key_style="double"/>
+  <key name="XML,/doc/storia/creazione/@data" value_type="date"/>
+  <key name="XML,/doc/storia/protocollazione/@cod_oper"/>
+  <key name="XML,/doc/storia/protocollazione/@oper" key_style="double"/>
+  <key name="XML,/doc/storia/protocollazione/@uff_oper" key_style="double"/>
+  <key name="XML,/doc/storia/protocollazione/@data" value_type="date"/>
+  <key name="XML,/doc/storia/modifica/@data" value_type="date"/>
+  <key name="XML,/doc/storia/reso/@data" value_type="date"/>
+  <key name="XML,/doc/storia/in_fascicolo/@data/" value_type="date"/>
+  <key name="XML,/doc/storia/ultima_modifica/@oper" key_style="double"/>
+  <key name="XML,/doc/storia/ultima_modifica/@uff_oper" key_style="double"/>
+  <key name="XML,/doc/storia/ultima_modifica/@data" value_type="date"/>
+  <key name="XML,/doc/minuta/mittente/@nome_uff" key_style="double"/>
+  <key name="XML,/doc/minuta/mittente/@nome_persona" key_style="double"/>
+  <key name="XML,/doc/storia/rimozione_cc/@operatore" key_style="double"/>
+  <key name="XML,/doc/storia/rimozione_cc/@data" value_type="date"/>
+  <key name="XML,/doc/storia/rimozione_cc/@data_visto" value_type="date"/>
+  <key name="XML,/doc/storia/rimozione_cds/@data" value_type="date"/>
+  <key name="XML,/doc/storia/rimozione_op/@data" value_type="date"/>
+  <key name="XML,/doc/storia/trasferimento/@operatore" key_style="double"/>
+  <key name="XML,/doc/storia/annullamento/@operatore" key_style="double"/>
+  <key name="XML,/doc/storia/apertura/@data" value_type="date"/>
+  <key name="XML,/doc/prot_differito" instance="yes"/>
+  <key name="XML,/doc/validazione/@operatore" key_style="double"/>
+  <key name="XML,/doc/validazione/@data" value_type="date"/>
+  <key name="XML,/doc//xw:file" key_style="multi" attr_collate="#attachmentExtension:$@name|Tl.@$"/>
+  <key name="XML,/doc//xw:file/@title" key_style="double" global="yes"/>
+  <key name="XML,/doc//xw:file/@name" empty_key="yes"/>
+  <key name="XML,/doc//xw:file/metadata"/>
+  <key name="XML,/doc//xw:file/metadata/@parser" empty_key="yes"/>
+  <key name="XML,/doc//xw:file/metadata/@parserVersion" empty_key="yes"/>
+  <key name="XML,/doc//xw:file/chkin/@operatore" key_style="double"/>
+  <key name="XML,/doc//xw:file/chkin/@data" value_type="date"/>
+  <key name="XML,/doc//xw:file/chkout/@operatore" key_style="double"/>
+  <key name="XML,/doc//xw:file/chkout/@data" value_type="date"/>
+  <key name="XML,/doc/impronta" key_style="skip"/>
+  <key name="XML,/doc/impronta/@tipo" key_style="skip"/>
+  <key name="XML,/doc/impronta/@value" key_style="skip"/>
+
+  <key name="XML,/doc/classif" key_style="double" global="yes"/>
+  <key name="XML,/doc/note" th_key="arrivo" global="yes"/>
+  <key name="XML,/doc/tipologia/@cod" th_key="interno" global="yes"/>
+  <key name="XML,/doc/mezzo_trasmissione/@cod" th_key="partenza" empty_key="yes" global="yes"/>
+  <key name="XML,/doc/@tipo" th_key="varie"/>
+  <key name="XML,/doc/registro_emergenza/@num_regem"/>
+  <key name="XML,/doc/scadenza/@data_scadenza" value_type="date"/>
+  <key name="XML,/doc/scadenza/@data_ultima_revisione" value_type="date"/>
+  <key name="XML,/doc/odg_seduta/@data_convocazione" value_type="date" empty_key="yes"/>
+  <key name="XML,/doc/minuta/classif/@cod/" empty_key="yes"/>
+  <key name="XML,/doc/@scarto" empty_key="yes"/>
+  <key name="XML,/doc/classif/@cod" empty_key="yes"/>
+  <key name="XML,/doc/delibera/componente" instance="yes"/>
+
+  <!-- Federico 23/12/08: chiave per informazioni sui documenti contenuti in un fascicolo [RW 0055118] -->
+  <key name="XML,/doc/#protinfo" key_style="one" collate_rule="|||||$@/doc/@num_prot@$|$@/doc/repertorio/@numero@$|$@/doc/@data_prot@$"/>
+
+  <!-- RW0052062 - fcossu - Raccomandate -->
+  <key name="XML,/doc/@data_arrivo" value_type="date"/>
+  <key name="XML,/doc/@data_partenza" value_type="date"/>
+  <key name="XML,/doc/extra/raccomandata/@numero"/>
+  <key name="XML,/doc/extra/raccomandata/@numero_protocollo" empty_key="yes"/>
+  <key name="XML,/doc/extra/raccomandata/@data_protocollo" value_type="date"/>
+  
+  <!-- fcossu 24/11/2009 Data del documento nei documenti in partenza [EA 443] -->
+  <key name="XML,/doc/@data_reale" value_type="date"/>
+  
+  <!-- fcossu 11/12/09 Progetto Gestione Informazioni [EA 484] -->
+  <key name="XML,/doc/extra/tipologie_repertorio/tipologia_repertorio" key_style="double" empty_key="yes"/>
+  <key name="XML,/doc/extra/fornitori/fornitore" key_style="double"/>
+  
+  <!-- fcossu 04/02/2010 Ricerca per voci di indice [EA 576] -->
+  <key name="XML,/doc/voce_indice" key_style="double" global="yes"/>
+
+  <!-- lsopko 22/12/2010 Ricerca per albo pretorio -->
+  <key name="XML,/doc/extra/richiedente/nome" key_style="double"/>
+
+  <!-- abarducci 01/07/2013 Ricerca documenti in Conservazione -->
+  <key name="XML,/doc/extra/conservazione/@id" empty_key="yes"/>
+
+  <file_location mode="rule" rule="$@XML,/doc/storia/creazione/@data|p0-4@$/$@XML,/doc/@cod_amm_aoo@/$bozze/$@XML,/doc/@bozza|caesi?bozze:@$-$@XML,/doc/storia/creazione/@data|p0-6@$;$@XML,/doc/rif_interni/rif/@cod_fasc|p0-4@$/$@XML,/doc/rif_interni/rif/@cod_fasc|p5-7@$/fascicoli/$@XML,/doc/rif_interni/rif/@cod_fasc|p13-99,tl.,s\/_@$/$@XML,/doc/rif_interni/rif/@cod_fasc|p0-4@$-$@XML,/doc/rif_interni/rif/@cod_fasc|p13-99,tl.,s\/_@$.$@XML,/doc/rif_interni/rif/@cod_fasc|Tl.,tl.@$;$@XML,/doc/@anno@$/$@XML,/doc/@cod_amm_aoo@$/repertori/$@XML,/doc/repertorio/@cod@$/$@XML,/doc/@cod_amm_aoo@$-$@XML,/doc/repertorio/@cod@$-$@XML,/doc/storia/creazione/@data@$;$@XML,/doc/@anno@$/$@XML,/doc/@cod_amm_aoo@$/documenti/$@XML,/doc/classif/@cod|s\/_@$/$@XML,/doc/classif/@cod|s\/_@$-$@XML,/doc/storia/creazione/@data@$;$@XML,/doc/@anno@$/$@XML,/doc/@cod_amm_aoo@$/documenti/$@XML,/doc/minuta/classif/@cod|s\/_@$/$@XML,/doc/minuta/classif/@cod|s\/_@$-$@XML,/doc/storia/creazione/@data@$;unsorted" move_always="yes"/>
+ </primary_node>
+ <primary_node ud_name="workflow" ud_container="list_of_doc">
+  <unique_rule search_rule="[XML,/workflow/@nrecord]"/>
+  <key name="XML,/workflow/@nrecord" serial_id="nrecord"/>
+  <key name="XML,//@xml:space" key_style="skip"/>
+  <file_location mode="rule" rule="$@XML,/workflow/@anno@$/$@XML,/workflow/@cod_amm_aoo@$/workflow/$@XML,/workflow/classif/@cod|s\/_@$/$@XML,/workflow/@anno@$-$@XML,/workflow/classif/@cod|s\/_@$-workflow-$@XML,/workflow/@stato|caeaperto?aperti:chiusi@$" move_always="yes"/>
+ </primary_node>
+ <primary_node ud_name="fascicolo" ud_container="list_of_doc">
+  <unique_rule search_rule="[XML,/fascicolo/@nrecord] or [XML,/fascicolo/@numero]"/>
+  <key name="XML,/fascicolo/@nrecord" serial_id="nrecord"/>
+  <key name="XML,/fascicolo/@numero" serial_id="num_fascicolo"/>
+  <key name="XML,/fascicolo/extra/procedimento/@numero_procedimento" serial_id="num_procedimento_auac"/>
+  <key name="XML,//@xml:space" key_style="skip"/>
+  <key name="XML,/fascicolo/fascicolo_speciale/@data_assunzione" value_type="date"/>
+  <key name="XML,/fascicolo/fascicolo_speciale/@data_cessazione" value_type="date"/>
+  <key name="XML,/fascicolo/fascicolo_speciale/@data_nascita" value_type="date"/>
+  <key name="XML,/fascicolo/fascicolo_speciale/@data_immatricolazione" value_type="date"/>
+  <key name="XML,/fascicolo/rif_interni/rif/@nome_uff" key_style="double"/>
+  <key name="XML,/fascicolo/rif_interni/rif/@nome_persona" key_style="double"/>
+  <key name="XML,/fascicolo/rif_interni/rif" instance="yes" attr_collate='#dirittonomeuff:$@diritto@$$|^| @nome_uff|s" ,b@$#dirittonomepersona:$@diritto@$$|^| @nome_persona@$#dirittocoduffscartato:$@diritto@$|$@cod_uff@$|$@scartato@$#dirittocodpersonascartato:$@diritto@$|$@cod_persona@$|$@scartato@$'/>
+  <key name="XML,/fascicolo/oggetto" key_style="double"/>
+  <key name="XML,/fascicolo/soggetto" key_style="double"/>
+  <key name="XML,/fascicolo/classif" key_style="double"/>
+  <key name="XML,/fascicolo/classif/@cod" empty_key="yes"/>
+  <key name="XML,/fascicolo/storia/responsabilita/@nome_persona" key_style="double"/>
+  <key name="XML,/fascicolo/storia/responsabilita/@nome_uff" key_style="double"/>
+  <key name="XML,/fascicolo/storia/responsabilita/@data" value_type="date"/>
+  <key name="XML,/fascicolo/storia/chiusura/@data" value_type="date"/>
+  <key name="XML,/fascicolo/storia/creazione/@data" value_type="date"/>
+  <key name="XML,/fascicolo/storia/ultima_modifica/@data" value_type="date"/>
+  <key name="XML,/fascicolo/@data_valutazione_scarto/" value_type="date"/>
+  <!-- RW0042548 Seriale fascicoli personale -->
+  <key name="XML,/fascicolo/@num_pos" serial_id="fasc_pers_num_pos"/>
+  
+<!--  
+  <key name="XML,/fascicolo//xw:file" key_style="skip"/>
+  <key name="XML,/fascicolo//xw:file/@name" key_style="skip"/>
+  <key name="XML,/fascicolo//xw:file/@name" empty_key="yes"/>
+   -->
+
+  <!-- fcossu 04/02/2010 Ricerca per voci di indice [EA 576] -->
+  <key name="XML,/fascicolo/voce_indice" key_style="double"/>
+  <file_location mode="rule" rule="$@XML,/fascicolo/@numero|p0-4@$/$@XML,/fascicolo/@cod_amm_aoo@$/fascicoli/$@XML,/fascicolo/classif/@cod|s\/_@$/$@XML,/fascicolo/@numero|p0-4@$-$@XML,/fascicolo/classif/@cod|s\/_@$.$@XML,/fascicolo/@numero|Tl.,tl.@$" move_always="yes"/>
+ </primary_node>
+ <primary_node ud_name="raccoglitore" ud_container="list_of_doc">
+  <unique_rule search_rule="[XML,/raccoglitore/@nrecord]"/>
+  <key name="XML,/raccoglitore/@nrecord" serial_id="nrecord"/>
+  <key name="XML,//@xml:space" key_style="skip"/>
+  <key name="XML,/raccoglitore/storia/chiusura/@data" value_type="date"/>
+  <key name="XML,/raccoglitore/storia/creazione/@data" value_type="date"/>
+  <key name="XML,/raccoglitore/storia/responsabilita/@data" value_type="date"/>
+  <key name="XML,/raccoglitore/storia/ultima_modifica/@data" value_type="date"/>
+  <key name="XML,/raccoglitore/rif_interni/rif/@nome_uff" key_style="double"/>
+  <key name="XML,/raccoglitore/rif_interni/rif/@nome_persona" key_style="double"/>
+  <key name="XML,/raccoglitore/rif_interni/rif" instance="yes" attr_collate='#dirittonomeuff:$@diritto@$$|^| @nome_uff|s" ,b@$#dirittonomepersona:$@diritto@$$|^| @nome_persona@$'/>
+  <key name="XML,/raccoglitore/oggetto" key_style="double"/>
+  <file_location mode="rule" rule="$@XML,/raccoglitore/@anno@$/$@XML,/raccoglitore/@cod_amm_aoo@$/raccoglitori" move_always="yes"/>
+ </primary_node>
+ <primary_node ud_name="seduta" ud_container="list_of_doc">
+  <unique_rule search_rule="[XML,/seduta/@nrecord]"/>
+  <key name="XML,/seduta/@nrecord" serial_id="nrecord"/>
+  <key name="XML,//@xml:space" key_style="skip"/>
+  <key name="XML,/seduta/@data_convocazione" value_type="date"/>
+  <key name="XML,/seduta/componenti/componente" instance="yes"/>
+  <file_location mode="rule" rule="$@XML,/seduta/@anno@$/$@XML,/seduta/@cod_amm_aoo@$/sedute/$@XML,/seduta/organo/@cod@$" move_always="yes"/>
+ </primary_node>
+	<serials>
+		<serial id="nrecord" mask="########" skip_test="yes"/>
+		<serial id="num_protocollo" mask="#######" prefix="yes" empty="yes" />
+		<serial id="num_fascicolo" mask="#####" prefix="yes" skip_test="yes"/>
+		<serial id="num_repertorio" mask="#######" prefix="yes" empty="yes" />
+		<!-- RW0042548 Seriale fascicoli personale -->
+		<serial id="fasc_pers_num_pos" mask="########" skip_test="yes" empty="yes"/>
+		<serial id="num_procedimento_auac" mask="########" prefix="yes" empty="yes"/>
+	</serials>
+	<thesaurus>
+		<th_file th_filename="../common.ths" th_type="ths">
+			<th_link xw_key="XML,/doc/note" th_key="arrivo"/>
+			<th_link xw_key="XML,/doc/classif/@cod" th_key="classif"/>
+			<th_link xw_key="XML,/doc/tipologia/@cod" th_key="interno"/>
+			<th_link xw_key="XML,/doc/mezzo_trasmissione/@cod" th_key="partenza"/>
+			<th_link xw_key="XML,/doc/@tipo" th_key="varie"/>
+            <!-- Personalizzazioni thesauro per Protocollo 3DI -->
+            <!--    <th_link xw_key="XML,/doc/ordine/tipologia_ordine" th_key="tipologia_ordine"/>
+                    <th_link xw_key="XML,/doc/ordine/servizio" th_key="servizi_ordine"/>
+                    <th_link xw_key="XML,/doc/ordine/contratto" th_key="contratti_ordine"/>
+                    <th_link xw_key="XML,/doc/ordine/licenza" th_key="licenze_ordine"/>
+                    <th_link xw_key="XML,/doc/ordine/altro" th_key="altro_ordine"/> -->
+		</th_file>
+	</thesaurus>
+ <hw_fields hw_container="XML" hw_datafield="UD">
+  <search_alias search_name="sed_nrecord" search_key="xml,/seduta/@nrecord"/>
+  <search_alias search_name="sed_organocod" search_key="xml,/seduta/organo/@cod"/>
+  <search_alias search_name="sed_codammaoo" search_key="xml,/seduta/@cod_amm_aoo"/>
+  <search_alias search_name="sed_stato" search_key="xml,/seduta/@stato"/>
+  <search_alias search_name="seddataconvocazione" search_key="xml,/seduta/@data_convocazione"/>
+  <search_alias search_name="sedannoconvocazione" search_key="xml,/seduta/@data_convocazione/#year"/>
+  <search_alias search_name="sed_nominativo" search_key="xml,/seduta/componenti/componente/nominativo"/>
+  <search_alias search_name="sed_presenza" search_key="xml,/seduta/componenti/componente/@presenza"/>
+  <search_alias search_name="sed_odgpropostanrecord" search_key="xml,/seduta/odg/proposta/@nrecord_prop"/>
+  <search_alias search_name="sed_verbalenrecord" search_key="xml,/seduta/verbale/@nrecord_verbale"/>
+  <search_alias search_name="rac_linkinternohref" search_key="xml,/raccoglitore/link_interno/@href"/>
+  <search_alias search_name="rac_stato" search_key="xml,/raccoglitore/@stato"/>
+  <search_alias search_name="rac_nrecord" search_key="xml,/raccoglitore/@nrecord"/>
+  <search_alias search_name="rac_anno" search_key="xml,/raccoglitore/@anno"/>
+  <search_alias search_name="rac_oggetto" search_key="xml,/raccoglitore/oggetto"/>
+  <search_alias search_name="rac_rifcontenutooggettocodice" search_key="xml,/raccoglitore/rif_contenuto/oggetto/@codice"/>
+  <search_alias search_name="rac_codammaoo" search_key="xml,/raccoglitore/@cod_amm_aoo"/>
+  <search_alias search_name="rac_note" search_key="xml,/raccoglitore/note"/>
+  <search_alias search_name="rac_pubblico" search_key="xml,/raccoglitore/@pubblico"/>
+  <search_alias search_name="rac_rifinternirifnomepersona" search_key="xml,/raccoglitore/rif_interni/rif/@nome_persona"/>
+  <search_alias search_name="rac_rifinternirifcodpersona" search_key="xml,/raccoglitore/rif_interni/rif/@cod_persona"/>
+  <search_alias search_name="rac_rifinternirifnomeuff" search_key="xml,/raccoglitore/rif_interni/rif/@nome_uff"/>
+  <search_alias search_name="rac_rifinternirifcoduff" search_key="xml,/raccoglitore/rif_interni/rif/@cod_uff"/>
+  <search_alias search_name="rac_rifinternirifdiritto" search_key="xml,/raccoglitore/rif_interni/rif/@diritto"/>
+  <search_alias search_name="rac_rifinternirifdirittonomepersona" search_key="xml,/raccoglitore/rif_interni/rif/#dirittonomepersona"/>
+  <search_alias search_name="rac_rifinternirifdirittonomeuff" search_key="xml,/raccoglitore/rif_interni/rif/#dirittonomeuff"/>
+  <!-- fcossu 29/12/2009 Scarto vaschetta ruoli [EA 501] -->
+  <search_alias search_name="rac_rifinternirifruoliscartati" search_key="xml,/raccoglitore/rif_interni/@ruoli_scartati"/>
+  <!-- fcossu 04/02/2010 Ricerca per voci di indice [EA 576]-->
+  <search_alias search_name="fasc_voceindice" search_key="xml,/fascicolo/voce_indice"/>
+  <search_alias search_name="fasc_linkinternohref" search_key="xml,/fascicolo/link_interno/@href"/>
+  <search_alias search_name="fasc_nrecord" search_key="xml,/fascicolo/@nrecord"/>
+  <search_alias search_name="fasc_stato" search_key="xml,/fascicolo/@stato"/>
+  <search_alias search_name="fasc_anno" search_key="xml,/fascicolo/@anno"/>
+  <search_alias search_name="fasc_numero" search_key="xml,/fascicolo/@numero"/>
+  <search_alias search_name="fasc_classif" search_key="xml,/fascicolo/classif"/>
+  <search_alias search_name="fasc_classifcod" search_key="xml,/fascicolo/classif/@cod"/>
+  <search_alias search_name="fasc_scarto" search_key="xml,/fascicolo/@scarto"/>
+  <search_alias search_name="fasc_oggetto" search_key="xml,/fascicolo/oggetto"/>
+  <search_alias search_name="fasc_soggetto" search_key="xml,/fascicolo/soggetto"/>
+  <search_alias search_name="fasc_codammaoo" search_key="xml,/fascicolo/@cod_amm_aoo"/>
+  <search_alias search_name="fasc_note" search_key="xml,/fascicolo/note"/>
+  <search_alias search_name="fasc_rifinternirifnomepersona" search_key="xml,/fascicolo/rif_interni/rif/@nome_persona"/>
+  <search_alias search_name="fasc_rifinternirifcodpersona" search_key="xml,/fascicolo/rif_interni/rif/@cod_persona"/>
+  <search_alias search_name="fasc_rifinternirifnomeuff" search_key="xml,/fascicolo/rif_interni/rif/@nome_uff"/>
+  <search_alias search_name="fasc_rifinternirifcoduff" search_key="xml,/fascicolo/rif_interni/rif/@cod_uff"/>
+  <search_alias search_name="fasc_rifinternirifdiritto" search_key="xml,/fascicolo/rif_interni/rif/@diritto"/>
+  <search_alias search_name="fasc_rifinternirifdirittonomepersona" search_key="xml,/fascicolo/rif_interni/rif/#dirittonomepersona"/>
+  <search_alias search_name="fasc_rifinternirifdirittonomeuff" search_key="xml,/fascicolo/rif_interni/rif/#dirittonomeuff"/>
+  <search_alias search_name="fasc_rifinternirifdirittocoduffscartato" search_key="xml,/fascicolo/rif_interni/rif/#dirittocoduffscartato"/>
+  <search_alias search_name="fasc_rifinternirifdirittocodpersonascartato" search_key="xml,/fascicolo/rif_interni/rif/#dirittocodpersonascartato"/>
+  <search_alias search_name="fasc_fsmatricola" search_key="xml,/fascicolo/fascicolo_speciale/@matricola"/>
+  <search_alias search_name="fascdataassunzione" search_key="xml,/fascicolo/fascicolo_speciale/@data_assunzione"/>
+  <search_alias search_name="fascdatacessazione" search_key="xml,/fascicolo/fascicolo_speciale/@data_cessazione"/>
+  <search_alias search_name="fasc_categoria" search_key="xml,/fascicolo/fascicolo_speciale/@categoria"/>
+  <search_alias search_name="fasc_codfiscale" search_key="xml,/fascicolo/fascicolo_speciale/@cod_fis"/>
+  <search_alias search_name="fascdatanascita" search_key="xml,/fascicolo/fascicolo_speciale/@data_nascita"/>
+  <search_alias search_name="fascdataimmatricolazione" search_key="xml,/fascicolo/fascicolo_speciale/@data_immatricolazione"/>
+  <!-- RW0041967 Alias per ricerca fascicoli in base a data creazione -->
+  <search_alias search_name="fascstoriacreazionedata" search_key="xml,/fascicolo/storia/creazione/@data"/>
+  <!-- fcossu 11/12/09 Progetto Gestione Informazioni [EA 484] -->
+  <search_alias search_name="fascchiusuradata" search_key="xml,/fascicolo/storia/chiusura/@data"/>
+  <search_alias search_name="fascaperturadata" search_key="xml,/fascicolo/storia/creazione/@data"/>
+  <!-- fcossu 29/12/2009 Scarto vaschetta ruoli [EA 501] -->
+  <search_alias search_name="fasc_rifinternirifruoliscartati" search_key="xml,/fascicolo/rif_interni/@ruoli_scartati"/>
+  <search_alias search_name="@" search_key="xml,/doc/#global"/>
+  <search_alias search_name="doc_personalview" search_key="xml,/doc/personalView"/>
+  <search_alias search_name="doc_personalviewcod" search_key="xml,/doc/personalView/@cod"/>
+  <search_alias search_name="doc_tipo" search_key="xml,/doc/@tipo"/>
+  <search_alias search_name="doc_anno" search_key="xml,/doc/@anno"/>
+  <search_alias search_name="doc_bozza" search_key="xml,/doc/@bozza"/>
+  <!-- mbernardini 05/07/21013 : gestione dei libri firma ('attesa firma', 'firmato', '') -->
+  <search_alias search_name="doc_statofirma" search_key="xml,/doc/@stato_firma"/>
+  <search_alias search_name="doc_codammaoo" search_key="xml,/doc/@cod_amm_aoo"/>
+  <search_alias search_name="docnrecord" search_key="xml,/doc/@nrecord"/>
+  <search_alias search_name="docnumprot" search_key="xml,/doc/@num_prot"/>
+  <search_alias search_name="docdataprot" search_key="xml,/doc/@data_prot"/>
+  <search_alias search_name="doc_agliatti" search_key="xml,/doc/@agli_atti"/>
+  <search_alias search_name="doc_annullato" search_key="xml,/doc/@annullato"/>
+  <search_alias search_name="doc_scarto" search_key="xml,/doc/@scarto"/>
+  <search_alias search_name="doc_validato" search_key="xml,/doc/@validato"/>
+  <search_alias search_name="doc_fontecodstruttura" search_key="xml,/doc/fonte/@cod_struttura"/>
+  <search_alias search_name="doc_protdifferito" search_key="xml,/doc/prot_differito"/>
+  <search_alias search_name="doc_repertorionumero" search_key="xml,/doc/repertorio/@numero"/>
+  <search_alias search_name="doc_repertoriocod" search_key="xml,/doc/repertorio/@cod"/>
+  <search_alias search_name="doc_oggetto" search_key="xml,/doc/oggetto"/>
+  <search_alias search_name="doc_tipologiacod" search_key="xml,/doc/tipologia/@cod"/>
+  <search_alias search_name="doc_mezzotrasmissionecod" search_key="xml,/doc/mezzo_trasmissione/@cod"/>
+  <search_alias search_name="doc_mezzotrasmissionecosto" search_key="xml,/doc/mezzo_trasmissione/@costo"/>
+  <search_alias search_name="doc_mezzotrasmissionevaluta" search_key="xml,/doc/mezzo_trasmissione/@valuta"/>
+  <search_alias search_name="doc_classif" search_key="xml,/doc/classif"/>
+  <search_alias search_name="doc_classifcod" search_key="xml,/doc/classif/@cod"/>
+  <search_alias search_name="doc_testo" search_key="xml,/doc/testo"/>
+  <search_alias search_name="doc_note" search_key="xml,/doc/note"/>
+  <search_alias search_name="doc_riferimenti" search_key="xml,/doc/riferimenti"/>
+  <search_alias search_name="doc_xlink" search_key="xml,/doc/xlink"/>
+  <search_alias search_name="doc_xlinkhref" search_key="xml,/doc/xlink/@href"/>
+  <search_alias search_name="doc_xlinktype" search_key="xml,/doc/xlink/@type"/>
+  <search_alias search_name="doc_linkinternohref" search_key="xml,/doc/link_interno/@href"/>
+  <search_alias search_name="doc_keywords" search_key="xml,/doc/keywords"/>
+  <search_alias search_name="doc_allegato" search_key="xml,/doc/allegato"/>
+  <search_alias search_name="doc_rifinternirifdirittonomepersona" search_key="xml,/doc/rif_interni/rif/#dirittonomepersona"/>
+  <search_alias search_name="doc_rifinternirifdirittonomeuff" search_key="xml,/doc/rif_interni/rif/#dirittonomeuff"/>
+  <search_alias search_name="doc_rifinternirifdirittocoduffcodfasc" search_key="xml,/doc/rif_interni/rif/#dirittocoduffcodfasc"/>
+  <search_alias search_name="doc_rifinternirifdirittocodpersonacodfasc" search_key="xml,/doc/rif_interni/rif/#dirittocodpersonacodfasc"/>
+  <search_alias search_name="doc_rifinternirifdirittocoduffscartato" search_key="xml,/doc/rif_interni/rif/#dirittocoduffscartato"/>
+  <search_alias search_name="doc_rifinternirifdirittocodpersonascartato" search_key="xml,/doc/rif_interni/rif/#dirittocodpersonascartato"/>
+  <search_alias search_name="doc_rifinternirifcodfasc" search_key="xml,/doc/rif_interni/rif/@cod_fasc"/>
+  <search_alias search_name="doc_rifinternirifcodoperatore" search_key="xml,/doc/rif_interni/rif/@cod_operatore"/>
+  <search_alias search_name="doc_rifinternirifcodpersona" search_key="xml,/doc/rif_interni/rif/@cod_persona"/>
+  <search_alias search_name="doc_rifinternirifnomepersona" search_key="xml,/doc/rif_interni/rif/@nome_persona"/>
+  <search_alias search_name="doc_rifinternirifnomeuff" search_key="xml,/doc/rif_interni/rif/@nome_uff"/>
+  <search_alias search_name="doc_rifinternirifcoduff" search_key="xml,/doc/rif_interni/rif/@cod_uff"/>
+  <search_alias search_name="doc_rifinternirifdata" search_key="xml,/doc/rif_interni/rif/@data"/>
+  <search_alias search_name="doc_rifinternirifora" search_key="xml,/doc/rif_interni/rif/@ora"/>
+  <search_alias search_name="doc_rifinternirifdatavisto" search_key="xml,/doc/rif_interni/rif/@data_visto"/>
+  <search_alias search_name="doc_rifinterniriforavisto" search_key="xml,/doc/rif_interni/rif/@ora_visto"/>
+  <search_alias search_name="doc_rifinternirifdiritto" search_key="xml,/doc/rif_interni/rif/@diritto"/>
+  <search_alias search_name="doc_rifinternirifnomeoperatore" search_key="xml,/doc/rif_interni/rif/@operatore"/>
+  <search_alias search_name="doc_rifinternirifvistoda" search_key="xml,/doc/rif_interni/rif/@visto_da"/>
+  <search_alias search_name="doc_rifinternirifnomeoper" search_key="xml,/doc/rif_interni/rif/@oper"/>
+  <search_alias search_name="doc_rifesternirifnome" search_key="xml,/doc/rif_esterni/rif/nome"/>
+  <search_alias search_name="doc_rifesternirifnomecod" search_key="xml,/doc/rif_esterni/rif/nome/@cod"/>
+  <search_alias search_name="docrifesternirifdataprot" search_key="xml,/doc/rif_esterni/rif/@data_prot"/>
+  <search_alias search_name="doc_rifesternirifcopiaconoscenza" search_key="xml,/doc/rif_esterni/rif/@copia_conoscenza"/>
+  <search_alias search_name="doc_rifestrenirifnprot" search_key="xml,/doc/rif_esterni/rif/@n_prot"/>
+  <search_alias search_name="doc_rifesternirifreferentenominativo" search_key="xml,/doc/rif_esterni/rif/referente/@nominativo"/>
+  <search_alias search_name="doc_rifesternirifreferenteruolo" search_key="xml,/doc/rif_esterni/rif/referente/@ruolo"/>
+
+  <search_alias search_name="doc_protesterno" search_key="xml,/doc/@prot_esterno"/>
+
+  <search_alias search_name="doc_filesfiletesto" search_key="xml,/doc//xw:file"/>
+  <!-- mbernardini 05/07/21013 : gestione dei libri firma -->
+  <search_alias search_name="doc_filesdafirmare" search_key="xml,/doc//xw:file/@da_firmare"/>
+  <search_alias search_name="doc_postit" search_key="xml,/doc/postit"/>
+  <search_alias search_name="doc_postitcodoperatore" search_key="xml,/doc/postit/@cod_operatore"/>
+  <search_alias search_name="doc_postitdata" search_key="xml,/doc/postit/@data"/>
+  <search_alias search_name="doc_postitora" search_key="xml,/doc/postit/@ora"/>
+  <search_alias search_name="doc_postitoperatore" search_key="xml,/doc/postit/@operatore"/>
+  <search_alias search_name="doc_pubblicazioneal" search_key="xml,/doc/pubblicazione/@al"/>
+  <search_alias search_name="doc_pubblicazionedal" search_key="xml,/doc/pubblicazione/@dal"/>
+  <search_alias search_name="doc_pubblicazionepreavvisodal" search_key="xml,/doc/pubblicazione/@preavviso_dal"/>
+  <search_alias search_name="doc_validazionecodoperatore" search_key="xml,/doc/validazione/@cod_operatore"/>
+  <search_alias search_name="doc_validazionedata" search_key="xml,/doc/validazione/@data"/>
+  <search_alias search_name="doc_validazioneora" search_key="xml,/doc/validazione/@ora"/>
+  <search_alias search_name="doc_validazioneoperatore" search_key="xml,/doc/validazione/@operatore"/>
+  <search_alias search_name="doc_autore" search_key="xml,/doc/autore"/>
+  <search_alias search_name="doc_minutaclassif" search_key="xml,/doc/minuta/classif"/>
+  <search_alias search_name="doc_minutamittentenomeuff" search_key="xml,/doc/minuta/mittente/@nome_uff"/>
+  <search_alias search_name="doc_minutamittentenomepersona" search_key="xml,/doc/minuta/mittente/@nome_persona"/>
+  <search_alias search_name="doc_minutascarto" search_key="xml,/doc/minuta/@scarto"/>
+  <search_alias search_name="doc_rifcontenutooggettotipo" search_key="xml,/doc/rif_contenuto/oggetto/@tipo"/>
+  <search_alias search_name="doc_rifcontenutooggettocodice" search_key="xml,/doc/rif_contenuto/oggetto/@codice"/>
+  <search_alias search_name="doc_storiaaperturacodoperatore" search_key="xml,/doc/storia/apertura/@cod_operatore"/>
+  <search_alias search_name="doc_storiaaperturaoperatore" search_key="xml,/doc/storia/apertura/@operatore"/>
+  <search_alias search_name="doc_storiaaperturaora" search_key="xml,/doc/storia/apertura/@ora"/>
+  <search_alias search_name="doc_storiaaperturadata" search_key="xml,/doc/storia/apertura/@data"/>
+  <search_alias search_name="doc_storiaannullamento" search_key="xml,/doc/storia/annullamento"/>
+  <search_alias search_name="doc_storiaannullamentocodoperatore" search_key="xml,/doc/storia/annullamento/@cod_operatore"/>
+  <search_alias search_name="doc_storiaannullamentodata" search_key="xml,/doc/storia/annullamento/@data"/>
+  <search_alias search_name="doc_storiaannullamentoora" search_key="xml,/doc/storia/annullamento/@ora"/>
+  <search_alias search_name="doc_storiaannullamentooperatore" search_key="xml,/doc/storia/annullamento/@operatore"/>
+  <search_alias search_name="doc_storiaazioneworkflow" search_key="xml,/doc/storia/azione_workflow"/>
+  <search_alias search_name="doc_storiaazioneworkflowattore" search_key="xml,/doc/storia/azione_workflow/@attore"/>
+  <search_alias search_name="doc_storiaazioneworkflowazione" search_key="xml,/doc/storia/azione_workflow/@azione"/>
+  <search_alias search_name="doc_storiaazioneworkflowcodattore" search_key="xml,/doc/storia/azione_workflow/@cod_attore"/>
+  <search_alias search_name="doc_storiaazioneworkflowcodoperatore" search_key="xml,/doc/storia/azione_workflow/@cod_operatore"/>
+  <search_alias search_name="doc_storiaazioneworkflowcodpersona" search_key="xml,/doc/storia/azione_workflow/@cod_persona"/>
+  <search_alias search_name="doc_storiaazioneworkflowcodufficio" search_key="xml,/doc/storia/azione_workflow/@cod_ufficio"/>
+  <search_alias search_name="doc_storiaazioneworkflowdata" search_key="xml,/doc/storia/azione_workflow/@data"/>
+  <search_alias search_name="doc_storiaazioneworkflowora" search_key="xml,/doc/storia/azione_workflow/@ora"/>
+  <search_alias search_name="doc_storiaazioneworkflowoperatore" search_key="xml,/doc/storia/azione_workflow/@operatore"/>
+  <search_alias search_name="docstoriacreazionedata" search_key="xml,/doc/storia/creazione/@data"/>
+  <search_alias search_name="doc_storiacreazioneora" search_key="xml,/doc/storia/creazione/@ora"/>
+  <search_alias search_name="doc_storiacreazioneoper" search_key="xml,/doc/storia/creazione/@oper"/>
+  <search_alias search_name="doc_storiacreazioneuffoper" search_key="xml,/doc/storia/creazione/@uff_oper"/>
+  <search_alias search_name="doc_storiacreazionecodoper" search_key="xml,/doc/storia/creazione/@cod_oper"/>
+  <search_alias search_name="doc_storiaprotocollazionedata" search_key="xml,/doc/storia/protocollazione/@data"/>
+  <search_alias search_name="doc_storiaprotocollazioneoper" search_key="xml,/doc/storia/protocollazione/@oper"/>
+  <search_alias search_name="doc_storiaprotocollazioneuffoper" search_key="xml,/doc/storia/protocollazione/@uff_oper"/>
+  <search_alias search_name="doc_storiaprotocollazionecodoper" search_key="xml,/doc/storia/protocollazione/@cod_oper"/>
+  <search_alias search_name="doc_storiamodifica" search_key="xml,/doc/storia/modifica"/>
+  <search_alias search_name="doc_storiamodificaazione" search_key="xml,/doc/storia/modifica/@azione"/>
+  <search_alias search_name="doc_storiamodificadata" search_key="xml,/doc/storia/modifica/@data"/>
+  <search_alias search_name="doc_storiamodificaora" search_key="xml,/doc/storia/modifica/@ora"/>
+  <search_alias search_name="doc_storiaultimamodificaoper" search_key="xml,/doc/storia/ultima_modifica/@oper"/>
+  <search_alias search_name="doc_storiaultimamodificauffoper" search_key="xml,/doc/storia/ultima_modifica/@uff_oper"/>
+  <search_alias search_name="doc_storiarimozionecccodfasc" search_key="xml,/doc/storia/rimozione_cc/@cod_fasc"/>
+  <search_alias search_name="doc_storiarimozionecccodoperatore" search_key="xml,/doc/storia/rimozione_cc/@cod_operatore"/>
+  <search_alias search_name="doc_storiarimozionecccodpersona" search_key="xml,/doc/storia/rimozione_cc/@cod_persona"/>
+  <search_alias search_name="doc_storiarimozionecccoduff" search_key="xml,/doc/storia/rimozione_cc/@cod_uff"/>
+  <search_alias search_name="doc_storiarimozioneccdata" search_key="xml,/doc/storia/rimozione_cc/@data"/>
+  <search_alias search_name="doc_storiarimozioneccora" search_key="xml,/doc/storia/rimozione_cc/@ora"/>
+  <search_alias search_name="doc_storiarimozioneccdatavisto" search_key="xml,/doc/storia/rimozione_cc/@data_visto"/>
+  <search_alias search_name="doc_storiarimozioneccoravisto" search_key="xml,/doc/storia/rimozione_cc/@ora_visto"/>
+  <search_alias search_name="doc_storiarimozioneccnomeoperatore" search_key="xml,/doc/storia/rimozione_cc/@operatore"/>
+  <search_alias search_name="doc_storiarimozioneccvistoda" search_key="xml,/doc/storia/rimozione_cc/@visto_da"/>
+  <search_alias search_name="doc_ordinetipologia" search_key="xml,/doc/ordine/tipologia_ordine"/>
+  <search_alias search_name="doc_ordineservizio" search_key="xml,/doc/ordine/servizio"/>
+  <search_alias search_name="doc_ordinecontratto" search_key="xml,/doc/ordine/contratto"/>
+  <search_alias search_name="doc_ordinelicenza" search_key="xml,/doc/ordine/licenza"/>
+  <search_alias search_name="doc_ordinealtro" search_key="xml,/doc/ordine/altro"/>
+  <search_alias search_name="docregemnumprot" search_key="xml,/doc/registro_emergenza/@num_regem"/>
+  <search_alias search_name="docdatascadenza" search_key="xml,/doc/scadenza/@data_scadenza"/>
+  <search_alias search_name="docdataultimarevisione" search_key="xml,/doc/scadenza/@data_ultima_revisione"/>
+  <search_alias search_name="doc_fascicolocollegato" search_key="xml,/doc/rif_interni/fascicoli_collegati/fasc/@cod"/>
+  <search_alias search_name="doc_propostacodorgano" search_key="xml,/doc/proposta/@cod_organo"/>
+  <search_alias search_name="docodgsedutadataconvocazione" search_key="xml,/doc/odg_seduta/@data_convocazione"/>
+  <search_alias search_name="doc_odgsedutaannoconvocazione" search_key="xml,/doc/odg_seduta/@data_convocazione/#year"/>
+  <search_alias search_name="doc_deliberanominativo" search_key="xml,/doc/delibera/componente/nominativo"/>
+  <search_alias search_name="doc_deliberaparere" search_key="xml,/doc/delibera/componente/@parere"/>
+  <!-- Federico 05/12/05: introdotta gestione delle notifiche differite [RW 0032578] -->
+  <search_alias search_name="doc_notificadifferita" search_key="xml,/doc/rif_interni/rif/@notificaDifferita"/>
+  <search_alias search_name="doc_idnotifdifferita"  search_key="xml,/doc/rif_interni/rif/@idNotificaDifferita"/>
+  <!-- Federico 19/01/06: introdotta gestione errori nell'invio delle notifiche differite [RW 0033704] -->
+  <search_alias search_name="doc_inviomailfallito"  search_key="xml,/doc/rif_interni/rif/@invioEMailFallito"/>
+  <!-- Federica - introdotta ricerca per intervallo data scadenza pubblicazione-->
+  <search_alias search_name="docpubblicazioneal" search_key="xml,/doc/pubblicazione/@al"/>
+  <!-- Federico 12/09/08: alias per richiedente interno ALBO [RW 0054051] -->
+  <search_alias search_name="albo_ric_interno" search_key="xml,/doc/extra/richiedente/nome"/>
+  <!-- lsopko 22/12/2010 albo pretorio -->
+  <search_alias search_name="albo_tipologia" search_key="XML,/doc/extra/tipologie_repertorio/tipologia_repertorio"/>
+  <!-- RW0052062 - fcossu - Raccomandate -->
+  <search_alias search_name="docraccomandatanumero" search_key="xml,/doc/extra/raccomandata/@numero"/>
+  <search_alias search_name="docraccomandatanumeroprot" search_key="xml,/doc/extra/raccomandata/@numero_protocollo"/>
+  <search_alias search_name="docraccomandatadataprot" search_key="xml,/doc/extra/raccomandata/@data_protocollo"/>
+  <search_alias search_name="docraccomandatadataarrivo" search_key="xml,/doc/@data_arrivo"/>
+  <search_alias search_name="docraccomandatadatapartenza" search_key="xml,/doc/@data_partenza"/>
+  <!-- fcossu 24/11/2009 Data del documento nei documenti in partenza [EA 443] -->
+  <search_alias search_name="docdatareale" search_key="xml,/doc/@data_reale"/>
+  <!-- fcossu 29/12/2009 Scarto vaschetta ruoli [EA 501] -->
+  <search_alias search_name="doc_rifinternirifruoliscartati" search_key="xml,/doc/rif_interni/@ruoli_scartati"/>
+  <!-- fcossu 04/02/2010 Ricerca per voci di indice [EA 576]-->
+  <search_alias search_name="doc_voceindice" search_key="xml,/doc/voce_indice"/>
+  <!-- abarducci 01/07/2013 Ricerca documenti in Conservazione -->
+  <search_alias search_name="doc_conservazione" search_key="xml,/doc/extra/conservazione/@id"/>
+ </hw_fields>
+ <profile type="title" value='XML,/doc/classif/@cod XML,/doc/oggetto XML,/doc/rif_esterni/rif/nome XML,/doc/autore XML,/doc/@bozza XML,/doc/@nrecord XML,/doc/@data_prot XML,/doc/@num_prot XML,/fascicolo/@numero XML,/raccoglitore/oggetto XML,/doc/scadenza/@data_scadenza XML,/doc/repertorio/@numero "|sort|" "^" XML,/doc/@tipo "^" "|epn|" "^" XML,/doc/@nrecord "^|" XML,/doc/@num_prot "^|" XML,/doc/repertorio/@numero "^|" XML,/doc/@data_prot "^|" XML,/doc/rif_esterni/rif/nome XML,/doc/autore XML,/doc/minuta/mittente/@nome_persona "^ (~" XML,/doc/minuta/mittente/@nome_uff "~^)" XML,/doc/proposta/proponente/@nome_persona "^ (~" XML,/doc/proposta/proponente/@nome_uff "~^)" "^|" XML,/doc/oggetto "^|" "^_DIFF_~" XML,/doc/prot_differito/@data_arrivo "^|" XML,/fascicolo/@numero "^|" XML,/fascicolo/oggetto "^|" XML,/fascicolo/@stato "^|bozza=" XML,/doc/@bozza "^|" XML,/doc/repertorio "^|annullato=" XML,/doc/@annullato "^|" XML,/raccoglitore/oggetto "^|" XML,/raccoglitore/@stato "^|" XML,/seduta/@data_convocazione "^|" XML,/seduta/@straordinaria "^|*COS*" XML,/seduta/organo/@cod "^|*SS*" XML,/seduta/@stato "^|" XML,/doc/societa "^|" XML,/doc/extra/@agli_atti "^|" XML,/fascicolo/extra/@folder_type "^|" XML,/fascicolo/extra/@folder_status "^|" XML,/fascicolo/storia/creazione/@data "^|" XML,/fascicolo/extra/procedimento/@data_invio_domanda "^|" XML,/fascicolo/extra/procedimento/@data_conclusione "^|" XML,/doc/files/xw:file/@name(first) XML,/doc/immagini/xw:file/@name(first) "^|" XML,/doc/files/xw:file/@title(first) XML,/doc/immagini/xw:file/@title(first) "^|" XML,/doc/extra/creazione_login "^|" XML,/doc/extra/creazione_ruolo "^|" XML,/fascicolo/extra/titolare/ragione_sociale "^|" XML,/fascicolo/extra/procedimento/@numero_procedimento "^|" XML,/fascicolo/extra/procedimento/@domanda_client_id "^|D!~" XML,//rif_interni/rif/@diritto "^|DP!~" XML,//rif_interni/rif/@cod_persona "^|DU!~" XML,//rif_interni/rif/@cod_uff "^|DF!~" XML,//rif_interni/rif/@cod_fasc "^|RC!~" XML,/doc/repertorio/@cod "^|V!~" XML,/doc/visibilita/@tipo "^|VA!~" XML,/doc/visibilita/@fino_al "^|F!~" XML,/doc/files/xw:file/@name(first) "^|I!~" XML,/doc/immagini/xw:file/@name(first) "^|R!~" XML,/raccoglitore/@pubblico "^|FC!~" XML,/fascicolo/classif/@cod "^|VL!~" XML,/doc/@validato "^|P!~" XML,/doc/personalView/@cod "^|DT!~" XML,/doc/@tipo "^|U!~" UD,/xw/@UdType "^|S!~" XML,/doc/@cod_amm_aoo "^|S!~" XML,/fascicolo/@cod_amm_aoo "^|S!~" XML,/raccoglitore/@cod_amm_aoo "^|PS!" XML,/doc/@personale "^|DUN!~" XML,//rif_interni/rif/@nome_uff "^|OxSS!" XML,/doc/odg_seduta/@stato "^|OxPO!~" XML,/doc/proposta/@cod_organo "^|SCP!~" XML,/doc/storia/*/@cod_persona "^|SVD!~" XML,/doc/storia/*/@visto_da "^|SPR!~" XML,/doc/storia/creazione/@cod_oper "^|SPRU!~" XML,/doc/storia/creazione/@cod_uff_oper "^|RS!~" XML,/raccoglitore/@stato "^|NR!~" XML,/raccoglitore/@nrecord "^|OxST!~" XML,/doc/proposta/@delib_seduta_stante "^|DS!~" XML,/doc/scadenza/@data_scadenza "^|ST!~" XML,/doc/@stato "^|DPN!~" XML,//rif_interni/rif/@nome_persona "^|" xml,/doc/mezzo_trasmissione/@cod "^|" xml,/doc/mezzo_trasmissione/@costo "^|SPRN!~" XML,/doc/storia/creazione/@oper "^|SPRNU!~" XML,/doc/storia/creazione/@uff_oper "^|CONSID!~" XML,/doc/extra/conservazione/@id "^|CONSERV!~" XML,/doc/extra/conservazione/@servizio "^|DEP!~" XML,/doc/extra/deposito/@stato "^|DEPM!~" XML,/doc/extra/deposito_minuta/@stato "^|"  XML,/doc/extra/richiedente/nome  XML,/doc/extra/tipologie_repertorio/tipologia_repertorio "^|" XML,/doc/extra/wf_processinstance_id "^|" XML,/doc/extra/wf_archivedtask_id "^|" XML,/doc/extra/tipo "^|" XML,/fascicolo/extra/procedimento/@oggetto_domanda "^|" XML,/fascicolo/extra/procedimento/@valutazione_completezza_correttezza "^|" XML,/fascicolo/extra/procedimento/@data_valutazione_rispondenza_programmazione_valutazione "^|" XML,/fascicolo/extra/procedimento/@conferimento_incarico "^|" XML,/fascicolo/extra/procedimento/@redazione_rapporto_verifica "^|" XML,/fascicolo/extra/procedimento/@presentazione_provvedimento "^|" XML,/fascicolo/extra/procedimento/@valutazione_collegiale "^|" XML,/doc/extra/tipo_doc "^|" XML,/doc/extra/creazione_admin'/>
+ <profile type="title.separ" value=";"/>
+ <profile type="check_time" value="10"/>
+ <profile type="doctail.maxsize" value="4000"/>
+ <profile type="doctail.minsize" value="1000"/>
+ <profile type="doctail.maxperc" value="50"/>
+ <profile type="doctail.growonsite" value="false"/>
+ <profile type="separs.erase" value="128"/>
+ <!-- Reverse default for 24.*.* -->
+ <profile type="arc.attribfreeorder" value="false"/>
+ <!-- sync delay for xw 22 -->
+ <profile type="arc.flushdatasteps" value="250"/>
+ <profile type="arc.flushidxsteps" value="1000"/>
+ <!-- sync delay for xw 23 and 24 -->
+ <!--  <profile type="arc.flushdatadelay" value="120"/>                                                                   
+ <profile type="arc.flushidxdelay" value="600"/>  -->
+</xway_cfg>
+

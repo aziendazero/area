@@ -1,0 +1,93 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:js="http://www.3di.it/thymeleaf/springJsDecorator">
+
+	<head>
+		<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+	    <title>Evidenze</title>
+	   
+	   	<link th:substituteby="common :: dojo"/>
+	   	<link th:substituteby="common :: spring-js"/>
+	   	<link th:substituteby="common :: spring-js-decorator"/>
+
+		<!-- Page custom CSS -->
+		<link type="text/css" rel="stylesheet" th:href="@{/resources/css/index.css}"/>
+	</head>
+	
+  	<body class="claro">
+  
+	  	<div style="width:270px;">			  	
+
+			<form method="POST" id="edit_file_form" th:object="${fileBinaryAttachmentsApplBean}" th:action="${flowExecutionUrl}">
+				
+				<!-- header videata -->
+				<div class="form-caption-container">
+					<span class="form-caption-text" th:text="*{intestazioneForm}">File</span>
+				</div>					
+					<!-- form-frames-container -->
+
+			<!-- lista holder -->
+				<table style="width:100%">
+					<tbody>
+						<tr>
+							<td style="width:50%" th:text="*{descrizioneFileInModifica}">File</td>
+							<td>
+								<input type="hidden" id="fileName" th:field="*{fileName}" />
+								<div id="uploader"></div>					
+								<div id="resUploader"></div>
+							</td>
+						</tr>
+						
+					</tbody>
+				</table>
+
+				<script th:inline="javascript">
+					/*<![CDATA[*/
+					/*[+
+					   	attachedWidget = dijit.byId("uploader");
+						if (attachedWidget ) {			
+							attachedWidget.destroy();
+							attachedWidget = null;
+						}
+						
+						dojo.require("dojox.form.Uploader");
+						dojo.require("dojox.embed.Flash");
+						if (dojox.embed.Flash.available) {
+							dojo.require("dojox.form.uploader.plugins.Flash");
+						} else {
+							dojo.require("dojox.form.uploader.plugins.IFrame");
+						}
+						
+						dojo.ready(function() {
+							var u = new dojox.form.Uploader({
+								label : "Sostituisci file delibera",
+								multiple : false,
+								uploadOnSelect : true,
+								onBegin : function(arr){
+									displayOpenwaitmsg();
+									u.set({url:"upload?binaryAttachmentsApplClientId=" + [[*{binaryAttachmentsApplClientId}]]});
+								},
+								onComplete : function(arr) {
+									x=document.getElementById("resUploader")  //Find the element
+									if (arr.hasOwnProperty('error') ) {
+											x.innerHTML="Errore, file non caricato";    
+									} else {
+										fn = document.getElementById("fileName");  //imposto il filename
+										//x.innerHTML="File caricato correttamente";
+										if(arr.hasOwnProperty('name')) {
+											fn.value = arr.name;
+										}
+										alert("File della delibera aggiornato: " + fn.value);
+										hideOpenwaitmsg();
+										Spring.remoting.submitForm('','edit_file_form',{_eventId:'refreshFolder'});
+									}									
+								},					
+							}, "uploader");
+							u.startup();
+						});			
+						+]*/
+					/*]]>*/
+				</script>
+			</form>
+	  	</div>
+	</body>
+</html>

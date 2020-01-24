@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+		http://www.springframework.org/schema/task
+		http://www.springframework.org/schema/task/spring-task-3.2.xsd">
+
+	<!-- 
+		We are telling Spring to explore the given package looking for 'stereotype' classes, that
+		is classes implementing well known behavior, thus Spring can register, expose (make referable)
+		and handle them in a specific, optimized way.
+		For instance, a @Controller annotated class will be registered as an MVC controller, looking for
+		url mappings (@RequestMapping annotated methods) inside it and similar.
+		
+		Base package is only one in this case, but multiple comma-separated values could be given.
+		
+		context:component-scan *implies* context:annotation-config since, logically, configuration annotations could be found 
+		inside scanned classes.
+		
+		This way we are *adding* the annotation-driven configuration behavior to this application context, while we are NOT excluding 
+		the classic XML-driven one: the two can coexist.
+		
+		Detected components of any type will be registered as Spring bean with the "id" specified inside the annotation itself, i.e.
+		@Service("emailSender") -> bean id is "emailSender"
+		If no "id" is specified within the annotation, then the un-capitalized class name is used, i.e.
+		@Service
+		public class SmptEmailManager(...){...} -> bean id is "stmpEmailManager".
+		Using explicit names is preferable.  
+	 -->
+	<task:annotation-driven />
+	<context:component-scan base-package="it.tredi.auac.service" />
+	<context:component-scan base-package="it.tredi.auac.component" />
+	
+	<!-- perche' questo funzioni occorrerebbe marcare con @Component @Service @Repository @Controller la classe WorkflowBonitaImpl -->
+	<!-- context:component-scan base-package="it.tredi.workflow.bonita6" / -->
+	<bean id="workflowBonita" class="it.tredi.workflow.bonita6.WorkflowBonita">
+      <constructor-arg index="0" type="java.lang.String" value="${bonita.serverurl}"/>
+      <constructor-arg index="1" type="java.lang.String" value="${bonita.applicationname}"/>	
+      <constructor-arg index="2" type="java.lang.String" value="${bonita.serverformurl}"/>	
+      <constructor-arg index="3" type="java.lang.String" value="${bonita.serverformapplicationname}"/>	
+      <constructor-arg index="4" type="java.lang.String" value="${bonita.sessioncookiename}"/>	
+      <constructor-arg index="5" type="java.lang.String" value="${bonita.sessioncookiedomain}"/>	
+	</bean>
+
+</beans>

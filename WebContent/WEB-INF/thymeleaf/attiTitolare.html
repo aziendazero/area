@@ -1,0 +1,115 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:js="http://www.3di.it/thymeleaf/springJsDecorator" 
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+			
+	<div th:fragment="attiTitolare">			
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$('#atti').tablesorter({dateFormat: 'pt'});
+				//$('#findAnno,#findNumero,#findProcedimento').multifilter({
+				$('#findAnno,#findNumero,#findProcedimento').multifilter({
+				    'target': $('#atti'),
+				    'method': 'thclass',
+				    'inputColInfoStored': 'dijit'
+				  });
+			});
+		</script>
+
+					<!-- tabella degli atti -->
+					<div style="margin-left: 0px;" class="lista_holder"
+						th:if="*{attiML} and *{fascicolo.folderType}=='atti_titolare'">
+						<div class="form-frames-container">
+							<div class="frame-container">
+								<div class="frame-toolbar-container">
+									<span class="panel-toolbar-zone"> <span
+										class="frame-toolbar-caption">Elenco Atti</span>
+									</span>
+								</div>
+							</div>
+						</div>
+						<!-- form-frames-container -->
+						
+				<table class="fieldset row" style="width: 850px" th:if="*{fascicolo != null and fascicolo.dataCreazione != null}">
+					<tbody>
+						<tr>
+							<td>
+								<table class="row">
+									<tbody>
+										<tr>
+											<td style="width: 15%;" class="label">Anno</td>
+											<td style="width: 85%;"><input style="width: 100px;" 
+												class="filterAtti"
+												id="findAnno"
+												js:widget="widgetType:'dijit.form.TextBox',widgetAttrs:{class:'filterAtti'}" type="text" 
+												data-col="Anno"
+												data-dojo-props="randomAttribute:'newValue'"/>
+											</td>
+										</tr>
+										<tr>
+											<td style="width: 15%;" class="label">Numero</td>
+											<td style="width: 85%;"><input style="width: 100px;"
+												id="findNumero"
+												js:widget="widgetType:'dijit.form.TextBox',widgetAttrs:{class:'filterAtti'}" type="text"/>
+											</td>
+										</tr>
+										<tr>
+											<td style="width: 15%;" class="label">Tipo Procedimento</td>
+											<td style="width: 85%;">
+								  				<select id="findProcedimento" js:widget="widgetType:'dijit.form.Select',widgetAttrs:{class:'filterAtti'}">
+													<option value="">---seleziona tipo procedimento---</option>
+												  	<option th:each="tipo:*{tipiProcL}" th:value="${tipo.descr}" th:text="${tipo.descr}">Procedimento</option>						  
+												</select>
+											
+											</td>
+										</tr>
+
+
+									</tbody>
+								</table>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+
+
+						<!-- lista holder -->
+
+						<div class="fixed_height_scrollable_table">
+							<table class="lista" id="atti">
+								<thead>
+									<tr>
+										<th class="listTableHeader">Tipo Atto</th>
+										<th class="listTableHeader findProcedimento">Tipo Procedimento</th>
+										<th class="listTableHeader findAnno">Anno</th>
+										<th class="listTableHeader findNumero">Numero</th>
+										<th class="listTableHeader">Allegato</th>
+										<th class="listTableHeader">Data Inizio</th>
+										<th class="listTableHeader">Data Fine</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="atto:*{attiML}" style="height: 25px;">
+										<td th:text="${atto['tipo_atto']}"></td>
+										<td th:text="${atto['tipo_proc']}"></td>
+										<td th:text="${atto['anno']}"></td>
+										<td th:text="${atto['numero']}"></td>
+										<td th:if="${atto['file_nome'] ne ''}">
+											<a class="anchor" th:utext="${atto['file_nome']}"
+											th:href="@{/download(id=${atto['file_id_enc']},title=${atto['file_nome_enc']},sessionId=${atto['session_id']},isBinaryAttachmentsAppl=true)}">file.pdf</a>
+										</td>
+										<td th:if="${atto['file_nome'] eq ''}"></td>
+										<td th:text="${atto['inizio_validita']}"></td>
+										<td th:text="${atto['fine_validita']}"></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<!-- tabella degli atti -->
+			
+	
+	</div> 		
+			
+</html>
+
+

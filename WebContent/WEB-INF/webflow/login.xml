@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.springframework.org/schema/webflow http://www.springframework.org/schema/webflow/spring-webflow-2.0.xsd"
+        parent="common">
+
+	<input name="redirectUrl"/>
+	<input name="token"/>
+	
+	<on-start>
+		<set name="flowScope.defaultRedirectUrl" value="'main.flow'"/>
+		<set name="conversationScope.theCommonService" value="commonService"/>
+		<evaluate expression="loginService.checkCas(messageContext, externalContext, redirectUrl, defaultRedirectUrl)" result="flowScope.loginPageBean"/>
+		<!-- evaluate expression="loginService.doLogout(externalContext)" / -->
+	</on-start>
+	
+	<!-- state='start' e' lo stato di default -->
+	<action-state id="start">
+		<!-- 
+		public final static String lOGINRESULT_NOUSERONDB = "NOUSERONDB";
+		public final static String lOGINRESULT_LOGGED = "LOGGED";
+		public final static String lOGINRESULT_MULTIROLE = "MULTIROLE";		
+		 -->
+		<!-- evaluate expression="loginService.checkNextStep()"/ -->
+		<!-- evaluate expression="loginService.checkCas(messageContext, externalContext, redirectUrl, defaultRedirectUrl)" result="viewScope.loginPageBean"/ -->
+		<evaluate expression="loginPageBean.LoginResult"/>
+		<transition on="NOUSERONDB" to="login"></transition>
+		<transition on="LOGGED" to="logged"></transition>
+		<transition on="MULTIROLE" to="login"></transition>
+	</action-state>
+	
+	<!-- Questa parte dovrebbe diventare inutile -->
+	<!-- action-state id="doSSOLogin">
+		<on-entry>
+			<evaluate expression="loginService.createLoginPageBean(token)" result="flashScope.loginPageBean"/>
+		</on-entry>
+		<evaluate expression="loginService.doLogin(utenteDao, operatoreModelDao, loginPageBean, messageContext, externalContext, redirectUrl, defaultRedirectUrl, requestParameters.operatoreModelClientId, requestParameters.titolareClientId, false, binaryAttachmentsApplDao)" />
+		 <!- - se false rimane in loginPage - ->
+		<transition on="no" to="login"></transition>
+		<transition to="logged"></transition>
+	</action-state -->
+	
+    <view-state id="login" view="login" model="loginPageBean">
+		<transition on="doLogin" to="logged">
+			<!-- evaluate expression="loginService.doLogin(utenteDao, operatoreModelDao, loginPageBean, messageContext, externalContext, redirectUrl, defaultRedirectUrl, requestParameters.operatoreModelClientId, requestParameters.titolareClientId, true, binaryAttachmentsApplDao)" / -->
+			<evaluate expression="loginService.selectUtenteModel(messageContext, externalContext, redirectUrl, defaultRedirectUrl, requestParameters.operatoreModelClientId, requestParameters.titolareClientId)" />
+			<!-- se false rimane in loginPage -->
+		</transition>
+		<transition on="doAltroLogin" bind="true">
+			<evaluate expression="loginService.findUtentiModel(loginPageBean, messageContext, externalContext, redirectUrl, defaultRedirectUrl)" />
+			<render fragments="[//div[@id='utentiDiv']]"></render>
+		</transition>
+		<transition on="doSelAltroLogin" bind="true">
+			<evaluate expression="loginService.selectUtenteModel(loginPageBean, messageContext, externalContext, redirectUrl, defaultRedirectUrl, requestParameters.utenteClientId)" />
+			<render fragments="[//form[@id='form']]"></render>
+		</transition>
+		
+		<!-- gestione errore tramite popup senza action ajax -->
+        <transition on-exception="java.lang.Exception" to="login">
+        	<evaluate expression="commonService.printExceptionMessage(flowExecutionException)" result="flashScope.exceptionMessage"/>
+        	<evaluate expression="commonService.printExceptionStackTrace(flowExecutionException)" result="flashScope.exceptionStackTrace"/>
+        </transition>
+    </view-state>
+
+	<end-state id="logged">
+	</end-state>
+
+</flow>

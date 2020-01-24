@@ -1,0 +1,53 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:js="http://www.3di.it/thymeleaf/springJsDecorator">
+
+	<head>
+		<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+	    <title>Modifica Udo</title>
+	   
+	   	<link th:substituteby="common :: dojo"/>
+	   	<link th:substituteby="common :: spring-js"/>
+	   	<link th:substituteby="common :: spring-js-decorator"/>
+
+		<!-- Page custom CSS -->
+		<link type="text/css" rel="stylesheet" th:href="@{/resources/css/index.css}"/>
+		<script type="text/javascript">
+			function savedUdo() {
+				//alert('stoptimer ');
+				Spring.remoting.submitForm('','modifica_udo_form',{_eventId:'savedUdo'});
+			}
+		
+			function UdoSaved() {
+				//displayOpenwaitmsg();
+			    //setTimeout(savedUdo,5000);
+				//alert('modificaUdoModel.html UDO SALVATA');
+				var closeDialog=function() {dijit.byId(topDialogId).hide();}
+				dojo.ready(closeDialog);
+
+				//la modifica alla UdoModel avviene in stati in cui la UdoInst non viene aggiornata quindi non occorre aggiornare la pagina 
+				//Spring.remoting.submitForm('','modifica_udo_form',{_eventId:'savedUdo'});
+			}
+
+			setBonitaPopupSize();
+			
+			//$(window).resize(function() {
+			  //$( "#log" ).append( "<div>Handler for .resize() called.</div>" );
+			  //alert('res');
+			//});
+
+		</script>
+	</head>
+	
+  	<body class="claro">
+		<form method="POST" id="modifica_udo_form" th:object="${updateUdoModelPageBean}" th:action="${flowExecutionUrl}">
+					<!-- input style="margin-top:10px;"
+						js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Aggiorna'}"
+						js:ajax="formId:'esegui_task_form',event:'onClick',params:{_eventId:'savedTask'}"
+						id="closeButton" name="_eventId_savedTask"
+						value="Aggiorna" type="submit" / -->
+		</form>
+		<!-- header videata -->
+		<iframe id="bonitaiframe" class="bonitaiframe" th:src="${updateUdoModelPageBean.udoUpdateUrl}"></iframe> 
+  
+	</body>
+</html>

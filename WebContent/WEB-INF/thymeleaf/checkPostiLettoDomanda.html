@@ -1,0 +1,64 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:js="http://www.3di.it/thymeleaf/springJsDecorator">
+
+	<head>
+		<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+	    <title>Controllo posti letto</title>
+	   
+	   	<link th:substituteby="common :: dojo"/>
+	   	<link th:substituteby="common :: spring-js"/>
+	   	<link th:substituteby="common :: spring-js-decorator"/>
+
+		<!-- Page custom CSS -->
+		<link type="text/css" rel="stylesheet" th:href="@{/resources/css/index.css}"/>
+	</head>
+	
+  	<body class="claro">
+  
+	  	<div style="width:700px;">			  	
+
+			<form method="POST" id="check_popsti_letto_form" th:object="${pageBean}" th:action="${flowExecutionUrl}">
+		
+				<!-- header videata -->
+				<div class="form-caption-container">
+					<span class="form-caption-text">Controllo posti letto</span>
+				</div>
+					
+				<!-- tabella elenco udo -->
+				<div style="margin-left: 0px;" class="lista_holder">
+					<div class="form-frames-container">
+						<div class="frame-container">
+							<div class="frame-toolbar-container">
+								<span class="panel-toolbar-zone"> 
+									<span class="frame-toolbar-caption" th:text="'Posti letto totali - Accreditati: ' + *{postiLettoTotaliAccreditati} + ', Autorizzati: ' + *{postiLettoTotaliAutorizzati}"></span>
+								</span>
+							</div>
+						</div>
+					</div>
+					<!-- form-frames-container -->
+
+					<!-- lista holder -->
+					<div class="fixed_height_scrollable_table">
+						<table class="lista" style="width:100%">
+							<tbody>
+								<tr>
+									<td class="listTableHeader">Disciplina</td>
+									<td style="width:100px;" class="listTableHeader">Posti letto Accreditati</td>
+									<td style="width:100px;" class="listTableHeader">Posti letto Autorizzati</td>
+								</tr>
+								<tr th:each="ent:*{checkPostiLettoDomandaPageBeanEntityList}">
+									<td th:text="${ent.descr}"></td>
+									<td th:text="${ent.postiLettoEntity.postiLettoTotaliAccreditati}"></td>
+									<td th:text="${ent.postiLettoEntity.postiLettoTotaliAutorizzati}"></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+					
+			</form>
+			
+	  	</div>
+  
+	</body>
+</html>

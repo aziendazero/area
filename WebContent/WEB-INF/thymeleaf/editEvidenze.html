@@ -1,0 +1,166 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:js="http://www.3di.it/thymeleaf/springJsDecorator">
+
+	<head>
+		<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+	    <title>Evidenze</title>
+	   
+	   	<link th:substituteby="common :: dojo"/>
+	   	<link th:substituteby="common :: spring-js"/>
+	   	<link th:substituteby="common :: spring-js-decorator"/>
+
+		<!-- Page custom CSS -->
+		<link type="text/css" rel="stylesheet" th:href="@{/resources/css/index.css}"/>
+		
+		<script th:inline="javascript" th:if="${close}" id="closeScript">
+		/*<![CDATA[*/
+			/*[+
+			var closeDialog=function() {dijit.byId(topDialogId).hide();}
+			dojo.ready(closeDialog);
+			var jsCloseFunction = [[${jsCloseFunction}]];
+			if (jsCloseFunction != '') dojo.ready(eval(jsCloseFunction));
+		  	+]*/	 
+		/*]]>*/
+		</script>		
+		
+	</head>
+	
+  	<body class="claro">
+  
+	  	<div style="width:500px;">			  	
+
+			<form method="POST" id="edit_evidenze_form" th:object="${editEvidenzePageBean}" th:action="${flowExecutionUrl}">
+		
+				<!-- header videata -->
+				<div class="form-caption-container">
+					<span class="form-caption-text">Evidenze</span>
+				</div>
+				
+				<div id="messages">
+					<div style="border:1px solid red;padding:10px;margin:10px 0px 10px 0px" th:if="${#fields.hasErrors('messages')}">
+						<div th:each="error:${#fields.errors('messages')}" style="margin-top:1px;"><img style="vertical-align:bottom;" border="0" src="images/mstop_sm.gif" /> <span th:text="${error}"/></div>
+					</div>
+				</div>			
+			
+				<textarea style="width:494px;" th:readonly="*{readonly}"
+					th:field="*{evidenze}"
+					js:widget="widgetType:'dijit.form.SimpleTextarea',widgetAttrs:{class:'dijitReset',rows:10}"
+					js:errors="true">&#160;</textarea>
+					
+					
+				<!-- tabella dei documenti -->
+				<div style="margin-left: 0px;" class="lista_holder"
+					th:if="*{documentsL}">
+					<div class="form-frames-container">
+						<div class="frame-container">
+							<div class="frame-toolbar-container">
+								<span class="panel-toolbar-zone"> <span
+									class="frame-toolbar-caption">Elenco Documenti</span>
+								</span>
+							</div>
+						</div>
+					</div>
+					<!-- form-frames-container -->
+
+					<!-- lista holder -->
+					<div class="fixed_height_scrollable_table">
+						<table class="lista" style="width:100%">
+							<tbody>
+								<tr>
+									<td class="listTableHeader">Id Univoco REQ</td>
+									<td class="listTableHeader">File</td>
+									<td class="listTableHeader">Azioni</td>
+								</tr>
+								<tr th:each="document:*{documentsL}" style="height: 25px;">
+									<td>
+										<textarea readonly="readonly" th:id="${#ids.seq('oggettoDocumento')}" js:widget="widgetType:'dijit.form.Textarea',widgetAttrs:{class:'dijitReset'}"
+											th:text="${document['oggetto']}">&nbsp;
+										</textarea>									
+									</td>
+									<td><a class="anchor" th:utext="${document['file_name']}"
+										th:href="@{/download(id=${document['file_id']},title=${document['file_name_enc']},sessionId=${document['session_id']})}">file.pdf</a></td>
+									<td th:if="${document['creazione_admin']} != 'true'" style="width:40px;"><img
+										th:title="'Creato il ' + ${document['creazione_data']} + ' dall\'utente \'' + ${document['creazione_login']} + '\' (' + ${document['creazione_ruolo']} + ')'"
+										border="0" src="images/qbef.gif" /> <input
+										th:if="*{!readonly}"
+										title="Rimuovi il documento"
+										js:confirm="event:'onclick',message:'#{crud.confirm}'"
+										js:ajax="formId:'edit_evidenze_form',event:'onclick',params:{_eventId:'deleteDocument',idIUnit:'${document['idIUnit']}'}"
+										th:id="${#ids.seq('deleteDocumentButton')}" type="image"
+										src="images/delete_sm.gif" /></td>
+										<td th:if="${document['creazione_admin']} == 'true'" style="width:40px;"><img
+										th:title="'Creato il ' + ${document['creazione_data']} + ' dall\'utente \'' + ${document['creazione_login']} + '\' (' + ${document['creazione_ruolo']} + ') - Delega Admin'"
+										border="0" src="images/qbef.gif" /> <input
+										th:if="*{!readonly}"
+										title="Rimuovi il documento"
+										js:confirm="event:'onclick',message:'#{crud.confirm}'"
+										js:ajax="formId:'edit_evidenze_form',event:'onclick',params:{_eventId:'deleteDocument',idIUnit:'${document['idIUnit']}'}"
+										th:id="${#ids.seq('deleteDocumentButton')}" type="image"
+										src="images/delete_sm.gif" /></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<!-- tabella dei documenti -->					
+					
+				<div id="uploader"></div>					
+				<div id="resUploader"></div>
+					
+					
+				<div style="width:100%;text-align:center;margin-top:10px;">
+					<input th:if="*{!readonly}"
+						js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Salva'}"
+						js:ajax="formId:'edit_evidenze_form',event:'onClick',params:{_eventId:'saveEvidenze'}"
+						id="saveEvidenzeButton" name="_eventId_saveEvidenze" value="Salva" type="submit" />
+				</div>					
+					
+				<script th:inline="javascript" th:if="*{!readonly}">
+					/*<![CDATA[*/
+					/*[+
+					   	attachedWidget = dijit.byId("uploader");
+						if (attachedWidget ) {			
+							attachedWidget.destroy();
+							attachedWidget = null;
+						}
+						
+						dojo.require("dojox.form.Uploader");
+						dojo.require("dojox.embed.Flash");
+						if (dojox.embed.Flash.available) {
+							dojo.require("dojox.form.uploader.plugins.Flash");
+						} else {
+							dojo.require("dojox.form.uploader.plugins.IFrame");
+						}
+						
+						dojo.ready(function() {
+							var u = new dojox.form.Uploader({
+								label : "Carica Allegato",
+								multiple : false,
+								uploadOnSelect : true,
+								onBegin : function(arr){
+									displayOpenwaitmsg();
+									u.set({url:"upload?idUnit=" + [[*{evidenzeFolderIdIUnit}]] + "&oggetto=" + [[*{requisitoInst.requisitoTempl.nome}]] + "&reqId=" +[[*{requisitoInst.clientid}]]});
+								},
+								onComplete : function(arr) {
+									x=document.getElementById("resUploader")  //Find the element
+									if (arr.hasOwnProperty('error') ) {
+											x.innerHTML="Errore, file non caricato";    
+										}
+									else{
+										//x.innerHTML="File caricato correttamente";
+										Spring.remoting.submitForm('','edit_evidenze_form',{_eventId:'refreshLinks'});
+									}									
+								},					
+							}, "uploader");
+							u.startup();
+						});			
+						+]*/
+					/*]]>*/
+				</script>
+					
+			</form>
+			
+	  	</div>
+  
+	</body>
+</html>

@@ -1,0 +1,277 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:js="http://www.3di.it/thymeleaf/springJsDecorator">
+
+	<head>
+		<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+	    <title>Informazioni UDO</title>
+	   
+	   	<link th:substituteby="common :: dojo"/>
+	   	<link th:substituteby="common :: spring-js"/>
+	   	<link th:substituteby="common :: spring-js-decorator"/>
+
+		<!-- Page custom CSS -->
+		<link type="text/css" rel="stylesheet" th:href="@{/resources/css/index.css}"/>
+	</head>
+	
+  	<body class="claro">
+  
+	  	<div style="width:820px;">			  	
+
+			<form method="POST" id="show_udoinst_form" th:object="${showUdoInstPageBean}" th:action="${flowExecutionUrl}">
+		
+				<!-- header videata -->
+				<div class="form-caption-container">
+					<span class="form-caption-text" th:text="*{udoInst.descr}">UDO</span>
+				</div>
+					
+				<!-- tabella storia -->
+				<div style="margin-left: 0px;" class="lista_holder">
+					<!-- form-frames-container -->
+
+					<!-- lista holder -->
+					<div class="fixed_height_scrollable_table">
+						
+						
+				<!--  div id="dettaglioUDOPanelDiv" -->
+				<table class="fieldset row" style="width: 800px">
+					<tbody>
+						<tr>
+							<td>
+								<table class="row">
+									<tbody>
+										<tr>
+											<td style="width: 20;" class="label">Cod. ULSS</td>
+											<td style="width: 10%;"><input style="width: 100%;"
+												id="codULSS" js:widget="widgetType:'dijit.form.TextBox'"
+												type="text"
+												th:value="*{udoInst.codiceUlssTerritoriale}"
+												readonly="readonly" /></td>
+											<td style="width: 25%;" class="label secondo">Codice struttura/Denominazione</td>
+											<td style="width: 45%;"><input style="width: 100%;"
+												id="codiceStruttura"
+												js:widget="widgetType:'dijit.form.TextBox'" type="text"
+												th:value="*{udoInst.codiceStruttDenomin}"
+												readonly="readonly" /></td>
+										</tr>
+									</tbody>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<table class="row">
+									<tbody>
+										<tr>
+											<td style="width: 20%;" class="label">Struttura Fisica </td>
+											<td style="width: 80%;"><input style="width: 100%;"
+												id="strutturaFisica"
+												js:widget="widgetType:'dijit.form.TextBox'" type="text"
+												th:value="*{udoInst.denomStruttFisicaSede}"
+												readonly="readonly" /></td>
+										</tr>
+									</tbody>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<table class="row">
+									<tbody>
+										<tr>
+											<td style="width: 20%;" class="label">Unità Organizzativa</td>
+											<td style="width: 80%;"><input style="width: 100%;"
+												id="unitaOrganizzativa"
+												js:widget="widgetType:'dijit.form.TextBox'" type="text"
+												th:value="*{udoInst.denominazioneUoConId}"
+												readonly="readonly" /></td>
+										</tr>
+
+									</tbody>
+								</table>
+							</td>
+						</tr>
+
+						<tr>
+							<td>
+								<table class="row">
+									<tbody>
+										<tr>
+											<td style="width: 20%;" class="label">Sede Operativa</td>
+											<td style="width: 80%;"><input style="width: 100%;"
+												id="sedeOperativa"
+												js:widget="widgetType:'dijit.form.TextBox'" type="text"
+												th:value="*{udoInst.denominazioneSede}"
+												readonly="readonly" /></td>
+										</tr>
+									</tbody>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<table class="row">
+									<tbody>
+										<tr>
+											<td style="width: 20%;" class="label">Indirizzo</td>
+											<td style="width: 80%;"><input style="width: 100%;"
+												id="via" js:widget="widgetType:'dijit.form.TextBox'"
+												type="text"
+												th:value="*{udoInst.indirizzoSede}"
+												readonly="readonly" /></td>
+										</tr>
+									</tbody>
+								</table>
+							</td>
+						</tr>						
+						<tr>
+							<td>
+								<table class="row">
+									<tbody>																		
+										<tr>
+											<td style="width:20%;" class="label">Punto Fisico</td>
+											<td style="width:80%;">
+												<input style="width:100%;" id="puntoFisico" js:widget="widgetType:'dijit.form.TextBox'" type="text" 
+												th:value="*{udoInst.tipoPuntoFisicoSede}" 
+												readonly="readonly"/>
+											</td>
+										</tr>										
+									</tbody>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<table class="row">
+									<tbody>
+										<tr>
+											<td style="width:20%;" class="label">Edificio</td>
+											<td style="width:20%;">
+												<input style="width:100%;" id="stabilimento" js:widget="widgetType:'dijit.form.TextBox'" type="text" 
+												th:value="*{udoInst.stabilimento}"
+												readonly="readonly"/>
+											</td>
+											<td style="width:15%;" class="label secondo">Blocco</td>
+											<td style="width:45%;">
+												<input style="width:100%;" id="blocco" js:widget="widgetType:'dijit.form.TextBox'" type="text" 
+												th:value="*{udoInst.blocco}" 
+												readonly="readonly"/>
+											</td>											
+										</tr>											
+									</tbody>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<table class="row">
+									<tbody>
+										<tr>
+											<td style="width:20%;" class="label">Piano</td>
+											<td style="width:20%;">
+												<input style="width:100%;" id="piano" js:widget="widgetType:'dijit.form.TextBox'" type="text" 
+												th:value="*{udoInst.piano}"
+												 readonly="readonly"/>
+											</td>
+											<td style="width:15%;" class="label secondo">Progressivo</td>
+											<td style="width:45%;">
+												<input style="width:100%;" id="progressivo" js:widget="widgetType:'dijit.form.TextBox'" type="text"
+												 th:value="*{udoInst.progressivo}"
+												  readonly="readonly"/>
+											</td>											
+										</tr>											
+									</tbody>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<table class="row">
+									<tbody>
+										<tr>
+											<td style="width:20%;" class="label">Direttore Sanitario</td>
+											<td style="width:25%;">
+												<input style="width:100%;" id="dirSanitarioCogn" js:widget="widgetType:'dijit.form.TextBox'" type="text"
+												 th:value="*{udoInst.dirSanitarioCogn}"
+												 readonly="readonly"/>
+											</td>
+											<td style="width:25%;">
+												<input style="width:100%;" id="dirSanitarioNome" js:widget="widgetType:'dijit.form.TextBox'" type="text" 
+												th:value="*{udoInst.dirSanitarioNome}" 
+												readonly="readonly"/>
+											</td>
+											<td style="width:30%;">
+												<input style="width:100%;" id="dirSanitarioCfisc" js:widget="widgetType:'dijit.form.TextBox'" type="text" 
+												th:value="*{udoInst.dirSanitarioCfisc}"
+												 readonly="readonly"/>
+											</td>																															
+										</tr>											
+									</tbody>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<table class="row">
+									<tbody>																		
+										<tr th:if="!${theAclService.userCanEditEsito(userBean,showUdoInstPageBean)}">
+											<td style="width:20%;" class="label">Stato UDO</td>
+											<td style="width:20%;">
+												<input style="width:100%;" id="statoUdo" js:widget="widgetType:'dijit.form.TextBox'" type="text" 
+												th:value="*{udoInst.stato}" 
+												readonly="readonly"/>
+											</td>
+											<td style="width:15%;" class="label secondo">Scadenza</td>
+											<td style="width:45%;">
+												<input style="width:100%;" id="scadenza" js:widget="widgetType:'dijit.form.TextBox'" type="text" 
+												 th:if="*{udoInst.scadenza ne null}"
+												th:value="*{#dates.format(udoInst.scadenza,'dd/MM/yyyy')}" 
+												readonly="readonly"/>
+											</td>	
+										</tr>										
+										<tr th:if="${theAclService.userCanEditEsito(userBean,showUdoInstPageBean)}">
+											<td style="width:20%;" class="label">Stato UDO</td>
+											<td style="width:20%;">
+												<input style="width:100%;" id="statoUdo" js:widget="widgetType:'dijit.form.TextBox'" type="text" 
+												th:value="*{udoInst.stato}" 
+												readonly="readonly"/>
+											</td>
+											<td style="width:15%;" class="label secondo"></td>
+											<td style="width:45%;"></td>	
+										</tr>										
+									</tbody>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<table class="row">
+									<tbody>
+										<tr>
+											<td style="width:20%;" class="label">Note</td>
+											<td style="width:80%;">
+												<input style="width:100%;" id="annotazioniUdo" js:widget="widgetType:'dijit.form.TextBox'" type="text" 
+												th:value="*{udoInst.annotations}"
+												readonly="readonly"/>
+											</td>
+										</tr>		
+										
+									</tbody>
+								</table>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+
+				<!--  /div -->
+						
+						
+						
+					</div>
+				</div>
+					
+			</form>
+			
+	  	</div>
+  
+	</body>
+</html>

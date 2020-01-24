@@ -1,0 +1,186 @@
+ver. 1.0.0
+19/03/2015		NEW		aalberghini		Migliorata build Ant
+ver. 1.0.1
+19/03/2015		NEW		abarducci		Modifiche per la gestione del workflow di Autorizzazione/Accreditamento
+05/05/2015		NEW		abarducci		Possibilità di impostare gli esiti in massivo
+05/05/2015		NEW		abarducci		Per le udo Ambulatoriali aggiungere una info che lo indichi e negli esiti possibili aggiungere “Rilevato” che a tutti gli effetti è come Ammessa (anche in inserimento Esiti)
+05/05/2015		NEW		abarducci		Aggiunta “Segnala la mancanza di tipi Udo” che permette in Stato “Valutazione congruenza programmazione” di aggiungere delle note specifiche alla domanda
+ver. 1.0.2
+12/01/2016		NEW		abarducci		Aggiunta gestione UoModel da organigramma
+ver. 1.0.3
+05/04/2016		NEW		abarducci		Mostrate nel dettaglio UDO: Posti letto + Modulo si/no + codice disciplina e relativi posti letto
+05/04/2016		NEW		abarducci		I PL devono essere visibili nell'intestazione della Lista di verifica (in caso di modulo almeno quelli totali, meglio se con una formula che somma i cod disciplina e i pl: cod 51=20, cod 9=10..)
+05/04/2016		NEW		abarducci		Inserire posti letto in intestazione PDF autovalutazione
+05/04/2016		NEW		abarducci		Oggetto della domanda: inserire una tendina con due valori (complessiva/parziale), e rendere gli stessi ricercabili nella maschera di ricerca delle domande
+05/04/2016		NEW		abarducci		Aggiunta pulsante per il Calcolo totale dei posti letto nella domanda per udo, suddivisi per disciplina sia modulo sia non modulo
+05/04/2016		NEW		abarducci		Inibire nella domanda l'inserimento documenti da interfaccia quando è iniziato un flusso
+05/04/2016		NEW		abarducci		In Valutazione congruenza programmazione il campo NOTE del flusso nel reinvio della domanda al titolare è stato reso obbligatorio.
+05/04/2016		NEW		abarducci		In apertura visualizzazione domanda le Note devono essere ordinate in base al loro inserimento temporale (prima le più recenti)
+05/04/2016		NEW		abarducci		Modificato flusso (Versione 1.4) per aggiunta invio email di notifica a Segreteria Accreditamento nei seguenti casi:
+											1) Prima di "Valutazione documentale" a "Responsabile Servizio Accreditamento"
+											2) Prima di "Conferimento incarico" a "Responsabile Servizio Accreditamento"
+											3) Prima di "Presentazione provvedimento" a "Responsabile Servizio Accreditamento"
+											4) Prima di "Scelta del tipo di Valutazione" alla email della "Segreteria"
+05/04/2016		NEW		abarducci		Aggiungere data/ora di inserimento del Esito in congruenza programmazione e mostrarlo nella i di Info.
+05/04/2016		NEW		abarducci		Le Note mancanza tipi UDO sono state rese incancellabili inoltre quando si passa allo stato "RICHIESTA DI INTEGRAZIONE DOCUMENTI E AUTOVALUTAZIONI" e si torna allo stato "VALUTAZIONE RISPONDENZA PROGRAMMAZIONE" le ultime note di tipo mancanza tipi UDO inserite sono evidenziate e da controllare esplicitamente prima di poter proseguire 
+05/04/2016		NEW		abarducci		Richiesta 2016-002 Gli esiti delle Udo settati a "Parziale da integrare" in "VALUTAZIONE RISPONDENZA PROGRAMMAZIONE" sono esplicitamente da controllare prima di poter proseguire quando si ritorna allo stato "VALUTAZIONE RISPONDENZA PROGRAMMAZIONE" 
+ver. 1.0.4
+12/04/2016		NEW		abarducci		Aggiunto caricamento javascript per test performance 
+ver. 1.0.5
+13/04/2016		NEW		abarducci		Richiesta 2016-004 Modifica flusso (Versione 1.5) per distinguere fase congruenza programmazione/inserimento esiti dalla congruenza programmazione/esecuzione task bonita
+21/04/2016		NEW		abarducci		Richiesta 2016-005 Modifica flusso (Versione 1.5) per distinguere fase valutazione (Stato=PROCEDIMENTO IN VALUTAZIONE)/inserimento valutazioni valutatori da valutazione/esecuzione task bonita
+02/05/2016		NEW		abarducci		Richiesta 2016-006 Cruscotto regionale domande, aggiunte colonne "Valutazione domanda", "Valutazione congruenza", "Incarico Vdv", "Inserito RDV", "Relazione accessibile", "CRITE". Modifica flusso (Versione 1.5) per salvare le nuove date richieste 
+05/05/2016		NEW		abarducci		Richiesta 2016-007 Documenti allegati obbligatori e raggruppamento degli stessi all'interno della domanda
+ver. 1.0.6
+30/05/2016		NEW		abarducci		Richiesta 2016-011 Ordinamento dei requisiti in una lista deciso dall'operatore
+31/05/2016		NEW		abarducci		Richiesta 2016-013 Controllo su invio domanda per UDO di tipo Modulo. Non deve essere possibile inviare la domanda se una UDO di tipo MODULO non ha indicati i posti letto per ogni disciplina. Questo controllo va fatto nello stato di bozza e di richiesta di integrazioni autovalutazioni e documenti.
+23/05/2016		NEW		abarducci		Richiesta 2016-015 Vaschette PROCEDIMENTI ATTIVI
+10/06/2016		NEW		abarducci		Richiesta 2016-016 Visione fascicolo ATTI per gli utenti con profilo REGIONE
+15/06/2016		NEW		abarducci		Richiesta 2016-014 Immagine e avanzamento grafico del flusso di Autorizzazione/Accreditamento
+ver. 1.0.7
+20/06/2016		NEW		abarducci		Richiesta 2016-053 Integrazione con CAS
+22/06/2016		NEW		abarducci		Aggiunta campo week alla UdoModel e alla UdoInst
+22/06/2016		NEW		abarducci		Modifiche alle discipline con aggiunta dei campi PostiLettoExtra e PostiLettoObi
+23/06/2016		NEW		abarducci		Richiesta 2016-012 Modifiche ai Fattori Produttivi per differenziazione posti letto
+ver. 1.0.8
+12/07/2016		NEW		abarducci		Richiesta AGG-2016-01 Aggiungere alla valutazione esito del verificatore il valore (NON VERIFICATO) per il tipo risposta Si/No e Soglia
+ver. 1.0.9
+09/01/2017		NEW		abarducci		Gestione nuovo id, ora univoco, per UoModel provenienti da organigramma
+ver. 1.0.10
+22/02/2017		NEW		abarducci		Task 11010 - Produzione file XML. Produzione file XML per invio dati ministero ora gestita solo la creazione e salvataggio dei file completi alle ore 23:00 nessuna gestione delle modifiche
+22/02/2017		NEW		abarducci		Task 10225 - Modifica inserimento domande in seguito a passaggio ad atti aziendali. In inserimento domande recuperare anche le UoModel da organigramma che non hanno il record in ORGANIGRAMMA_PROCEDIMENTO e durante l'aggiornamento del flag inserire il relativo record in ORGANIGRAMMA_PROCEDIMENTO se non presente.
+ver. 1.0.11
+24/05/2017		NEW		abarducci		Modificata la gestione degli edifici.
+24/05/2017		NEW		abarducci		Spostare MRA su utente ADMIN.
+ver. 1.0.12
+14/06/2017		NEW		abarducci		Modificato il controllo dei Posti Letto nelle domande
+ver. 1.0.13
+15/06/2017		NEW		abarducci		L'utente con ruolo AMMINISTRATORE ora può accedere oltre che come Operatore Titolare anche come qualsiasi utente registrato effettuando una ricerca per UsernameCAS
+16/06/2017		NEW		abarducci		Aggiunta della vaschetta dei procedimenti attivi per tutti gli attori del flusso (oltre Regione, anche Verificatore, Team Leader e Operatore Titolare)
+21/06/2017		NEW		abarducci		Modificata la ricerca in "Titolari atti" per la regione con l'aggiunta dei campi Direzione/Area e Partita IVA. Aggiunta delle colonne Direzione e Partita IVA nella lista dei risultati. Aggiunta della possibilità di ordinare la lista per i campi presenti Ragione sociale, Direzione e Partita IVA 
+21/06/2017		NEW		abarducci		Nel "Facicolo Atti del Titolare" aggiunta ricerca per Anno Numero e Tipo procedimento. Le colonne della lista risultati sono ordinabili.
+21/06/2017		NEW		abarducci		Nel "Facicolo Atti del Titolare" aggiunta l'estensione del file caricato nei casi in cui non sia salvato insieme al nome del file.
+26/06/2017		NEW		abarducci		Domande di Autorizzazione/Accreditamento aggiunta, dopo i Requisiti Generali Aziendali, delle StruttureInst, non ripetute, e dei relativi requisiti agganciate alla Struttura fisica della Sede delle Udo. E' possibile configurare la data di creazione delle domande dalla quale tale modifica viene attivata.
+27/06/2017		NEW		abarducci		Aggiunta di una immagine statica e semplificata per tutti gli utenti relativa all'avanzamento del flusso. Lo strumento di monitoraggio attuale rimane attivo per permettere di monitorare lo stato di avanzamento del flusso, gli attori, gli errori, etc. e sarà visibile solo agli utenti con ruolo regione.
+27/06/2017		NEW		abarducci		Nella homa aggiunta la possibilità di ordinare la lista delle domande per qualsiasi colonna sia per l'utente con ruolo Regione che Operatore Titolare
+ver. 1.0.14
+04/07/2017		BUG		abarducci		Task 12142 - Corretto bug EL1008E:(pos 0): Field or property 'tipiProcL' cannot be found on object of type 'it.tredi.auac.bean.ShowFolderPageBean', che si verifica visualizza il fascicolo atti di un titolare.
+ver. 1.0.15
+13/07/2017		BUG		abarducci		Task #12267 - Requisiti duplicati causa doppie UO prese da organigramma. Aggiunta una patch per evitare che causa delle Uo da organigramma collegate contemporaneamente a 2 Soggetti giuridici, quindi a 2 titolari, si vedono i requisiti doppi quando vengono assegnati perchè si ricava la Uo associata all'Utente e per una data id della Uo ne vengono restituite 2 dalla vista UO_MODEL_ORGANIGRAMMA  
+ver. 1.0.16
+31/08/2017		BUG		abarducci		12547 - Modifica correttiva campo valutazione congruenza. Nella lista delle domande visualizzata dagli utenti regionali il campo "Valutazione congruenza" deve riportare la data in cui viene inserita l'ultima valutazione, viene ottenuto solo per le domande con versione del flusso dalla 1.5 utilizzando il campo /fascicolo/extra/procedimento/@data_valutazione_rispondenza_programmazione_valutazione
+01/09/2017		NEW		abarducci		12497 - Modificato flusso (Versione 1.6). Per le domande con tipo domanda Parziale vengono inviate le email di avviso che devono rispondere alla congruenza solo agli assegnatari interessati, le email non vengono più inviate agli assegnatari non interessati. 
+04/09/2017		NEW		abarducci		12503 - Lanciato su db script per cui tutti i requisiti di AC con tipo risposta Sì/No sono stati modificati in tipo rispota Soglia
+04/09/2017		NEW		abarducci		12503 - La risposta di tipo Si/No "Non Applicabile" è stata sostituita con "Non Pertinente"
+04/09/2017		NEW		abarducci		12503 - Lanciato su db script per cui tutti i requisiti indicatori (con suffisso IND nel nome requisito) e non di tipo rispota Titolo sono stati modificati in tipo rispota Quantitativa
+05/09/2017		NEW		abarducci		12504 - Esportazione in CSV dello specchietto posti letto in domanda
+05/09/2017		NEW		agjoni			12505 - Disabilitazione pulsante completezza UDO
+05/09/2017		NEW		abarducci		12613 - Campo Tipo domanda reso modificabile per utenti con profilo Regione e Admin
+ver. 1.0.17
+13/09/2017		BUG		abarducci		12659 - L'utente con ruolo verificatore, in particolare il Team Leader, non vede le domande assegnate se sono in stato "REDAZIONE RAPPORTO DI VERIFICA"
+ver. 1.0.17.1
+14/09/2017		BUG		abarducci		12665 - Modulo valutatori - bug esporta rapporto di verifica
+ver. 1.0.17.2
+26/09/2017		BUG		abarducci		12676 - Allineamento edifici tra anagrafica e domanda
+ver. 1.0.18
+18/09/2017		NEW		abarducci		12560 - Modificato valore "Non Verificato" in "Non Campionato" per risposte di tipo Soglia e Si/No
+18/09/2017		NEW		agjoni			12502 - Mappate azioni admin in domanda
+21/09/2017		NEW		abarducci		12696 - Aggiunto controllo posti letto OBI in domanda
+28/09/2017		NEW		agjoni			12466 - Aggiornamento della ragione sociale del titolare su extraway quando modificata su oracle dal lato amministrativo
+12/10/2017		NEW		abarducci		12506 - Gestione Requisiti Generali solo per specifiche casistiche
+12/10/2017		NEW		abarducci		12508 – Gestione liste requisiti per EDIFICIO
+16/10/2017		NEW		agjoni			12511 – Assegnazione Codice Univoco a nuovo Titolare quando viene registrato (T0000) + recupero pregresso + inserimento del Codice Univoco all'interno dell'XML di MRA
+23/10/2017		NEW		abarducci		12507 – Report requisiti generali SR "AV-Punteggio per RG" per domanda Accreditamento e Autorizzazione
+24/10/2017		NEW		abarducci		12507 – Report requisiti generali SR "VdV-Punteggio per RG" per domanda Accreditamento e Autorizzazione
+ver. 1.0.19
+25/10/2017		NEW		abarducci		12507 – Report requisiti generali SR "AV-Punteggio per Udo" per domanda Accreditamento
+25/10/2017		NEW		abarducci		12507 – Report requisiti generali SR "VdV-Punteggio per Udo" per domanda Accreditamento
+26/10/2017		BUG		abarducci		Corretto bug su Applica in "Assegna verifica ai selezionati" nella show folder che andava in errore se veniva selezionato un edificio o una struttura 
+ver. 1.0.20
+27/10/2017		BUG		abarducci		12912 - Bug export csv requisiti generali
+30/10/2017		NEW		abarducci		12507 – Report requisiti generali SR "AV-Punteggio per Area" per domanda Accreditamento
+30/10/2017		NEW		abarducci		12507 – Report requisiti generali SR "VdV-Punteggio per Area" per domanda Accreditamento
+30/10/2017		NEW		abarducci		12507 – Report requisiti generali SR "AV-Punteggio complessivo" per domanda Accreditamento
+30/10/2017		NEW		abarducci		12507 – Report requisiti generali SR "VdV-Punteggio complessivo" per domanda Accreditamento
+ver. 1.0.21
+28/11/2017		NEW		abarducci		13115 - modifica visibilità domande in bozza
+ver. 1.0.22
+25/01/2018		NEW		agjoni			13145 - Ricerca per UDO senza esito in congruenza programmazione
+ver. 1.0.23
+26/01/2018		NEW		abarducci		12501 - Modifiche sezione Domanda - Codici Ulss
+31/01/2018		NEW		abarducci		13085 - Aggiunta alle autovalutazione di tipo soglia l'opzione "Non Pertinente"
+31/01/2018		NEW		agjoni			13483 - Modifica grafica visualizza dettaglio UdO nuova domanda
+08/02/2018		NEW		abarducci		13611 - Bug posti letto domanda
+27/02/2018		NEW		abarducci		12512 - Disabilitazione utente. Rimozione degli utenti disabilitati dalla tendina "Persona" in "Assegna tutti i selezionati"
+28/02/2018		NEW		abarducci		13078 - Aggiornamento campo PROCEDIMENTO_IN_CORSO di Udo e Uo su creazione e modifica (aggiungi Udo/Uo) Domanda
+28/02/2018		NEW		agjoni			12956 - Modifica tooltip lato domanda
+28/02/2018		NEW		agjoni			13100 - Bug su strutture prive di requisiti in domanda
+28/02/2018		NEW		lpapa			12910 - Export csv encoding caratteri
+28/02/2018		NEW		barducci,gjoni	12498 - Modifica dati delibera dopo inserimento
+28/02/2018		NEW		barducci		Corretto bug assegnazione requisiti ad edifici dalla maschera di visualizzazione domanda
+ver. 1.0.24
+23/05/2018		BUG		abarducci		15570 - Fwd: eliminazione UdO
+ver. 1.0.25
+01/06/2018		NEW		abarducci		15611 - Creazione utente con profilo Operatore Titolare solo lettura
+ver. 1.0.26
+27/07/2018		NEW		abarducci		15686 - Cancellazione massiva di UDO da una domanda
+30/07/2018		NEW		abarducci		15685 - Manutenzione correttiva- modifiche csv requisiti e nuovo filtro di ricerca, aggiunto asterisco nel campo Requisito - Autovalutazione per i requisiti di tipo Titolo
+30/07/2018		NEW		abarducci		15685 - Manutenzione correttiva- modifiche csv requisiti e nuovo filtro di ricerca, aggiunti due filtri "Requisiti senza risposta" "Requisiti non assegnati"
+01/08/2018		NEW		abarducci		15942 - Modifica mail di notifica per la congruenza programmazione Modificato flusso (Versione 1.7)
+ver. 1.0.27
+02/08/2018		NEW		abarducci		15855 - 1.	Punto 12. Differenziazione della visibilità delle domande e degli attori del processo per utente con profilo REGIONE Modificato flusso (Versione 2.0 unico per Autorizzazione e Accreditamento)
+07/08/2018		BUG		abarducci		16050 - Fwd: domanda AO PD 15/11/2017 - Modifica stored procedure CHECK_POSTILETTO_UDO che effettua il controllo posti letto, ora utilizza il nuovo campo POSTI_LETTO della tabella TIPO_UDO_22_TEMPL per riconoscere i tipi udo 22 che richiedono posti letto, originariamente utilizzava un elenco dei clientid fornito dal cliente
+30/08/2018		NEW		abarducci		16026 - Assegnazione requisiti massiva sulla base della UO
+31/08/2018		BUG		abarducci		15855 - Correzione visibilità per utenti della congruenza programmazione
+03/09/2018		BUG		abarducci		16038 - Filtro di ricerca per requisiti privi di risposta e assegnazione specifica per i VERIFICATORI
+04/09/2018		BUG		abarducci		15144 - Filtro domanda per raggruppamenti di discipline
+ver. 1.0.28
+17/09/2018		BUG		abarducci		16216 - In Aggiorna ragione sociale su fascicolo non veniva trovato il titolare per clientid, corretta la query
+18/09/2018		BUG		abarducci		16216 - In Aggiorna ragione sociale su fascicolo al primo titolare non trovato o trovato multiplo la procedure si fermava, ora processa tutti i titolari logga e mostra i messaggi 
+18/09/2018		BUG		abarducci		16216 - Resa visibile la possibilità di modificare i dati del provvedimento a qualsiasi utente regionale che visualizza la domanda secondo le nuove regole implementate 
+18/09/2018		NEW		abarducci		16216 - Rinominata la lista di autovalutazione degli edifici in questa modalità: NOME SEDE OPERATIVA + NOME e CODICE EDIFICIO (al momento compare solo il nome dell'edificio) 
+18/09/2018		BUG		abarducci		16216 - Se in una domanda vengono inserite UDO con edifici settati su 00 Coincide appartenenti però a sedi operative diverse, veniva creata una sola lista di Edificio relativa a 00 Coincide. Le liste dovono essere una per ogni 00 Coincide appartenente a una diversa sede operativa. 
+18/09/2018		BUG		abarducci		16216 - Inserita nella autovalutazione una riga di intestazione con il nome dell'edificio espresso come (NOME SEDE OPERATIVA + NOME e CODICE EDIFICIO)
+18/09/2018		BUG		abarducci		16216 - Inserita nella autovalutazione una riga di intestazione con il nome della struttura
+19/09/2018		BUG		abarducci		16216 - Per l'utente con profilo COLLABORATORE VALUTAZIONE nella sua lista customizzata di requisiti (unica lista di tutti i requisiti a lui assegnati) inserito nell'apposita colonna il nome del edificio espresso come (NOME SEDE OPERATIVA + NOME e CODICE EDIFICIO) qualora i requisiti siano appartenenti ad un edificio
+19/09/2018		BUG		abarducci		16216 - Nella lista di requisiti ottenuta cercando i requisiti dalla domanda inserito nell'apposita colonna il nome del edificio espresso come (NOME SEDE OPERATIVA + NOME e CODICE EDIFICIO) qualora i requisiti siano appartenenti ad un edificio
+19/09/2018		NEW		abarducci		16216 - Per l'utente con profilo COLLABORATORE VALUTAZIONE nella sua lista customizzata di requisiti (unica lista di tutti i requisiti a lui assegnati) inserito nell'apposita colonna "Generale Aziendale" come descrizione per i Requisiti generali Aziendali
+19/09/2018		NEW		abarducci		16216 - Nella lista di requisiti ottenuta cercando i requisiti dalla domanda inserito nell'apposita colonna "Generale Aziendale" come descrizione per i Requisiti generali Aziendali
+19/09/2018		BUG		abarducci		16216 - Resi visibili i tasti Esporta Report Istruttoria e Esporta relazione conclusiva nella fase di Congruenza Programmazione (stati: STATO_VALUTAZIONE_RISPONDENZA_PROGRAMMAZIONE, STATO_VALUTAZIONE_RISPONDENZA_PROGRAMMAZIONE_INSERIMENTO_ESITI, STATO_VALUTAZIONE_RISPONDENZA_PROGRAMMAZIONE_VALUTAZIONE, STATO_VALUTAZIONE_RISPONDENZA_PROGRAMMAZIONE_COMPLETATA)
+19/09/2018		BUG		abarducci		16216 - Corretto bug visualizzazione UdoInst Info che si apre dalla lista Autovalutazioni su ricerca valutazioni da domanda e lista per COLLABORATORE VALUTAZIONE
+24/09/2018		BUG		abarducci		16256 - Corretto ricerca in domanda su campo Autovalutazione di tipo soglia per valore 0
+ver. 1.0.29
+26/09/2018		BUG		abarducci		16269 - Corretto bug errore in visualizzazione fascicolo titolare e fascicolo atti
+26/09/2018		NEW		abarducci		16218 - Risposta massiva per Accreditamento/requisiti di tipo soglia
+27/09/2018		NEW		abarducci		16270 - Resi visibili i tasti Esporta Report Istruttoria e Esporta relazione conclusiva nella fase di Istruttoria Completata (stato: ISTRUTTORIA_COMPLETATA)
+27/09/2018		NEW		abarducci		16243 - Filtro in domanda AC che mostri solo le UDO con liste di requisiti
+ver. 1.0.30
+11/12/2018		NEW		tiommi			Gestione progetto con MAVEN
+11/02/2019		NEW		apollinzi		16482 - Manutenzione correttiva domande per Verificatori. Visto che la colonna per l'inserimento delle risposte è unica per autovalutazione e verificatore sostituita "Autovalutazione" con "Risposta".
+11/02/2019		NEW		apollinzi		16482 - Manutenzione correttiva domande per Verificatori. Nel cruscotto di monitoraggio delle domande aggiunti i pulsanti avanti e indietro anche a piè di pagina
+11/02/2019		NEW		apollinzi		16482 - Manutenzione correttiva domande per Verificatori. Nel cruscotto di monitoraggio delle domande (home page della Regione) mostrate 50 domande
+13/02/2019		NEW		apollinzi		16221 - Estrazione CSV domande
+15/02/2019		NEW		apollinzi		17223 - Gestire lato domanda tre nuovi profili
+29/03/2019		NEW		abarducci		16451 - Modifica registrazione Posti Letto
+01/04/2019		NEW		abarducci		16527 - Confronta UDO lato Anagrafica - aggiunta funzionalità chiamata da inde al url /download.flow?clientid=udoModel_clientid
+02/04/2019		NEW		abarducci		Corretta visualizzazione posti letto extra regione fattori produttivi
+02/04/2019		NEW		abarducci		16451 - Modifica registrazione Posti Letto corretto Controllo posti letto
+ver. 1.0.31
+10/04/2019		BUG		abarducci		Corretto bug gli utenti regionali non devono vedere le domande eliminate
+ver. 1.0.32
+19/06/2019		NEW		abarducci		Su inserimento esito finale per ogni UDO_INST aggiunti i dati dell'utente che inserisce Operatore, DirezioneOperator, TimeStamp
+ver. 1.0.33
+03/07/2019		NEW		abarducci		Aggiunta la possibilità di inserire allegati nella domanda di tipo Altro
+ver. 1.0.34
+22/07/2019		NEW		abarducci		19207 - Bug sul controllo Posti Letto
+22/07/2019		NEW		abarducci		19220 - anomalia su "domande con azioni da eseguire"
+ver. 1.0.35
+30/07/2019		NEW		abarducci		19268 - Fwd: descrizione cod HSP (modificate view stored e trigger)
+10/09/2019		NEW		apollinzi		19366-Sistemazioni_Specchietto_Posti_Letto
+ver. 2.0.0
+12/09/2019		NEW		abarducci		19281 - Chiusura domande diverse con stessa delibera
+13/09/2019		NEW		abarducci		19434 - Possibilità di mostrare in domanda utente che ha in carico operazione del flusso
+17/09/2019		NEW		abarducci		18057 - Gestione delibera doppia termine procedimento - Modifica flusso (Versione 3.0) 
+20/09/2019		NEW		abarducci		18050 - Modifica per domande parziali - Requisiti generali
+
+

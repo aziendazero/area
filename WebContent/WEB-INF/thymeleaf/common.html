@@ -1,0 +1,185 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:js="http://www.3di.it/thymeleaf/springJsDecorator">
+
+	<head>
+		<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+	    <title>Common fragments</title>
+    </head>
+
+	<!-- ******************** dojo ******************** -->
+	<head th:fragment="dojo" th:remove="tag">
+		<!-- Dijit Claro Theme - CSS -->
+		<!-- <link type="text/css" rel="stylesheet" th:href="@{/resources/dijit/themes/claro/document.css}" />  -->
+	    <link type="text/css" rel="stylesheet" th:href="@{/resources/dijit/themes/claro/claro.css}" />
+
+	    <!-- Dojo - Dijit - JS -->
+	    <script type="text/javascript" th:src="@{/resources/dojo/dojo.js}"></script>
+		<script type="text/javascript" th:src="@{/resources/dojo/require.js}"></script>	    
+	    <script type="text/javascript" th:src="@{/resources/dijit/dijit.js}"></script>
+    </head>
+    <!-- *********************************************** -->
+    
+    <!-- ******************** Tooltipster ******************** -->
+	<head th:fragment="tooltipster" th:remove="tag">
+		<link type="text/css" rel="stylesheet" th:href="@{/resources/css/tooltipster.bundle.min.css}"/>
+		<link type="text/css" rel="stylesheet" th:href="@{/resources/css/tooltipster-sideTip-borderless.min.css}"/>
+		<script type="text/javascript" th:src="@{/resources/js/tooltipster.bundle.min.js}"></script>
+    </head>
+    <!-- *********************************************** -->
+    
+    <!-- ******************** spring-js ******************** -->
+    <head th:fragment="spring-js" th:remove="tag">
+		<!-- 3D Patched Spring JS -->		
+		<script type="text/javascript" th:src="@{/resources/spring-js-decorator/Spring-2.4.0.M1-patched.js.uncompressed.js}"></script>
+		<!-- 
+		<script type="text/javascript" th:src="@{/resources/spring-js-decorator/Spring-Dojo-2.4.0.M1-patched.js.uncompressed.js}"></script>
+		 -->
+		 <script type="text/javascript" th:src="@{/resources/js/Spring-Dojo-2.4.0.M1-patched.js.uncompressed.js}"></script>
+	</head>	
+	<!-- ************************************************** -->
+	
+	<!-- ******************** spring-js-decorator ******************** -->
+	<head th:fragment="spring-js-decorator" th:remove="tag">
+		<!-- 3D springJsDecorator Thymeleaf Dialect - CSS -->
+		<link type="text/css" rel="stylesheet" th:href="@{/resources/spring-js-decorator/springJsDecorator.css}" />
+	</head>
+	<!-- ************************************************************* -->
+
+	<!-- ******************** menuCSS ******************** -->
+	<head th:fragment="menuCSS" th:remove="tag">
+		<link type="text/css" rel="stylesheet" th:href="@{/resources/css/menu.css}"/>
+	</head>
+	<!-- ************************************************** -->
+
+	<!-- ******************** noMenuCSS ******************** -->
+	<head th:fragment="noMenuCSS" th:remove="tag">
+		<link type="text/css" rel="stylesheet" th:href="@{/resources/css/nomenu.css}"/>
+	</head>
+	<!-- *************************************************** -->
+		
+  	<body class="claro">
+  	
+  		<!-- ******************** defaultHeader ******************** -->
+  		<div th:fragment="defaultHeader" th:remove="tag">
+			<span class="header-main-caption" id="header-main-caption">Sanità Regione Veneto - Autorizzazione e Accreditamento</span>  	
+			<span class="header-main-caption-username" th:text="${userBean.utenteModel.anagraficaUtenteModel.nome + ' ' + userBean.utenteModel.anagraficaUtenteModel.cognome}"></span>
+  		</div>
+  		<!-- ******************************************************* -->
+  		
+  		<!-- ******************** defaulMenu ******************** -->
+  		<div th:fragment="defaultMenu" th:remove="tag">
+			<div class="sidebar_holder">
+				<div class="menu-container sidebar-left">
+					<!-- menu -->
+					<div class="menu-container-level-1" >
+						<div class="menu-commandset-level-1" >
+							<img class="menu-commandset-branchimage-level-1"/>
+							<!-- <img src="images/openedslev1.gif" class="menu-commandset-image-level-1"/>  -->
+							<a class="menu-commandset-link-level-1" >Menu</a>
+							<!-- <img style="float: right; margin:2px 2px 0 0;" src="images/openedslev1.gif" class="menu-commandset-imagedx-level-1" />  -->
+						</div>
+	
+						<div style="" class="submenu-container-level-1" >
+							<div class="menu-container-level-2" >
+								<div class="menu-command-level-2" >
+									<img src="images/cmdmlev2.gif" class="menu-command-branchimage-level-2"/>
+									<img style="display: none;" class="menu-command-image-level-2" />
+									<a onclick="displayOpenwaitmsg();" class="menu-command-link-level-2" th:href="${flowExecutionUrl} + '&amp;_eventId=home'">Home</a>
+								</div>
+							</div>
+						</div>
+						
+						<div th:if="${userBean.mostraElencoDomandeConTask()}" style="" class="submenu-container-level-1" >
+							<div class="menu-container-level-2" >
+								<div class="menu-command-level-2" >
+									<img src="images/cmdmlev2.gif" class="menu-command-branchimage-level-2"/>
+									<img style="display: none;" class="menu-command-image-level-2" />
+									<a onclick="displayOpenwaitmsg();" class="menu-command-link-level-2" th:href="${flowExecutionUrl} + '&amp;_eventId=home&amp;avtask=1'">Domande con azioni da eseguire</a>
+								</div>
+							</div>
+						</div>				
+						
+						<div th:if="${userBean.REGIONE}" style="" class="submenu-container-level-1" >
+							<div class="menu-container-level-2" >
+								<div class="menu-command-level-2" >
+									<img src="images/cmdmlev2.gif" class="menu-command-branchimage-level-2"/>
+									<img style="display: none;" class="menu-command-image-level-2" />
+									<a onclick="displayOpenwaitmsg();" class="menu-command-link-level-2" th:href="${flowExecutionUrl} + '&amp;_eventId=listeVerifica'">Liste di Verifica</a>
+								</div>
+							</div>
+						</div>				
+						<div th:if="${userBean.REGIONE}" style="" class="submenu-container-level-1" >
+							<div class="menu-container-level-2" >
+								<div class="menu-command-level-2" >
+									<img src="images/cmdmlev2.gif" class="menu-command-branchimage-level-2"/>
+									<img style="display: none;" class="menu-command-image-level-2" />
+									<a onclick="displayOpenwaitmsg();" class="menu-command-link-level-2" th:href="${flowExecutionUrl} + '&amp;_eventId=titolari'">Titolari atti</a>
+								</div>
+							</div>
+						</div>				
+						<div th:if="${userBean.AMMINISTRATORE}" style="" class="submenu-container-level-1" >
+							<div class="menu-container-level-2" >
+								<div class="menu-command-level-2" >
+									<img src="images/cmdmlev2.gif" class="menu-command-branchimage-level-2"/>
+									<img style="display: none;" class="menu-command-image-level-2" />
+									<a onclick="displayOpenwaitmsg();" class="menu-command-link-level-2" th:href="${flowExecutionUrl} + '&amp;_eventId=mra'">MRA</a>
+								</div>
+							</div>
+						</div>				
+						<div th:if="${userBean.TITOLARE or userBean.OPERATORE_TITOLARE}" style="" class="submenu-container-level-1" >
+							<div class="menu-container-level-2" >
+								<div class="menu-command-level-2" >
+									<img src="images/cmdmlev2.gif" class="menu-command-branchimage-level-2"/>
+									<img style="display: none;" class="menu-command-image-level-2" />
+									<a onclick="displayOpenwaitmsg();" class="menu-command-link-level-2" th:href="${flowExecutionUrl} + '&amp;_eventId=insertFolder'">Inserimento nuova domanda</a>
+								</div>
+							</div>
+						</div>				
+						<div style="" class="submenu-container-level-1" >
+							<div class="menu-container-level-2" >
+								<div class="menu-command-level-2" >
+									<img src="images/cmdmlev2.gif" class="menu-command-branchimage-level-2"/>
+									<img style="display: none;" class="menu-command-image-level-2" />
+									<a class="menu-command-link-level-2" th:href="${properties.getProperty('san_reg_ven.url')}" target="_blank">Torna alla sezione anagrafica</a>							
+								</div>
+							</div>
+						</div>	
+						<div style="" class="submenu-container-level-1" >
+							<div class="menu-container-level-2" >
+								<div class="menu-command-level-2" >
+									<img src="images/cmdmlev2.gif" class="menu-command-branchimage-level-2"/>
+									<img style="display: none;" class="menu-command-image-level-2" />
+									<a onclick="displayOpenwaitmsg();" class="menu-command-link-level-2" th:href="${flowExecutionUrl} + '&amp;_eventId=logout'">Logout</a>							
+								</div>
+							</div>
+						</div>					
+					</div>
+				</div> <!-- menu-container -->
+			</div> <!-- sidebar_holder -->  		
+  		</div>  		
+  		<!-- **************************************************** -->
+  	
+  		<!-- ******************** defaulFooter ******************** -->
+  		<div th:fragment="defaultFooter" th:remove="tag">
+			<!-- empty -->
+  		</div>
+  		<!-- ****************************************************** -->  	
+  	
+  		<!-- ******************** waitmsg ******************** -->
+  		<div th:fragment="waitmsg" th:remove="tag">
+			<div id="waitmsg">
+				<div id="waitmsgdiv" class="QTPopup" style="display:none">	
+					<div class="popupTransparentBg"></div>
+			    </div>	
+			</div>    
+			<div style="display:none;z-index:2001;" id="openwaitmsggif">
+				<img src="images/ajax-loader.gif" class="openwaitmsggif" alt="loading..." />
+			</div>  		
+  		</div>
+  		<!-- ****************************************************** -->  		  	
+  	
+	</body>
+	
+</html>
+
+

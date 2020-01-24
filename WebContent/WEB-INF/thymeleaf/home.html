@@ -1,0 +1,51 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:js="http://www.3di.it/thymeleaf/springJsDecorator" 
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+		layout:decorator="templateFHMB">
+
+	<head>
+	    <title>Home</title>
+	    
+	    <!-- CSS per layout con menu -->
+	    <link th:substituteby="common :: menuCSS" />
+    </head>
+		
+  	<body class="claro">
+
+		<div layout:fragment="header" th:remove="tag">
+			<div th:substituteby="common :: defaultHeader"></div>
+		</div>
+	
+		<div layout:fragment="menu" th:remove="tag">
+			<div th:substituteby="common :: defaultMenu"></div>
+		</div>
+		
+		<div layout:fragment="body" th:remove="tag">
+	
+			<form method="POST" id="home_form" th:object="${homePageBean}" th:action="${flowExecutionUrl}" onkeypress="return event.keyCode != 13;">
+	
+				<div th:if="${userBean.AMMINISTRATORE}" th:remove="tag"> <!-- AMMINISTRATORE: PANNELLO ADMIN -->
+					<div th:substituteby="homeAdmin :: homeAdmin"></div>
+				</div>
+	
+				<div th:if="${userBean.TITOLARE or userBean.OPERATORE_TITOLARE or userBean.OPERATORE_TITOLARE_IN_LETTURA or userBean.COLLABORATORE_VALUTAZIONE or userBean.VALUTATORE_INTERNO}" th:remove="tag"> 
+					<div th:substituteby="homeTitolare :: homeTitolare"></div>
+				</div>
+				
+				<div th:if="${userBean.VERIFICATORE or userBean.REGIONE_IN_LETTURA or userBean.UTENTE_PROGRAMMAZIONE or userBean.REGIONE}" th:remove="tag"> 
+					<div th:substituteby="homeRegione :: homeRegione"></div>
+				</div>
+
+			</form>
+	
+		</div>	
+	  	
+		<div layout:fragment="footer" th:remove="tag">
+			<div th:substituteby="common :: defaultFooter"></div>
+		</div>
+  	
+	</body>
+	
+</html>
+
+

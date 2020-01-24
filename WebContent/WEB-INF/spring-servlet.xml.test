@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+
+	<!-- 
+		We are telling Spring to explore the given package looking for 'stereotype' classes, that
+		is classes implementing well known behavior, thus Spring can register, expose (make referable)
+		and handle them in a specific, optimized way.
+		For instance, a @Controller annotated class will be registered as an MVC controller, looking for
+		url mappings (@RequestMapping annotated methods) inside it and similar.
+		
+		Base package is only one in this case, but multiple comma-separated values could be given.
+		
+		context:component-scan *implies* context:annotation-config since, logically, configuration annotations could be found 
+		inside scanned classes.
+		
+		This way we are *adding* the annotation-driven configuration behavior to this application context, while we are NOT excluding 
+		the classic XML-driven one: the two can coexist.
+		
+		Detected components of any type will be registered as Spring bean with the "id" specified inside the annotation itself, i.e.
+		@Service("emailSender") -> bean id is "emailSender"
+		If no "id" is specified within the annotation, then the un-capitalized class name is used, i.e.
+		@Service
+		public class SmptEmailManager(...){...} -> bean id is "stmpEmailManager".
+		Using explicit names is preferable.  
+	 -->
+	<!-- context:component-scan base-package="it.tredi.spring.crud" / -->
+		
+	<!-- 
+		The standard Spring messages bundle, configured with multiple basenames. "messageSource" is a well-known bean name in Spring.
+	 -->
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource" p:defaultEncoding="ISO-8859-1">
+		<property name="basenames">
+			<list>
+				<value>messages</value>
+				<value>errors</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean name="authenticationFilter"
+	    class="org.jasig.cas.client.authentication.AuthenticationFilter"
+	    p:casServerLoginUrl="https://cas.test.it/cas/login"
+	    p:gateway="false"
+	    p:serverName="https://test.it/AuAc" />
+	    
+	 <!-- p:service="https://my.local.service.com/cas-client" -->
+	<bean name="ticketValidationFilter"
+    	class="org.jasig.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter"
+    	p:serverName="https://test.it/AuAc">
+	    <property name="ticketValidator">
+	        <bean class="org.jasig.cas.client.validation.Cas20ServiceTicketValidator">
+	            <constructor-arg index="0" value="https://cas.test.it/cas" />
+	        </bean>
+	    </property>
+	</bean>
+</beans>

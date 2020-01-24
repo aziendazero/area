@@ -1,0 +1,243 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:js="http://www.3di.it/thymeleaf/springJsDecorator" 
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+			
+		<div th:fragment="homeTitolare">			
+			<div class="lista_holder" th:if="*{fascicoli.titleL}">
+				<!-- TODO un if nel caso non sia il titolare -->
+				<div id="listaProcedimentiPanel">
+				
+					<!-- header videata -->
+					<div class="form-caption-container" >
+						<span class="form-caption-text" th:text="'Fascicolo del titolare: ' + *{titolareModel.ragSoc}">Fascicolo del titolare</span>
+					</div>
+					<div class="form-frames-container" >							
+						<div class="frame-container">
+							<div class="frame-toolbar-container" >
+								<span class="panel-toolbar-zone">
+									<span style="float:right;margin-right:20px;" class="frame-toolbar-caption" >
+										<input style="border:0px solid white;vertical-align:middle;margin-bottom:2px;" th:src="'images/pagination/first_' + *{fascicoli.canFirst} + '.gif'" js:ajax="formId:'home_form',event:'onclick',params:{_eventId:'procFirstPage'}" id="procFirstPage" type="image"/>
+										<input style="border:0px solid white;vertical-align:middle;margin-bottom:2px;" th:src="'images/pagination/prev_' + *{fascicoli.canPrev} + '.gif'" js:ajax="formId:'home_form',event:'onclick',params:{_eventId:'procPrevPage'}" id="procPrevPage" type="image"/>
+										<span style="margin:0px 5px 0px 5px;" th:text="'Pag ' + *{fascicoli.pageIndex} + ' di ' + *{fascicoli.pageCount}">Pag 0 di 0</span>
+										<input style="border:0px solid white;vertical-align:middle;margin-bottom:2px;" th:src="'images/pagination/next_' + *{fascicoli.canNext} + '.gif'" js:ajax="formId:'home_form',event:'onclick',params:{_eventId:'procNextPage'}" id="procNextPage" type="image"/>
+										<input style="border:0px solid white;vertical-align:middle;margin-bottom:2px;" th:src="'images/pagination/last_' + *{fascicoli.canLast} + '.gif'" js:ajax="formId:'home_form',event:'onclick',params:{_eventId:'procLastPage'}" id="procLastPage" type="image"/>							
+									</span>
+									<span class="frame-toolbar-caption" >Elenco Fascicoli</span>
+								</span>
+							</div>
+						</div>								
+					</div> <!-- form-frames-container -->		
+							
+					<br />
+					<table class="row">
+						<tbody>
+							<tr>
+								<td style="width: 140px;" class="label">Stato/Procedimento</td>
+								<td>
+								<select
+									th:field="*{folderStatusSelected}"
+									js:widget="widgetType:'dijit.form.Select'" js:errors="true">
+										<option value="">---scegli lo stato---</option>
+										<option value="BOZZA">BOZZA</option>
+										<option value="PROCEDIMENTO AVVIATO">PROCEDIMENTO AVVIATO</option>
+										<option value="FASE ISTRUTTORIA">FASE ISTRUTTORIA</option>
+		
+										<option value="RICHIESTA DI INTEGRAZIONE DOCUMENTI">RICHIESTA DI INTEGRAZIONE DOCUMENTI</option>
+										<option value="RICHIESTA DI INTEGRAZIONE AUTOVALUTAZIONI">RICHIESTA DI INTEGRAZIONE AUTOVALUTAZIONI</option>
+										<option value="RICHIESTA DI INTEGRAZIONE DOCUMENTI E AUTOVALUTAZIONI">RICHIESTA DI INTEGRAZIONE DOCUMENTI E AUTOVALUTAZIONI</option>
+										<option value="INVIATA">INVIATA</option>
+		
+										<option value="VALUTAZIONE RISPONDENZA PROGRAMMAZIONE">VALUTAZIONE RISPONDENZA PROGRAMMAZIONE</option>
+										<option value="VALUTAZIONE RISPONDENZA PROGRAMMAZIONE INSERIMENTO ESITI">VALUTAZIONE RISPONDENZA PROGRAMMAZIONE INSERIMENTO ESITI</option>
+										<option value="VALUTAZIONE RISPONDENZA PROGRAMMAZIONE VALUTAZIONE">VALUTAZIONE RISPONDENZA PROGRAMMAZIONE VALUTAZIONE</option>
+										<option value="RICHIESTA DI INTEGRAZIONI VALUTAZIONE RISPONDENZA PROGRAMMAZIONE">RICHIESTA DI INTEGRAZIONI VALUTAZIONE RISPONDENZA PROGRAMMAZIONE</option>
+		
+										<option value="ISTRUTTORIA COMPLETATA">ISTRUTTORIA COMPLETATA</option>
+										<option value="PROCEDIMENTO IN VALUTAZIONE">PROCEDIMENTO IN VALUTAZIONE</option>
+		
+										<option value="GESTIONE DELLE VERIFICHE">GESTIONE DELLE VERIFICHE</option>
+										<option value="GESTIONE DELLE VERIFICHE INSERIMENTO VERIFICHE">GESTIONE DELLE VERIFICHE INSERIMENTO VERIFICHE</option>
+										<option value="GESTIONE DELLE VERIFICHE VERIFICA">GESTIONE DELLE VERIFICHE VERIFICA</option>
+										<option value="REDAZIONE RAPPORTO DI VERIFICA">REDAZIONE RAPPORTO DI VERIFICA</option>
+		
+										<option value="INSERIMENTO ESITO">INSERIMENTO ESITO</option>
+										<option value="INSERIMENTO ESITO INSERIMENTO ESITI">INSERIMENTO ESITO INSERIMENTO ESITI</option>
+										<option value="INSERIMENTO ESITO VERIFICA">INSERIMENTO ESITO VERIFICA</option>
+		
+										<option value="PROCEDIMENTO CONCLUSO">PROCEDIMENTO CONCLUSO</option>
+									</select>&nbsp;&nbsp;&nbsp;&nbsp;
+					  				<select th:field="*{tipoProcSelected}" js:widget="widgetType:'dijit.form.Select'" js:errors="true">
+										<option value="">---seleziona procedimento---</option>
+									  	<option th:each="tipo:*{tipiProcL}" th:value="${tipo.descr}" th:text="${tipo.descr}">Procedimento</option>						  
+									</select>&nbsp;&nbsp;&nbsp;&nbsp;
+					  				<select th:field="*{oggettoDomandaDaCercare}" js:widget="widgetType:'dijit.form.Select'" js:errors="true">
+										<option value="">---seleziona tipo domanda---</option>
+										<option value="Complessiva">Complessiva</option>
+										<option value="Parziale">Parziale</option>
+									</select>
+					  			</td>
+							</tr>
+							<tr>
+								<td class="label">Data creazione da</td>
+								<td><input
+									id="dataCreazioneDa"
+									js:widget="widgetType:'dijit.form.DateTextBox',widgetAttrs:{datePattern:'dd/MM/yyyy',required:false}"
+									type="text"
+									th:field="*{dataCreazioneDa}"
+									value=""
+									js:errors="true" /> &nbsp;&nbsp;&nbsp; a &nbsp;&nbsp;&nbsp; <input
+									id="dataCreazioneA"
+									js:widget="widgetType:'dijit.form.DateTextBox',widgetAttrs:{datePattern:'dd/MM/yyyy',required:false}"
+									type="text"
+									th:field="*{dataCreazioneA}"
+									value=""
+									js:errors="true" /></td>
+							</tr>
+							<tr>
+								<td class="label">Data invio domanda da</td>
+								<td><input
+									id="dataInvioDomandaDa"
+									js:widget="widgetType:'dijit.form.DateTextBox',widgetAttrs:{datePattern:'dd/MM/yyyy',required:false}"
+									type="text"
+									th:field="*{dataInvioDomandaDa}"
+									value=""
+									js:errors="true" />  &nbsp;&nbsp;&nbsp; a &nbsp;&nbsp;&nbsp; <input
+									id="dataInvioDomandaA"
+									js:widget="widgetType:'dijit.form.DateTextBox',widgetAttrs:{datePattern:'dd/MM/yyyy',required:false}"
+									type="text"
+									th:field="*{dataInvioDomandaA}"
+									value=""
+									js:errors="true" /></td>
+							</tr>
+							<tr>
+								<td class="label">Data conclusione da</td>
+								<td><input
+									id="dataConclusioneDa"
+									js:widget="widgetType:'dijit.form.DateTextBox',widgetAttrs:{datePattern:'dd/MM/yyyy',required:false}"
+									type="text"
+									th:field="*{dataConclusioneDa}"
+									value=""
+									js:errors="true" />  &nbsp;&nbsp;&nbsp; a &nbsp;&nbsp;&nbsp;  <input
+									id="dataConclusioneA"
+									js:widget="widgetType:'dijit.form.DateTextBox',widgetAttrs:{datePattern:'dd/MM/yyyy',required:false}"
+									type="text"
+									th:field="*{dataConclusioneA}"
+									value=""
+									js:errors="true" /></td>
+							</tr>
+							<tr>
+								<td colspan="2">
+									<input
+									js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Pulisci'}"
+									js:ajax="formId:'home_form',event:'onClick',params:{_eventId:'svuotaCampiRicercaRegione'}"
+									id="svuotaCampiRicercaRegione"
+									name="_eventId_svuotaCampiRicercaRegione" value="Pulisci"
+									type="submit" />&nbsp;&nbsp;&nbsp;
+									<input
+									js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Applica filtri'}"
+									js:ajax="formId:'home_form',event:'onClick',params:{_eventId:'filtraDomandeRegione'}"
+									id="filtraSulleDomandeRegione"
+									name="_eventId_filtraSulleDomandeRegione" value="Applica filtri"
+									type="submit" />
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<br />
+							
+					<!-- lista holder -->
+					<table class="lista" id="listaProcedimentiTable">
+						<tbody>
+							<tr>
+								<td style="width:10px;" class="listTableHeader">Tipo</td>
+								<td style="width:110px;text-align:center" class="listTableHeader"><a class="anchor" js:ajax="formId:'form',event:'onclick',params:{_eventId:'orderDomande',tipoOrder:'*{T(it.tredi.auac.DomandaFieldToOrderEnum).NumeroProcedimento}'}" 
+					  							id="ordNumProc" 
+					  							th:href="${flowExecutionUrl} + '&amp;_eventId=orderDomande&amp;tipoOrder=' + *{T(it.tredi.auac.DomandaFieldToOrderEnum).NumeroProcedimento}">Numero Procedimento</a> <img
+												title="Ordinamento decrescente"
+												th:if="*{domandaOrderTypeEnum != null and domandaOrderTypeEnum==T(it.tredi.auac.DomandaOrderTypeEnum).NumeroProcedimentoDecrescente}"
+												border="0" src="images/scrdn.gif" /><img
+												title="Ordinamento crescente"
+												th:if="*{domandaOrderTypeEnum != null and domandaOrderTypeEnum==T(it.tredi.auac.DomandaOrderTypeEnum).NumeroProcedimentoCrescente}"
+												border="0" src="images/scrup.gif" /></td>
+								<td class="listTableHeader"><a class="anchor" js:ajax="formId:'form',event:'onclick',params:{_eventId:'orderDomande',tipoOrder:'*{T(it.tredi.auac.DomandaFieldToOrderEnum).Oggetto}'}" 
+					  							id="ordNumProc" 
+					  							th:href="${flowExecutionUrl} + '&amp;_eventId=orderDomande&amp;tipoOrder=' + *{T(it.tredi.auac.DomandaFieldToOrderEnum).Oggetto}">Oggetto</a> <img
+												title="Ordinamento decrescente"
+												th:if="*{domandaOrderTypeEnum != null and domandaOrderTypeEnum==T(it.tredi.auac.DomandaOrderTypeEnum).OggettoDecrescente}"
+												border="0" src="images/scrdn.gif" /><img
+												title="Ordinamento crescente"
+												th:if="*{domandaOrderTypeEnum != null and domandaOrderTypeEnum==T(it.tredi.auac.DomandaOrderTypeEnum).OggettoCrescente}"
+												border="0" src="images/scrup.gif" /></td>
+								<td style="width:110px;text-align:center" class="listTableHeader"><a class="anchor" js:ajax="formId:'form',event:'onclick',params:{_eventId:'orderDomande',tipoOrder:'*{T(it.tredi.auac.DomandaFieldToOrderEnum).DataCreazione}'}" 
+					  							id="ordNumProc" 
+					  							th:href="${flowExecutionUrl} + '&amp;_eventId=orderDomande&amp;tipoOrder=' + *{T(it.tredi.auac.DomandaFieldToOrderEnum).DataCreazione}">Data Creazione</a> <img
+												title="Ordinamento decrescente"
+												th:if="*{domandaOrderTypeEnum != null and domandaOrderTypeEnum==T(it.tredi.auac.DomandaOrderTypeEnum).DataCreazioneDecrescente}"
+												border="0" src="images/scrdn.gif" /><img
+												title="Ordinamento crescente"
+												th:if="*{domandaOrderTypeEnum != null and domandaOrderTypeEnum==T(it.tredi.auac.DomandaOrderTypeEnum).DataCreazioneCrescente}"
+												border="0" src="images/scrup.gif" /></td>
+								<td style="width:110px;text-align:center" class="listTableHeader"><a class="anchor" js:ajax="formId:'form',event:'onclick',params:{_eventId:'orderDomande',tipoOrder:'*{T(it.tredi.auac.DomandaFieldToOrderEnum).DataInvio}'}" 
+					  							id="ordNumProc" 
+					  							th:href="${flowExecutionUrl} + '&amp;_eventId=orderDomande&amp;tipoOrder=' + *{T(it.tredi.auac.DomandaFieldToOrderEnum).DataInvio}">Data invio Domanda</a> <img
+												title="Ordinamento decrescente"
+												th:if="*{domandaOrderTypeEnum != null and domandaOrderTypeEnum==T(it.tredi.auac.DomandaOrderTypeEnum).DataInvioDecrescente}"
+												border="0" src="images/scrdn.gif" /><img
+												title="Ordinamento crescente"
+												th:if="*{domandaOrderTypeEnum != null and domandaOrderTypeEnum==T(it.tredi.auac.DomandaOrderTypeEnum).DataInvioCrescente}"
+												border="0" src="images/scrup.gif" /></td>
+								<td style="width:110px;text-align:center" class="listTableHeader"><a class="anchor" js:ajax="formId:'form',event:'onclick',params:{_eventId:'orderDomande',tipoOrder:'*{T(it.tredi.auac.DomandaFieldToOrderEnum).DataConclusione}'}" 
+					  							id="ordNumProc" 
+					  							th:href="${flowExecutionUrl} + '&amp;_eventId=orderDomande&amp;tipoOrder=' + *{T(it.tredi.auac.DomandaFieldToOrderEnum).DataConclusione}">Data conclusione</a> <img
+												title="Ordinamento decrescente"
+												th:if="*{domandaOrderTypeEnum != null and domandaOrderTypeEnum==T(it.tredi.auac.DomandaOrderTypeEnum).DataConclusioneDecrescente}"
+												border="0" src="images/scrdn.gif" /><img
+												title="Ordinamento crescente"
+												th:if="*{domandaOrderTypeEnum != null and domandaOrderTypeEnum==T(it.tredi.auac.DomandaOrderTypeEnum).DataConclusioneCrescente}"
+												border="0" src="images/scrup.gif" /></td>
+								<td style="width:110px;text-align:center;" class="listTableHeader"><a class="anchor" js:ajax="formId:'form',event:'onclick',params:{_eventId:'orderDomande',tipoOrder:'*{T(it.tredi.auac.DomandaFieldToOrderEnum).Stato}'}" 
+					  							id="ordNumProc" 
+					  							th:href="${flowExecutionUrl} + '&amp;_eventId=orderDomande&amp;tipoOrder=' + *{T(it.tredi.auac.DomandaFieldToOrderEnum).Stato}">Stato Domanda</a> <img
+												title="Ordinamento decrescente"
+												th:if="*{domandaOrderTypeEnum != null and domandaOrderTypeEnum==T(it.tredi.auac.DomandaOrderTypeEnum).StatoDecrescente}"
+												border="0" src="images/scrdn.gif" /><img
+												title="Ordinamento crescente"
+												th:if="*{domandaOrderTypeEnum != null and domandaOrderTypeEnum==T(it.tredi.auac.DomandaOrderTypeEnum).StatoCrescente}"
+												border="0" src="images/scrup.gif" /></td>
+								<td style="width:150px;text-align:center;" class="listTableHeader" th:if="${userBean.COLLABORATORE_VALUTAZIONE}">Requisiti</td>
+							</tr>
+							<tr th:class="${userBean.COLLABORATORE_VALUTAZIONE}?'':'fascicoli_table_row'" th:each="proc:*{fascicoli.titleL}" th:onclick="${userBean.COLLABORATORE_VALUTAZIONE} ? '' : 'Spring.remoting.submitForm(\'\',\'home_form\',{_eventId:\'showFolder\',idUnit:\'' + ${proc['idIUnit']} + '\'});'">
+								<td style="width:10px;">
+									<img th:if="${proc['folder_type']}=='titolare'" title="Fascicolo del Titolare" border="0" src="resources/images/folder24_titolare.png" />
+									<img th:if="${proc['folder_type']}=='atti_titolare'" title="Fascicolo degli Atti" border="0" src="resources/images/folder24_atti_sub.png" />
+									<img th:if="${proc['folder_type']}=='domanda_titolare'" title="Fascicolo di Procedimento" border="0" src="resources/images/folder24_proc_sub.png" />
+								</td>
+								<td style="text-align:center" th:text="${proc['numero_procedimento']}"></td>		
+								<td th:text="${proc['oggetto']}"></td>
+								<td style="text-align:center" th:text="${proc['data_creazione']}"></td>
+								<td style="text-align:center" th:text="${proc['data_invio_domanda']}"></td>
+								<td style="text-align:center" th:text="${proc['data_conclusione']}"></td>
+								<td style="text-align:center" th:text="${proc['folder_status']}"></td>
+										
+								<td style="width:150px;text-align:center;" th:if="${userBean.COLLABORATORE_VALUTAZIONE}">
+									<input
+										js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Autovalutazione'}"
+										js:ajax="formId:'home_form',event:'onClick',params:{_eventId:'autovalutazione',idUnit:'${proc['idIUnit']}',domandaClientId:'${proc['domanda_client_id']}'}"
+										th:id="${#ids.seq('autovalutazioneButton')}" name="_eventId_autovalutazione"
+										value="Autovalutazione" type="submit" />
+										
+										<!-- icone x evidenza di TUTTI requisiti risposti/assegnati -->
+										<img th:if="${homePageBean.valutazioneCompletata(proc)}" style="vertical-align:middle;" border="0" src="resources/images/questionario_si.png" title="L'autovalutazione dei requisiti è completa"/>
+										<img th:if="${!homePageBean.valutazioneCompletata(proc)}" style="vertical-align:middle;" border="0" src="resources/images/questionario_no.png" title="L'autovalutazione dei requisiti deve essere completata" />		
+								</td>
+											
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div> 		
+			
+</html>
+
+

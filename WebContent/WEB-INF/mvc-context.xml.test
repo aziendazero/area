@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+
+	<!-- 
+		Enable Spring detection of MVC-oriented annotations, such as @Controller or @RequestMapping.
+		In fact these are not covered by the more generic context:annotation-config directive (implied by the context:component-scan one), which instead
+		is about @Required, @Autowired and so on... 	
+	 -->
+	<mvc:annotation-driven />
+	
+	<!-- 
+		This Spring 3.0 directive configures access to static resources (js, css,...) so that it is handled directly by our DispatcherServlet.
+		All requests directed to /<servlet-base-path>/resources/**/*.* are resolved (in turn) to /**/*.*, then (if not found) to 
+		classpath:/META-INF/web-resources/**/*.* and so on. We may add as many paths as needed, the order express the priority (?...).
+		As we can see, paths can be web-app relative locations as well as classpath locations.
+		The base path of the servlet is obviously to be pre-pended in each request. 
+	 -->
+	<mvc:resources mapping="/resources/**" location="/, classpath:/META-INF/web-resources/" />
+
+	<!-- Thymeleaf template resolver -->
+	<bean id="templateResolver" class="org.thymeleaf.templateresolver.ServletContextTemplateResolver">
+		<property name="prefix" value="/WEB-INF/thymeleaf/" />
+		<property name="suffix" value=".html" />
+		<property name="characterEncoding" value="UTF-8" />
+		<property name="templateMode" value="HTML5" />
+		<property name="cacheable" value="true" />
+	</bean>
+	
+	<!-- Thymeleaf template engine -->
+	<bean id="templateEngine" class="org.thymeleaf.spring3.SpringTemplateEngine" p:templateResolver-ref="templateResolver">
+       <property name="additionalDialects">
+           <set>
+               <!-- Adds Layout dialect -->
+               <bean class="nz.net.ultraq.thymeleaf.LayoutDialect"/>
+               
+               <!-- Adds 3d dialect - Spring JS decoration -->
+               <bean class="it.tredi.thymeleaf.SpringJsDecoratorDialect"/>        
+           </set>
+       </property>
+   </bean>
+
+	<bean id="xmlViewResolver" class="org.springframework.web.servlet.view.XmlViewResolver">
+	   <property name="location">
+	       <value>/WEB-INF/spring-views.xml</value>
+	   </property>
+	</bean>
+	
+	<!-- Thymeleaf direct view resolver -->
+	<bean id="thymeleafViewResolver" class="org.thymeleaf.spring3.view.AjaxThymeleafViewResolver"
+		p:viewClass="org.thymeleaf.spring3.view.FlowAjaxThymeleafView" p:templateEngine-ref="templateEngine" />
+	
+	<!-- 
+		The locale interceptor is an example of WebRequestInterceptor: it intercepts web requests (hey, would you believe it?!)
+		Specifically the LocalChangeInterceptor looks for a "locale" parameter in the request and set it inside Spring's LocaleResolver.
+		This way we can dynamically change the locale in a really easy way: just put locale="en_EN" into the request.
+	 -->
+	<mvc:interceptors>
+		<bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor" p:paramName="locale" />
+	</mvc:interceptors> 
+	
+	<!--
+		The SessionLocaleResolver keeps a SessionLocaleResolver.LOCALE parameter in session to configure Spring's locale resolver in a session-wide
+		fashion. "localeResolver" is a well-known bean name.
+	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver" p:defaultLocale="it" />
+	 -->
+	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver" p:defaultLocale="it_IT" />
+		
+</beans>

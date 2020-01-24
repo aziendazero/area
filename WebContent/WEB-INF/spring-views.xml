@@ -1,0 +1,165 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+ 
+	<bean id="esportaRequisitiToCsvViewResolver" class="it.tredi.auac.RequisitiInstExportCsv">
+		<property name="utilService" ref="utilService"/>
+		<property name="fileName">
+	       <value>Export.csv</value>
+		</property>
+	</bean>
+ 
+	<bean id="esportaVerificaRequisitiToCsvViewResolver" class="it.tredi.auac.RequisitiInstVerificaExportCsv">
+		<property name="utilService" ref="utilService"/>
+		<property name="fileName">
+	       <value>Esportazione Verifica.csv</value>
+		</property>
+	</bean>
+	
+	<bean id="esportaDomandeRegioneToCsvViewResolver" class="it.tredi.auac.DomandeRegioneExportCsv">
+		<property name="utilService" ref="utilService"/>
+		<property name="fileName">
+	       <value>ExportDomandeRegione.csv</value>
+		</property>
+	</bean>
+
+	<bean id="checkTipoUdo22DomandaToCsvViewResolver" class="it.tredi.auac.CheckTipoUdo22DomandaExportCsv">
+		<property name="fileName">
+	       <value>Controllo completezza Udo.csv</value>
+		</property>
+	</bean>
+	
+	<bean id="checkControlloPostiLettoExportCsvViewResolver" class="it.tredi.auac.CheckControlloPostiLettoExportCsv">
+		<property name="fileName">
+	       <value>Controllo Posti.csv</value>
+		</property>
+	</bean>
+	
+	<bean id="checkReportValutazioneRGViewResolver" class="it.tredi.auac.ReportValutazioneRGExportCsv">
+		<property name="utilService" ref="utilService"/>
+		<property name="fileName">
+	       <value>Report Valutazione RG.csv</value>
+		</property>
+	</bean>
+	
+	<bean id="checkReportVerificaRGViewResolver" class="it.tredi.auac.ReportVerificaRGExportCsv">
+		<property name="utilService" ref="utilService"/>
+		<property name="fileName">
+	       <value>Report Verifica RG.csv</value>
+		</property>
+	</bean>
+	
+	<bean id="reportVerificaUdoExportCsvViewResolver" class="it.tredi.auac.ReportVerificaUdoExportCsv">
+	  <property name="fileName">
+	        <value>Report Verifica Udo.csv</value>
+	  </property>
+ 	</bean>
+	
+	<bean id="checkReportValutazioneUdoViewResolver" class="it.tredi.auac.ReportValutazioneUdoExportCsv">
+		<property name="fileName">
+	       <value>Report Valutazione Udo.csv</value>
+		</property>
+	</bean>
+	
+	<bean id="reportValutazioneAreaCsvViewResolver" class="it.tredi.auac.ReportValutazioneAreaExportCsv">
+		<property name="utilService" ref="utilService"/>
+		<property name="fileName">
+	       <value>Report Valutazione Area.csv</value>
+		</property>
+	</bean>
+	
+	<bean id="reportVerificaAreaCsvViewResolver" class="it.tredi.auac.ReportVerificaAreaExportCsv">
+		<property name="utilService" ref="utilService"/>
+		<property name="fileName">
+	       <value>Report Verifica Area.csv</value>
+		</property>
+	</bean>
+	
+	<bean id="reportValutazioneComplessivaCsvViewResolver" class="it.tredi.auac.ReportValutazioneComplessivaExportCsv">
+		<property name="fileName">
+	       <value>Report Valutazione Complessiva.csv</value>
+		</property>
+	</bean>
+	
+	<bean id="reportVerificaComplessivaCsvViewResolver" class="it.tredi.auac.ReportVerificaComplessivaExportCsv">
+		<property name="fileName">
+	       <value>Report Verifica Complessiva.csv</value>
+		</property>
+	</bean>
+
+	<bean id="esportaUdoDomandaToCsvViewResolver" class="it.tredi.auac.UdoDomandaExportCsv">
+		<property name="fileName">
+	       <value>Udo Domanda.csv</value>
+		</property>
+	</bean>
+
+	<bean id="esportaUdoDomandaCompareToCsvViewResolver" class="it.tredi.auac.UdoDomandaCompareExportCsv">
+		<property name="fileName">
+	       <value>Confronto Udo Domanda.csv</value>
+		</property>
+	</bean>
+
+	<bean id="esportaUdoCompareToCsvViewResolver" class="it.tredi.auac.UdoModelCompareExportCsv">
+		<property name="fileName">
+	       <value>Confronto Udo.csv</value>
+		</property>
+	</bean>
+
+	<bean id="esportaDomandaToPdfViewResolver" class="it.tredi.auac.DomandaExportPdf">
+		<property name="utilService" ref="utilService"/>
+		<property name="fileName">
+	       <value>Export.pdf</value>
+		</property>
+	</bean>
+
+	<bean id="esportaVerificaDomandaToPdfViewResolver" class="it.tredi.auac.DomandaVerificaExportPdf">
+		<property name="utilService" ref="utilService"/>
+		<property name="fileName">
+	       <value>Verifica domanda.pdf</value>
+		</property>
+	</bean>
+
+	<bean id="esportaRapportoDiVerificaViewResolver" class="it.tredi.auac.DomandaRapportoVerificaExportPdf">
+		<property name="utilService" ref="utilService"/>
+		<property name="fileName">
+	       <value>Rapporto verifica domanda.pdf</value>
+		</property>
+	</bean>
+
+	<bean id="esportaListaVerificaToPdfViewResolver" class="it.tredi.auac.ListeVerificaExportPdf">
+		<property name="fileName">
+	       <value>Lista verifica.pdf</value>
+		</property>
+	</bean>
+
+	<bean id="esportaCsvReportIstruttoriaUdoViewResolver" class="it.tredi.auac.CsvReportIstruttoriaUdo">
+		<property name="fileName">
+	       <value>Report Istruttoria Udo Domanda.csv</value>
+		</property>
+	</bean>
+
+	<bean id="esportaRelazioneConclusivaViewResolver" class="it.tredi.auac.RelazioneConclusivaTxt">
+		<property name="fileName">
+	       <value>Relazione conclusiva Domanda.txt</value>
+		</property>
+	</bean>
+	
+	<bean id="esportaSpecchiettoPdfViewResolver" class="it.tredi.auac.SpecchiettoPostiLettoExportPdf">
+		<property name="utilService" ref="utilService"/>
+		<property name="fileName">
+	       <value>Specchietto.pdf</value>
+		</property>
+	</bean>
+	
+	<bean id="esportaSpecchiettoCsvViewResolver" class="it.tredi.auac.SpecchiettoPostiLettoExportCsv">
+		<property name="utilService" ref="utilService"/>
+		<property name="fileName">
+	       <value>Specchietto.csv</value>
+		</property>
+	</bean>
+</beans>
+

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.springframework.org/schema/webflow http://www.springframework.org/schema/webflow/spring-webflow-2.0.xsd"
+        abstract="true">
+
+	<view-state id="exception" view="exception" popup="true"/>
+	
+	<!-- fare override se si desidera un comportamento più raffinato: 
+	questo default permette di inserire in tutti i flow e sottoflow il pulsante home senza doversi preoccupare dell'esistenza dello stato home -->
+	<view-state id="home" view="externalRedirect:/main.flow"/> 
+	
+	<end-state id="finish"/> 
+	
+	<view-state id="redirectcas" view="externalRedirect:#{commonService.casLogoutUrl}"> 
+	<on-entry>
+       	<evaluate expression="loginService.doLogoutCas(externalContext)" />
+	</on-entry>
+	</view-state>
+	
+	<global-transitions>
+        <transition on-exception="java.lang.Exception" to="exception">
+			<render fragments="[//div[@id='errorDialog']]"></render>        
+        	<evaluate expression="commonService.printExceptionMessage(flowExecutionException)" result="flashScope.exceptionMessage"/>
+        	<evaluate expression="commonService.printExceptionStackTrace(flowExecutionException)" result="flashScope.exceptionStackTrace"/>
+        </transition>
+        <transition on="home" to="home">
+        </transition>        
+        <!-- transition on="logout" to="finish">
+        	<evaluate expression="loginService.doLogout(externalContext)" />
+        </transition -->  
+        <transition on="logout" to="redirectcas">
+        </transition>  
+    </global-transitions>
+
+</flow>

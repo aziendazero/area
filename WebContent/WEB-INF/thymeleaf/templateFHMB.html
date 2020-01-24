@@ -1,0 +1,67 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:js="http://www.3di.it/thymeleaf/springJsDecorator" 
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+	<head>
+		<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+	    <title>Sanità Regione Veneto - Autorizzazione e Accreditamento</title>
+	   
+	   	<link th:substituteby="common :: dojo"/>
+	   	<link th:substituteby="common :: spring-js"/>
+	   	<link th:substituteby="common :: spring-js-decorator"/>
+	   	
+		<script th:if="${theCommonService.abilitaPerformanceMonitor()}">window['adrum-start-time'] = new Date().getTime();</script>
+		<script type="text/javascript" th:if="${theCommonService.abilitaPerformanceMonitor()}" th:src="@{/resources/js/adrum.js}"></script>		
+	   	<!-- Page custom JS -->
+		<script type="text/javascript" th:src="@{/resources/js/custom.js}"></script>
+
+		<!-- Page custom CSS -->
+	    <link rel="stylesheet" type="text/css" th:href="@{/resources/css/rd3.css}"/>
+	    <link rel="stylesheet" type="text/css" th:href="@{/resources/css/custom.css}"/>   
+	</head>
+
+  	<body class="claro">
+
+		<!-- popup error dialog per richieste non ajax -->
+		<div th:substituteby="exception :: errorDialog"></div>
+
+		<div id="wep">
+			<div class="header-container" id="header-container">
+				
+				<!-- ******************** HEADER ******************** -->
+				<div layout:fragment="header">HEADER</div>
+				<!-- ************************************************ -->
+				
+			</div>
+			<div style="top: 31px; left: 0px;" id="forms-container">
+				<div  class="form-container">
+					
+					<div class="Floats_holder">
+						
+						<!-- ******************** MENU ******************** -->	
+						<div layout:fragment="menu">MENU</div>
+						<!-- ********************************************** -->
+						
+						<!-- ******************** BODY ******************** -->
+						<div layout:fragment="body">BODY</div>
+						<!-- ********************************************** -->
+
+					</div> <!-- Floats_holder -->
+
+					<br/>
+
+ 				</div> <!-- form-container -->
+ 				
+			</div> <!-- forms-container -->
+			
+		</div> <!-- wep -->
+		
+		<!-- gif animata per evidenza di caricamento ajax e blocco dell'interattività sulla pagina -->
+		<div th:substituteby="common :: waitmsg"></div>		
+		
+		<!-- ******************** FOOTER ******************** -->
+		<div layout:fragment="footer">FOOTER</div>
+		<!-- ************************************************ -->
+		
+	</body>
+</html>

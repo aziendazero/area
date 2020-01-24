@@ -1,0 +1,1075 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:js="http://www.3di.it/thymeleaf/springJsDecorator"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="templateFHMBWithForm">
+
+<head>
+<title>Autovalutazione</title>
+
+<!-- CSS per layout con menu -->
+<link th:substituteby="common :: menuCSS" />
+
+<style type="text/css">
+.claro .overrideSelectWidth .dijitSelectLabel {
+    width: 110px;
+    overflow: hidden;
+}
+.claro .overrideSelectWidthTipReq .dijitSelectLabel {
+    width: 60px;
+    overflow: hidden;
+}
+</style>
+
+</head>
+
+<body class="claro">
+	<div layout:fragment="header" th:remove="tag">
+		<div th:substituteby="common :: defaultHeader"></div>
+	</div>
+
+	<div layout:fragment="menu" th:remove="tag">
+		<th:block th:with="hasVerifToSave=${theAclService.userCanSaveVerifiche(userBean,pageBean)}">
+	
+		<div id="dummyDiv"></div>
+
+		<div class="sidebar_holder">
+			<div class="menu-container sidebar-left">
+				<!-- risposta Si/No massiva -->
+				<div th:remove="tag" th:if="${theAclService.userCanEditDomanda(userBean.ruolo,pageBean.domandaStato)}">
+					<div style="margin-top:5px;" class="frame-toolbar-container">
+						<span class="panel-toolbar-zone"> <span
+							class="frame-toolbar-caption">Rispondi a tutti i selezionati</span>
+						</span>
+					</div>
+					<table class="lista" style="width:100%;">
+						<tbody>
+							<tr>
+								<td style="text-align:center;border-right:0px solid white;">
+					  				<select th:field="*{valutazioneAll}" js:widget="widgetType:'dijit.form.Select'" style="width:80px;">
+										<option value="">--------------</option>
+									  	<option th:each="type : ${T(it.tredi.auac.ValutazioneTipoSiNoEnum).values()}" th:value="${type.key}" th:text="#{__${type.value}__}"></option>
+									</select>
+								</td>
+								<td style="text-align:center;border-left:0px solid white;">							
+									<input
+										js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Applica'}"
+										js:ajax="formId:'form',event:'onClick',params:{_eventId:'applicaValutazioneAll'}"
+										id="applicaValutazioneAllButton" name="_eventId_applicaValutazioneAll" value="Applica" type="submit" />											
+								</td>
+							</tr>
+							<tr>
+								<td style="text-align:center;" colspan="2">*L'operazione ha effetto solamente per requisiti di tipo 'Si/No'</td>
+							</tr>					
+						</tbody>
+					</table>
+				</div>
+
+				<!-- verifica Si/No massiva -->
+				<div th:remove="tag" th:if="${hasVerifToSave}">
+					<div style="margin-top:5px;" class="frame-toolbar-container">
+						<span class="panel-toolbar-zone"> <span
+							class="frame-toolbar-caption">Rispondi a tutti i selezionati</span>
+						</span>
+					</div>
+					<table class="lista" style="width:100%;">
+						<tbody>
+							<tr>
+								<td style="text-align:center;border-right:0px solid white;">
+					  				<select th:field="*{valutazioneAll}" js:widget="widgetType:'dijit.form.Select'" style="width:80px;">
+										<option value="">--------------</option>
+									  	<option th:each="type : ${T(it.tredi.auac.ValutazioneVerificatoreTipoSiNoEnum).values()}" th:value="${type.key}" th:text="#{__${type.value}__}"></option>
+									</select>
+								</td>
+								<td style="text-align:center;border-left:0px solid white;">							
+									<input
+										js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Applica'}"
+										js:ajax="formId:'form',event:'onClick',params:{_eventId:'applicaVerificaAll'}"
+										id="applicaVerificaAllButton" name="_eventId_applicaVerificaAll" value="Applica" type="submit" />											
+								</td>
+							</tr>
+							<tr>
+								<td style="text-align:center;" colspan="2">*L'operazione ha effetto solamente per requisiti di tipo 'Si/No'</td>
+							</tr>					
+						</tbody>
+					</table>
+				</div>
+
+				<!-- risposta Soglia massiva -->
+				<div th:remove="tag" th:if="${theAclService.userCanEditDomanda(userBean.ruolo,pageBean.domandaStato)}">
+					<div style="margin-top:5px;" class="frame-toolbar-container">
+						<span class="panel-toolbar-zone"> <span
+							class="frame-toolbar-caption">Rispondi a tutti i selezionati</span>
+						</span>
+					</div>
+					<table class="lista" style="width:100%;">
+						<tbody>
+							<tr>
+								<td style="text-align:center;border-right:0px solid white;">
+					  				<select th:field="*{valutazioneSogliaAll}" js:widget="widgetType:'dijit.form.Select'" style="width:80px;">
+										<option value="">--------------</option>
+									  	<option th:each="type : ${T(it.tredi.auac.ValutazioneTipoSogliaEnum).values()}" th:value="${type.key}" th:text="#{__${type.value}__}"></option>
+									</select>
+								</td>
+								<td style="text-align:center;border-left:0px solid white;">							
+									<input
+										js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Applica'}"
+										js:ajax="formId:'form',event:'onClick',params:{_eventId:'applicaValutazioneSogliaAll'}"
+										id="applicaValutazioneSogliaAllButton" name="_eventId_applicaValutazioneSogliaAll" value="Applica" type="submit" />											
+								</td>
+							</tr>
+							<tr>
+								<td style="text-align:center;" colspan="2">*L'operazione ha effetto solamente per requisiti di tipo 'Soglia'</td>
+							</tr>					
+						</tbody>
+					</table>
+				</div>
+
+				<!-- verifica Soglia massiva -->
+				<div th:remove="tag" th:if="${hasVerifToSave}">
+					<div style="margin-top:5px;" class="frame-toolbar-container">
+						<span class="panel-toolbar-zone"> <span
+							class="frame-toolbar-caption">Rispondi a tutti i selezionati</span>
+						</span>
+					</div>
+					<table class="lista" style="width:100%;">
+						<tbody>
+							<tr>
+								<td style="text-align:center;border-right:0px solid white;">
+					  				<select th:field="*{valutazioneSogliaAll}" js:widget="widgetType:'dijit.form.Select'" style="width:80px;">
+										<option value="">--------------</option>
+									  	<option th:each="type : ${T(it.tredi.auac.ValutazioneVerificatoreTipoSogliaEnum).values()}" th:value="${type.key}" th:text="#{__${type.value}__}"></option>
+									</select>
+								</td>
+								<td style="text-align:center;border-left:0px solid white;">							
+									<input
+										js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Applica'}"
+										js:ajax="formId:'form',event:'onClick',params:{_eventId:'applicaVerificaSogliaAll'}"
+										id="applicaVerificaSogliaAllButton" name="_eventId_applicaVerificaSogliaAll" value="Applica" type="submit" />											
+								</td>
+							</tr>
+							<tr>
+								<td style="text-align:center;" colspan="2">*L'operazione ha effetto solamente per requisiti di tipo 'Soglia'</td>
+							</tr>					
+						</tbody>
+					</table>
+				</div>
+
+				<!-- ricerca -->
+				<div th:remove="tag" >
+					<div style="margin-top:20px;" class="frame-toolbar-container">
+						<span class="panel-toolbar-zone"> <span
+							class="frame-toolbar-caption">Filtra</span>
+						</span>
+					</div>
+					<table class="lista" style="width:100%;">
+						<tbody>
+							<tr>
+								<td class="listTableHeader">Id univoco REQ</td>
+								<td style="text-align:center;">
+									<input th:field="*{requisitoSearchBean.subStringIdUnivocoReq}" style="width: 100%;"
+										id="idIdUnivocoReq" js:widget="widgetType:'dijit.form.TextBox'" type="text" />
+								</td>
+							</tr>
+
+							<tr>
+								<td class="listTableHeader">Tipo requisito</td>
+								<td style="text-align:center;" class="overrideSelectWidthTipReq">
+					  				<select th:field="*{requisitoSearchBean.subStringTipoReq}" js:widget="widgetType:'dijit.form.Select',widgetAttrs:{forceWidth:true}" style="width: 80px;">
+										<option value="">--------------</option>
+									  	<option value="generale$">generale</option>
+									  	<option value="specifico$funzionale">specifico - funzionale</option>
+									  	<option value="specifico$tecnologico">specifico - tecnologico</option>
+									  	<option value="specifico$organizzativo">specifico - organizzativo</option>
+									  	<option value="specifico$strutturale">specifico - strutturale</option>
+									  	<option value="specifico$impiantistico">specifico - impiantistico</option>
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<td class="listTableHeader">Testo requisito</td>
+								<td style="text-align:center;">
+									<input th:field="*{requisitoSearchBean.subStringTestoReq}" style="width: 100%;"
+										id="idTestoReq" js:widget="widgetType:'dijit.form.TextBox'" type="text" />
+								</td>
+							</tr>
+							
+							<tr th:if="${userBean.COLLABORATORE_VALUTAZIONE} or *{searchAllRequisiti}">
+								<td class="listTableHeader">Denominazione UO/UDO/ST</td>
+								<td style="text-align:center;">
+									<input th:field="*{requisitoSearchBean.subStringDenominazione}" style="width: 100%;"
+										id="idDenominazioneUoUdoReq" js:widget="widgetType:'dijit.form.TextBox'" type="text" />
+								</td>
+							</tr>
+							
+							<tr th:if="${userBean.COLLABORATORE_VALUTAZIONE} or *{searchAllRequisiti}">
+								<td class="listTableHeader">Tipologia UDO</td>
+								<td style="text-align:center;">
+									<input th:field="*{requisitoSearchBean.subStringTipologiaUDO}" style="width: 100%;"
+										id="idTipologiaUDOReq" js:widget="widgetType:'dijit.form.TextBox'" type="text" />
+								</td>
+							</tr>
+							
+							<tr th:if="${userBean.COLLABORATORE_VALUTAZIONE} or *{searchAllRequisiti}">
+								<td class="listTableHeader">Edificio</td>
+								<td style="text-align:center;">
+									<input th:field="*{requisitoSearchBean.subStringStabilimento}" style="width: 100%;"
+										id="idStabilimentoUoUdoReq" js:widget="widgetType:'dijit.form.TextBox'" type="text" />
+								</td>
+							</tr>
+							<tr th:if="${userBean.COLLABORATORE_VALUTAZIONE} or *{searchAllRequisiti}">
+								<td class="listTableHeader">Blocco</td>
+								<td style="text-align:center;">
+									<input th:field="*{requisitoSearchBean.subStringBlocco}" style="width: 100%;"
+										id="idBloccoUoUdoReq" js:widget="widgetType:'dijit.form.TextBox'" type="text" />
+								</td>
+							</tr>
+							<tr th:if="${userBean.COLLABORATORE_VALUTAZIONE} or *{searchAllRequisiti}">
+								<td class="listTableHeader">Piano</td>
+								<td style="text-align:center;">
+									<input th:field="*{requisitoSearchBean.subStringPiano}" style="width: 100%;"
+										id="idPianoUoUdoReq" js:widget="widgetType:'dijit.form.TextBox'" type="text" />
+								</td>
+							</tr>
+							<tr th:if="${userBean.COLLABORATORE_VALUTAZIONE} or *{searchAllRequisiti}">
+								<td class="listTableHeader">Progressivo</td>
+								<td style="text-align:center;">
+									<input th:field="*{requisitoSearchBean.subStringProgressivo}" style="width: 100%;"
+										id="idProgressivoUoUdoReq" js:widget="widgetType:'dijit.form.TextBox'" type="text" />
+								</td>
+							</tr>
+							<tr th:if="${userBean.COLLABORATORE_VALUTAZIONE} or *{searchAllRequisiti}">
+								<td class="listTableHeader">Sede Operativa</td>
+								<td style="text-align:center;">
+									<input th:field="*{requisitoSearchBean.subStringSedeOperativa}" style="width: 100%;"
+										id="idSedeOperativaUoUdoReq" js:widget="widgetType:'dijit.form.TextBox'" type="text" />
+								</td>
+							</tr>
+							
+							<tr th:if="${!userBean.COLLABORATORE_VALUTAZIONE}">
+								<td class="listTableHeader">Assegnazione</td>
+								<td style="text-align:center;">
+									<input th:field="*{requisitoSearchBean.subStringAssegnazioneReq}" style="width: 100%;"
+										id="idAssegnazioneReq" js:widget="widgetType:'dijit.form.TextBox'" type="text" />
+								</td>
+							</tr>						
+							<tr>
+								<td class="listTableHeader">Autovalutazione</td>
+								<td style="text-align:center;">
+									<input th:field="*{requisitoSearchBean.subStringAutovalutazioneReq}" style="width: 100%;"
+										id="idAutovalutazioneReq" js:widget="widgetType:'dijit.form.TextBox'" type="text" />
+								</td>
+							</tr>						
+							<tr>
+								<td class="listTableHeader">Note</td>
+								<td style="text-align:center;">
+									<input th:field="*{requisitoSearchBean.subStringNoteReq}" style="width: 100%;"
+										id="idNoteReq" js:widget="widgetType:'dijit.form.TextBox'" type="text" />
+								</td>
+							</tr>						
+
+							<tr>
+								<td class="listTableHeader">Verificatore</td>
+								<td style="text-align:center;">
+									<input th:field="*{requisitoSearchBean.subStringVerificatoreReq}" style="width: 100%;"
+										id="idVerificatoreReq" js:widget="widgetType:'dijit.form.TextBox'" type="text" />
+								</td>
+							</tr>
+							<tr>
+								<td class="listTableHeader">Valutazione Verificatore</td>
+								<td style="text-align:center;">
+									<input th:field="*{requisitoSearchBean.subStringValutazioneVerificatoreReq}" style="width: 100%;"
+										id="idValutazioneVerificatoreReq" js:widget="widgetType:'dijit.form.TextBox'" type="text" />
+								</td>
+							</tr>
+							<tr>
+								<td class="listTableHeader">Note Verificatore</td>
+								<td style="text-align:center;">
+									<input th:field="*{requisitoSearchBean.subStringNoteVerificatoreReq}" style="width: 100%;"
+										id="idNoteVerificatoreReq" js:widget="widgetType:'dijit.form.TextBox'" type="text" />
+								</td>
+							</tr>
+							
+							<tr>
+								<td class="listTableHeader">Senza risposta</td>
+								<td style="text-align:center;">
+									<input type="checkbox" 
+										th:field="*{requisitoSearchBean.senzaValutazione}" 
+										id="idreqsenzaAutoVal"
+										js:widget="widgetType:'dijit.form.CheckBox',widgetAttrs:{}" />
+								</td>
+							</tr>
+							<tr>
+								<td class="listTableHeader">Non assegnati</td>
+								<td style="text-align:center;">
+									<input type="checkbox" 
+										th:field="*{requisitoSearchBean.nonAssegnati}" 
+										id="idreqNonAssegnati"
+										js:widget="widgetType:'dijit.form.CheckBox',widgetAttrs:{}" />
+								</td>
+							</tr>
+							
+							<tr>
+								<td class="listTableHeader">Senza risposta verificatore</td>
+								<td style="text-align:center;">
+									<input type="checkbox" 
+										th:field="*{requisitoSearchBean.senzaVerifica}" 
+										id="idreqsenzaVer"
+										js:widget="widgetType:'dijit.form.CheckBox',widgetAttrs:{}" />
+								</td>
+							</tr>
+							<tr>
+								<td class="listTableHeader">Non assegnati verifica</td>
+								<td style="text-align:center;">
+									<input type="checkbox" 
+										th:field="*{requisitoSearchBean.nonAssegnatiVerifica}" 
+										id="idreqNonAssegnatiVer"
+										js:widget="widgetType:'dijit.form.CheckBox',widgetAttrs:{}" />
+								</td>
+							</tr>
+
+							<tr>
+								<td colspan="2" style="text-align:center;">							
+									<input
+										js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Applica filtri'}"
+										js:ajax="formId:'form',event:'onClick',params:{_eventId:'filtraRequisiti'}"
+										id="filtraRequisitiButton" name="_eventId_filtraRequisiti" value="Applica filtri" type="submit" />
+									<input
+										js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Pulisci'}"
+										js:ajax="formId:'form',event:'onClick',params:{_eventId:'rimuoviFiltroRequisiti'}"
+										id="rimuoviFiltroRequisitiButton"
+										name="_eventId_rimuoviFiltroRequisiti" value="Pulisci" type="submit" />											
+
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<!-- assegnazione massiva -->
+				<div th:remove="tag" th:if="${theAclService.userCanEditDomanda(userBean.ruolo,pageBean.domandaStato)}">
+					<div style="margin-top:20px;" class="frame-toolbar-container">
+						<span class="panel-toolbar-zone"> <span
+							class="frame-toolbar-caption">Assegna tutti i selezionati</span>
+						</span>
+					</div>
+					<table class="lista" style="width:100%;">
+						<tbody>
+							<tr>
+								<td class="listTableHeader">UO</td>
+								<td style="text-align:center;" class="overrideSelectWidth">
+					  				<select th:field="*{uoSelected}" js:widget="widgetType:'dijit.form.Select',widgetAttrs:{forceWidth:true,onChange:function(b){Spring.remoting.submitForm('','form',{_eventId:'updatePersonaL'});}}" style="width:140px;">
+										<option value="">------------------------------</option>
+										<option th:each="uo:*{uoL}" th:value="${uo.id.clientid}" th:text="${uo.denominazioneConId}"></option>
+									</select>							
+								</td>
+							</tr>
+							<tr>
+								<td class="listTableHeader">Persona</td>
+								<td style="text-align:center;" class="overrideSelectWidth">
+					  				<select th:field="*{personaSelected}" js:widget="widgetType:'dijit.form.Select'" style="width:140px;">
+										<option value="">------------------------------</option>
+										<option th:each="persona:*{personaL}"  th:value="${persona.utenteModelClientid}" th:text="${persona.cognomeNome}"></option>
+									</select>
+								</td>
+							</tr>						
+							<tr>
+								<td colspan="2" style="text-align:center;">							
+									<input
+										js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Applica'}"
+										js:ajax="formId:'form',event:'onClick',params:{_eventId:'assegnaRequisitoAll'}"
+										id="assegnaRequisitoAllButton" name="_eventId_assegnaRequisitoAll" value="Applica" type="submit" />											
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				
+				<!-- assegnazione verifica massiva -->
+				<div th:remove="tag" th:if="${theAclService.userCanAssegnareVerificaDomanda(userBean,pageBean.domandaStato,pageBean.verificatoreTeamLeader)}">
+					<div style="margin-top:20px;" class="frame-toolbar-container">
+						<span class="panel-toolbar-zone"> <span
+							class="frame-toolbar-caption">Assegna verifica ai selezionati</span>
+						</span>
+					</div>
+					<table class="lista" style="width:100%;">
+						<tbody>
+							<tr>
+								<td class="listTableHeader">Persona</td>
+								<td style="text-align:center;" class="overrideSelectWidth">
+					  				<select th:field="*{personaSelected}" js:widget="widgetType:'dijit.form.Select'" style="width:140px;">
+										<option value="">------------------------------</option>
+										<option th:each="utenteModel:*{teamVerificatori}"  th:value="${utenteModel.clientid}" th:text="${utenteModel.anagraficaUtenteModel.cognomeNome}"></option>
+									</select>
+								</td>
+							</tr>						
+							<tr>
+								<td colspan="2" style="text-align:center;">							
+									<input
+										js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Applica'}"
+										js:ajax="formId:'form',event:'onClick',params:{_eventId:'assegnaVerificaRequisitoAll'}"
+										id="assegnaVerificaRequisitoAllButton" name="_eventId_assegnaVerificaRequisitoAll" value="Applica" type="submit" />											
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<!-- copia/incolla note/evidenze -->
+				<div id="copyPasteNoteEvidenzeDiv">
+					<th:block th:if="${theAclService.userCanEditDomanda(userBean.ruolo,pageBean.domandaStato)}">
+						<div style="margin-top:20px;" class="frame-toolbar-container">
+							<span class="panel-toolbar-zone"> <span
+								class="frame-toolbar-caption">Copia/Incolla Note/Evidenze</span>
+							</span>
+						</div>
+						<table class="lista" style="width:100%;">
+							<tbody>					
+								<tr>
+									<td>	 
+										<input type="checkbox" js:widget="widgetType:'dijit.form.CheckBox',widgetAttrs:{}" th:field="*{neamNoteChecked}"
+											js:ajax="formId:'form',event:'onChange',params:{_eventId:'refreshCopyPasteNoteEvidenzeDiv'}"/>Note
+									</td>
+									<td>
+										<input type="checkbox" js:widget="widgetType:'dijit.form.CheckBox',widgetAttrs:{}" th:field="*{neamEvidenzeChecked}"
+											js:ajax="formId:'form',event:'onChange',params:{_eventId:'refreshCopyPasteNoteEvidenzeDiv'}"/>Evidenze
+									</td>
+								</tr>
+								<tr>
+									<td colspan="2" style="text-align:center;">							
+									<div th:if="*{!(neamNoteChecked or neamEvidenzeChecked)}">Selezionare almeno una opzione di copia: Note e/o Evidenze</div>
+										<div th:if="*{neamNoteChecked or neamEvidenzeChecked}">							
+											<div th:if="*{copiedRequisitoInst eq null}">Copiare un requisito dall'elenco tramite l'apposito pulsante <img style="vertical-align:bottom;height:16px;" border="0" src="images/copy.gif" /></div>	
+											<div th:if="*{copiedRequisitoInst ne null}">Copiate Note/Evidenze del requisito: <span style="font-weight:bold;" th:text="*{copiedRequisitoInst.requisitoTempl.nome}">Id Univoco REQ</span></div>
+											<div style="margin-top:5px;" th:if="*{copiedRequisitoInst ne null}">Selezionare i requisiti dall'elenco e premere il pulsante Incolla</div>
+											<div style="margin-top:5px;" th:if="*{copiedRequisitoInst ne null}">
+												<input
+													th:if="*{!#maps.isEmpty(checkM)}"
+													js:confirm="event:'onclick',message:'#{crud.confirm}'"
+													js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Incolla'}"
+													js:ajax="formId:'form',event:'onClick',params:{_eventId:'pasteNoteEvidenze'}"
+													id="incollaNoteEvidenze" name="_eventId_pasteNoteEvidenze"
+													value="Incolla" type="submit" />
+											</div>
+										</div>									
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</th:block>
+				</div>
+				
+
+				<!-- copia/incolla note verificatore -->
+				<div id="copyPasteNoteVerifDiv">
+					<th:block th:if="${hasVerifToSave}">
+						<div style="margin-top:20px;" class="frame-toolbar-container">
+							<span class="panel-toolbar-zone"> <span
+								class="frame-toolbar-caption">Copia/Incolla Note Verificatore</span>
+							</span>
+						</div>
+						<table class="lista" style="width:100%;">
+							<tbody>					
+								<tr>
+									<td style="text-align:center;">							
+										<div>							
+											<div th:if="*{copiedRequisitoInst eq null}">Copiare un requisito dall'elenco tramite l'apposito pulsante <img style="vertical-align:bottom;height:16px;" border="0" src="images/copy.gif" /></div>	
+											<div th:if="*{copiedRequisitoInst ne null}">Copiate Note Verificatore del requisito: <span style="font-weight:bold;" th:text="*{copiedRequisitoInst.requisitoTempl.nome}">Id Univoco REQ</span></div>
+											<div style="margin-top:5px;" th:if="*{copiedRequisitoInst ne null}">Selezionare i requisiti dall'elenco e premere il pulsante Incolla</div>
+											<div style="margin-top:5px;" th:if="*{copiedRequisitoInst ne null}">
+												<input
+													th:if="*{!#maps.isEmpty(checkM)}"
+													js:confirm="event:'onclick',message:'#{crud.confirm}'"
+													js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Incolla'}"
+													js:ajax="formId:'form',event:'onClick',params:{_eventId:'pasteNoteVerif'}"
+													id="incollaNoteVerif" name="_eventId_pasteNoteVerif"
+													value="Incolla" type="submit" />
+											</div>
+										</div>									
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</th:block>
+				</div>				
+
+				<br/>
+
+				<!-- pulsantiera COLLABORATORE_VALUTAZIONE -->
+				<div style="width:100%;text-align:center;" th:if="${userBean.COLLABORATORE_VALUTAZIONE}">
+					<input th:if="${theAclService.userCanEditDomanda(userBean.ruolo,pageBean.domandaStato)}"
+						title="Permette di salvare le modifiche effettuate sulla pagina di autovalutazione, rimanendo sulla stessa"
+						js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Salva'}"
+						js:ajax="formId:'form',event:'onClick',params:{_eventId:'save'}"
+						id="saveButton" name="_eventId_save" value="Salva" type="submit" />
+					<input th:if="${theAclService.userCanEditDomanda(userBean.ruolo,pageBean.domandaStato)}"
+						title="Permette di salvare le modifiche effettuate sulla pagina di autovalutazione, tornando alla lista fascicoli"
+						js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Salva e torna'}"
+						js:ajax="formId:'form',event:'onClick',params:{_eventId:'saveTornaHome'}"
+						id="saveTornaButton" name="_eventId_saveTorna" value="Salva e torna" type="submit" />							
+					<input title="Permette di tornare direttamente alla lista fascicoli, senza effettuare salvataggi sulla pagina di autovalutazione"
+						js:confirm="event:'onClick',message:'Tornare alla lista fascicoli?'"
+						js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Torna'}"
+						js:ajax="formId:'form',event:'onClick',params:{_eventId:'home'}"
+						id="tornaButton" name="_eventId_showFolder" value="Torna" type="submit" />
+				</div>				
+
+				<!-- pulsantiera utente non COLLABORATORE_VALUTAZIONE -->
+				<div style="width:100%;text-align:center;" th:if="${!userBean.COLLABORATORE_VALUTAZIONE}">
+					<input th:if="${theAclService.userCanEditDomanda(userBean.ruolo,pageBean.domandaStato)}"
+						title="Permette di salvare le modifiche effettuate sulla pagina di autovalutazione, rimanendo sulla stessa"
+						js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Salva'}"
+						js:ajax="formId:'form',event:'onClick',params:{_eventId:'save'}"
+						id="saveButton" name="_eventId_save" value="Salva" type="submit" />
+					<input th:if="${theAclService.userCanEditDomanda(userBean.ruolo,pageBean.domandaStato)}"
+						title="Permette di salvare le modifiche effettuate sulla pagina di autovalutazione, tornando alla domanda"
+						js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Salva e torna'}"
+						js:ajax="formId:'form',event:'onClick',params:{_eventId:'saveTorna'}"
+						id="saveTornaButton" name="_eventId_saveTorna" value="Salva e torna" type="submit" />							
+
+					<input th:if="${theAclService.userCanAssegnareVerificaDomanda(userBean,pageBean.domandaStato,pageBean.verificatoreTeamLeader)} and not ${hasVerifToSave}"
+						title="Permette di salvare le modifiche al verificatore effettuate sulla pagina di verifica autovalutazione, rimanendo sulla stessa"
+						js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Salva'}"
+						js:ajax="formId:'form',event:'onClick',params:{_eventId:'saveVerificatore'}"
+						id="saveVerificatoreButton" name="_eventId_saveVerificatore" value="Salva" type="submit" />
+					<input th:if="${theAclService.userCanAssegnareVerificaDomanda(userBean,pageBean.domandaStato,pageBean.verificatoreTeamLeader)} and not ${hasVerifToSave}"
+						title="Permette di salvare le modifiche effettuate al verificatore sulla pagina di verifica autovalutazione, tornando alla domanda"
+						js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Salva e torna'}"
+						js:ajax="formId:'form',event:'onClick',params:{_eventId:'saveVerificatoreTorna'}"
+						id="saveVerificatoreTornaButton" name="_eventId_saveVerificatoreTorna" value="Salva e torna" type="submit" />							
+
+					<input th:if="${hasVerifToSave} and not ${theAclService.userCanAssegnareVerificaDomanda(userBean,pageBean.domandaStato,pageBean.verificatoreTeamLeader)}"
+						title="Permette di salvare le modifiche effettuate alla verifica sulla pagina di verifica autovalutazione, rimanendo sulla stessa"
+						js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Salva'}"
+						js:ajax="formId:'form',event:'onClick',params:{_eventId:'saveVerifica'}"
+						id="saveVerificaButton" name="_eventId_saveVerifica" value="Salva" type="submit" />
+					<input th:if="${hasVerifToSave} and not ${theAclService.userCanAssegnareVerificaDomanda(userBean,pageBean.domandaStato,pageBean.verificatoreTeamLeader)}"
+						title="Permette di salvare le modifiche effettuate alla verifica sulla pagina di verifica autovalutazione, tornando alla domanda"
+						js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Salva e torna'}"
+						js:ajax="formId:'form',event:'onClick',params:{_eventId:'saveVerificaTorna'}"
+						id="saveVerificaTornaButton" name="_eventId_saveVerificaTorna" value="Salva e torna" type="submit" />							
+
+					<input th:if="${hasVerifToSave} and ${theAclService.userCanAssegnareVerificaDomanda(userBean,pageBean.domandaStato,pageBean.verificatoreTeamLeader)}"
+						title="Permette di salvare le modifiche effettuate al verificatore e alla verifica sulla pagina di verifica autovalutazione, rimanendo sulla stessa"
+						js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Salva'}"
+						js:ajax="formId:'form',event:'onClick',params:{_eventId:'saveVerificatoreVerifica'}"
+						id="saveVerificaButton" name="_eventId_saveVerifica" value="Salva" type="submit" />
+					<input th:if="${hasVerifToSave} and ${theAclService.userCanAssegnareVerificaDomanda(userBean,pageBean.domandaStato,pageBean.verificatoreTeamLeader)}"
+						title="Permette di salvare le modifiche effettuate al verificatore e alla verifica sulla pagina di verifica autovalutazione, tornando alla domanda"
+						js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Salva e torna'}"
+						js:ajax="formId:'form',event:'onClick',params:{_eventId:'saveVerificatoreVerificaTorna'}"
+						id="saveVerificaTornaButton" name="_eventId_saveVerificaTorna" value="Salva e torna" type="submit" />							
+
+					<input title="Permette di tornare direttamente alla domanda, senza effettuare salvataggi sulla pagina di autovalutazione"
+						js:confirm="event:'onClick',message:'Tornare alla domanda?'"
+						js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Torna'}"
+						js:ajax="formId:'form',event:'onClick',params:{_eventId:'showFolder'}"
+						id="tornaButton" name="_eventId_showFolder" value="Torna" type="submit" />
+					<input
+						js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Esporta in csv'}"
+						js:ajax="formId:'form',event:'onClick',params:{_eventId:'esportaRequisitiToCsv'}"
+						id="esportaCsvButton"
+						name="_eventId_esportaCsv" value="Esporta" type="submit" />	
+					<input th:if="${theAclService.userCanExportVerifica(pageBean.domandaStato, userBean)}"
+						js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Esporta verifica in csv'}"
+						js:ajax="formId:'form',event:'onClick',params:{_eventId:'esportaVerificaRequisitiToCsv'}"
+						id="esportaVerificaCsvButton"
+						name="_eventId_esportaVerificaCsv" value="Esporta verifica in csv" type="submit" />
+				</div>				
+
+			</div> <!-- menu-container -->
+		</div> <!-- sidebar_holder --> 
+		</th:block>
+	</div>
+
+	<div layout:fragment="body" th:remove="tag">
+		<th:block th:with="hasVerifToSave=${theAclService.userCanSaveVerifiche(userBean,pageBean)}">
+	
+		<!-- fieldset_holder -->
+		<div class="fieldset_holder">
+
+			<!-- header videata -->
+			<div class="form-caption-container">
+				<span class="form-caption-text" th:text="'Autovalutazione'">Autovalutazione</span>
+			</div>
+			
+			<div id="messages">
+				<div style="border:1px solid red;padding:10px;margin:10px 0px 10px 0px" th:if="${#fields.hasErrors('messages')}">
+					<div th:each="error:${#fields.errors('messages')}" style="margin-top:1px;"><img style="vertical-align:bottom;" border="0" src="images/mstop_sm.gif" /> <span th:text="${error}"/></div>
+				</div>
+			</div>
+		
+			<div class="form-frames-container">
+				<div class="frame-container">
+					<div class="frame-toolbar-container">
+						<span class="panel-toolbar-zone"> <span
+							style="float: right; margin-right: 20px;"
+							class="frame-toolbar-caption"> <input
+								style="border: 0px solid white; vertical-align: middle; margin-bottom: 2px;"
+								th:src="'images/pagination/first_' + *{canFirst} + '.gif'"
+								js:ajax="formId:'form',event:'onclick',params:{_eventId:'pageFirst'}"
+								id="pageFirst" type="image" /> <input
+								style="border: 0px solid white; vertical-align: middle; margin-bottom: 2px;"
+								th:src="'images/pagination/prev_' + *{canPrev} + '.gif'"
+								js:ajax="formId:'form',event:'onclick',params:{_eventId:'pagePrev'}"
+								id="procPrev" type="image" /> <span
+								style="margin: 0px 5px 0px 5px;"
+								th:text="'Pagina ' + *{pageIndex} + ' di ' + *{pageCount}">Pag
+									0 di 0</span> <input
+								style="border: 0px solid white; vertical-align: middle; margin-bottom: 2px;"
+								th:src="'images/pagination/next_' + *{canNext} + '.gif'"
+								js:ajax="formId:'form',event:'onclick',params:{_eventId:'pageNext'}"
+								id="pageNext" type="image" /> <input
+								style="border: 0px solid white; vertical-align: middle; margin-bottom: 2px;"
+								th:src="'images/pagination/last_' + *{canLast} + '.gif'"
+								js:ajax="formId:'form',event:'onclick',params:{_eventId:'pageLast'}"
+								id="pageLast" type="image" />
+							</span> 
+							<span class="frame-toolbar-caption">Lista dei Requisiti</span>
+						</span>
+					</div>
+				</div>
+			</div>			
+			<!-- form-frames-container -->
+
+			<!-- tabella delle UDO -->
+			<!-- lista holder -->
+			<div class="______DISABLED_fixed_height_scrollable_table">
+				<table class="lista" id="listaUdoTable">
+					<tbody>
+						<tr th:if="*{udoUoInst != null and udoUoInst.isUdo()}">
+							<td colspan="2" class="listTableHeader">Sede Operativa</td>
+							<td colspan="13" th:text="*{udoUoInst.denominazioneSede}"></td>
+						</tr>							
+						<tr th:if="*{udoUoInst != null and udoUoInst.isUdo()}">
+							<td colspan="2" class="listTableHeader">Unità Organizzativa</td>
+							<td colspan="13" th:if="*{udoUoInst != null and udoUoInst.isUdo()}" th:text="*{udoUoInst.unitaOrganizzativa}"></td>
+						</tr>						
+						<tr th:if="*{udoUoInst != null and udoUoInst.isUo()}">
+							<td colspan="2" class="listTableHeader">Unità Organizzativa</td>
+							<td colspan="13" th:if="*{udoUoInst != null and udoUoInst.isUo()}" th:text="*{udoUoInst.descr}"></td>
+						</tr>						
+
+						<tr th:if="*{udoUoInst != null and udoUoInst.isStruttura()}">
+							<td colspan="2" class="listTableHeader">Struttura</td>
+							<td colspan="13" th:if="*{udoUoInst != null and udoUoInst.isStruttura()}" th:text="*{udoUoInst.strutturaInst.denominazione}"></td>
+						</tr>						
+						<tr th:if="*{udoUoInst != null and udoUoInst.isEdificio()}">
+							<td colspan="2" class="listTableHeader">Edificio</td>
+							<td colspan="13" th:if="*{udoUoInst != null and udoUoInst.isEdificio()}" th:text="*{udoUoInst.edificioInst.descr}"></td>
+						</tr>						
+
+						<tr th:if="*{udoUoInst != null and udoUoInst.isRequisitiGeneraliAziendali()}">
+							<td colspan="15" th:if="*{udoUoInst != null and udoUoInst.isRequisitiGeneraliAziendali()}">Requisiti Generali Aziendali</td>
+						</tr>						
+						<tr th:if="*{udoUoInst != null and udoUoInst.isUdo()}">
+							<td colspan="2" class="listTableHeader">Unità di Offerta</td>
+							<td th:text="*{udoUoInst.codUnivocoUdo}"></td>
+							<td colspan="5" th:text="*{udoUoInst.descr}"></td>								
+							<td colspan="7" th:text="*{udoUoInst.tipoUdoTemplDescr}"></td>
+						</tr>
+						<tr th:if="*{udoUoInst != null and udoUoInst.isUdo()}">
+							<td colspan="2" class="listTableHeader">Disciplina-Ambito/Branca</td>
+							<td colspan="6">
+								<span th:each="disciplina:*{udoUoInst.disciplineUdoInstsInfo}" th:remove="tag">
+ 									<span th:remove="tag" th:if="${disciplinaStat.index} lt 5"><span th:remove="tag" th:text="${disciplina.fullDescr}"></span><span th:remove="tag" th:text="${disciplinaStat.count ne 5 and disciplinaStat.count lt disciplinaStat.size}?'; ':''"></span></span>
+ 									<span th:remove="tag" th:if="${disciplinaStat.index} eq 5">...</span>
+								</span>
+							</td>
+							<td colspan="7">
+ 								<span th:each="branca:*{udoUoInst.brancheUdoInstsInfo}" th:remove="tag">
+ 									<span th:remove="tag" th:if="${brancaStat.index} lt 5"><span th:remove="tag" th:text="${branca.codice} + ' - ' + ${branca.descr}"></span><span th:remove="tag" th:text="${brancaStat.count ne 5 and brancaStat.count lt brancaStat.size}?', ':''"></span></span>
+ 									<span th:remove="tag" th:if="${brancaStat.index} eq 5">...</span>
+								</span>		
+							</td>
+						</tr>
+						<tr th:if="*{udoUoInst != null and udoUoInst.isUdo()}">
+							<td colspan="2" class="listTableHeader">Fattori produttivi</td>
+							<td colspan="13">
+								<span th:each="fattProd:*{udoUoInst.udoInst.fattProdUdoInstsInfo}" th:remove="tag">
+ 									<span th:remove="tag" th:if="${fattProdStat.index} lt 5"><span th:remove="tag" th:text="${fattProd.fullDescr}"></span><span th:remove="tag" th:text="${fattProdStat.count ne 5 and fattProdStat.count lt fattProdStat.size}?'; ':''"></span></span>
+ 									<span th:remove="tag" th:if="${fattProdStat.index} eq 5">...</span>
+								</span>
+							</td>
+						</tr>
+						<tr th:if="*{udoUoInst != null and udoUoInst.isUdo()}">
+							<td colspan="2" class="listTableHeader">Indirizzo Interno</td>
+							<td colspan="2"><span style="font-weight:bold;color: #50503C;">Edificio: </span><span th:text="*{udoUoInst.stabilimento}"></span></td>
+							<td colspan="4"><span style="font-weight:bold;color: #50503C;">Blocco: </span><span th:text="*{udoUoInst.blocco}"></span></td>
+							<td><span style="font-weight:bold;color: #50503C;">Piano: </span><span th:text="*{udoUoInst.piano}"></span></td>
+							<td colspan="6"><span style="font-weight:bold;color: #50503C;">Progressivo: </span><span th:text="*{udoUoInst.progressivo}"></span></td>
+						</tr>							
+						<tr>
+							<td>
+								<input js:ajax="formId:'form',event:'onChange',params:{_eventId:'checkAllRequisito'}" 
+										js:widget="widgetType:'dijit.form.CheckBox',widgetAttrs:{}" type="checkbox" th:field="*{allChecked}"/>
+							</td>
+							<td class="listTableHeader">Id Univoco REQ</td>
+							<td th:colspan="${!userBean.COLLABORATORE_VALUTAZIONE} and *{searchAllRequisiti}?'2':'7'" class="listTableHeader">Testo Requisito</td>
+							<td class="listTableHeader" th:if="${userBean.COLLABORATORE_VALUTAZIONE} or *{searchAllRequisiti}">Denominazione UO/UDO/ST</td>
+							<td class="listTableHeader" th:if="${userBean.COLLABORATORE_VALUTAZIONE} or *{searchAllRequisiti}">Stab.</td>
+							<td class="listTableHeader" th:if="${userBean.COLLABORATORE_VALUTAZIONE} or *{searchAllRequisiti}">Bloc.</td>
+							<td class="listTableHeader" th:if="${userBean.COLLABORATORE_VALUTAZIONE} or *{searchAllRequisiti}">Piano</td>
+							<td class="listTableHeader" th:if="${userBean.COLLABORATORE_VALUTAZIONE} or *{searchAllRequisiti}">Prog.</td>
+							<td class="listTableHeader" th:if="${userBean.COLLABORATORE_VALUTAZIONE} or *{searchAllRequisiti}">Sede Operativa</td>
+							<td class="listTableHeader" th:if="${!userBean.COLLABORATORE_VALUTAZIONE}">Assegnazione</td>
+							<td class="listTableHeader">Risposta</td>
+							<td class="listTableHeader">Evidenze</td>
+							<td class="listTableHeader">Note</td>
+							<td class="listTableHeader">Storia</td>
+							<td class="listTableHeader">Azioni</td>
+						</tr>							
+
+						
+
+						<th:block th:each="requisitoInst:*{filteredRequisitoInstL}" th:if="${pageBean.isIndexInPage(requisitoInstStat.index)}">
+							<!--/* In caso di requisito con verifica vengono inserite 2 righe con rowspan */-->
+							<th:block th:if="${pageBean.showVerificaRow(requisitoInst)}">
+								<tr class="requisiti_table_row">
+									<!-- checkbox -->
+									<td rowspan="2">
+										<input js:widget="widgetType:'dijit.form.CheckBox',widgetAttrs:{}" type="checkbox" th:id="${#ids.seq('requisitoCheck')}"
+												js:ajax="formId:'form',event:'onChange',params:{_eventId:'checkRequisito',index:${requisitoInstStat.index}}" 
+												th:checked="*{requisitoChecked(__${requisitoInstStat.index}__)}" />
+									</td>
+									<!-- Id Univoco REQ -->
+									<td rowspan="2" th:style="${requisitoInst.requisitoTempl.tipoRisposta != null and requisitoInst.requisitoTempl.tipoRisposta.nome ne 'Titolo' and !#strings.isEmpty(requisitoInst.valutazione)}?'background-color:#36943E;color:white;'"
+											 th:text="${requisitoInst.requisitoTempl.nome}"></td>
+									<!-- Testo Requisito -->
+									<td rowspan="2" th:colspan="${!userBean.COLLABORATORE_VALUTAZIONE} and *{searchAllRequisiti}?'2':'7'" th:style="${requisitoInst.requisitoTempl.tipoRisposta != null and requisitoInst.requisitoTempl.tipoRisposta.nome eq 'Titolo'}?'font-weight:bold;'" th:text="${requisitoInst.requisitoTempl.testo}"></td>
+									<!-- 'Denominazione UO/UDO' -->
+									<td rowspan="2" style="width:120px;" th:if="${userBean.COLLABORATORE_VALUTAZIONE} or *{searchAllRequisiti}">
+										<th:block th:switch="${requisitoInst.type}"> 
+										  <span th:case="'uo'" th:text="${requisitoInst.uoInst.denominazioneConId}"></span>
+										  <a th:case="'ud'" class="anchor" 
+												js:ajax="formId:'form',event:'onclick',params:{_eventId:'showUdoInst',udoInstClientId:'${requisitoInst.udoInst.clientid}',readonly:'true'}" 
+					  							th:id="${#ids.seq('showUdoInstLink')}" th:text="${requisitoInst.udoInst.descr}"></a>
+										  <span th:case="'st'" th:text="${requisitoInst.strutturaInst.denominazione}">Struttura</span>
+										  <span th:case="'ed'" th:text="${requisitoInst.edificioInst.descr}">Edificio</span>
+										  <span th:case="*">Generale Aziendale</span> 
+										</th:block>
+									</td>
+									
+									<td rowspan="2" style="width:20px;" th:if="${userBean.COLLABORATORE_VALUTAZIONE} or *{searchAllRequisiti}" th:text="${requisitoInst.udoInst != null}?${requisitoInst.udoInst.stabilimento}:''">
+									</td>
+									<td rowspan="2" style="width:20px;" th:if="${userBean.COLLABORATORE_VALUTAZIONE} or *{searchAllRequisiti}" th:text="${requisitoInst.udoInst != null}?${requisitoInst.udoInst.blocco}:''">
+									</td>
+									<td rowspan="2" style="width:20px;" th:if="${userBean.COLLABORATORE_VALUTAZIONE} or *{searchAllRequisiti}" th:text="${requisitoInst.udoInst != null}?${requisitoInst.udoInst.piano}:''">
+									</td>
+									<td rowspan="2" style="width:20px;" th:if="${userBean.COLLABORATORE_VALUTAZIONE} or *{searchAllRequisiti}" th:text="${requisitoInst.udoInst != null}?${requisitoInst.udoInst.progressivo}:''">
+									</td>
+									<td rowspan="2" style="width:100px;" th:if="${userBean.COLLABORATORE_VALUTAZIONE} or *{searchAllRequisiti}" th:text="${requisitoInst.udoInst != null}?${requisitoInst.udoInst.denominazioneSede}:''">
+									</td>
+									<!-- 'Assegnazione' -->
+									<td style="width:120px;" th:if="${!userBean.COLLABORATORE_VALUTAZIONE}">
+										<div th:if="${requisitoInst.utenteModel}">
+											<span th:if="${requisitoInst.utenteModel.uoModel}" th:title="${requisitoInst.utenteModel.uoModel.denominazione}" style="width:120px;display:inline-block;white-space:nowrap;overflow:hidden !important;text-overflow:ellipsis;" th:text="${requisitoInst.utenteModel.uoModel.denominazione}"></span>							
+											<span th:title="${requisitoInst.utenteModel.anagraficaUtenteModel.cognome} + ' ' + ${requisitoInst.utenteModel.anagraficaUtenteModel.nome}" style="width:120px;display:inline-block;white-space:nowrap;overflow:hidden !important;text-overflow:ellipsis;" th:text="${requisitoInst.utenteModel.anagraficaUtenteModel.cognome} + ' ' + ${requisitoInst.utenteModel.anagraficaUtenteModel.nome}"></span>
+										</div>
+									</td>
+									<!-- Autovalutazione -->
+									<td>
+										<!-- autovalutazione di tipo 'Quantitativa' -->
+										<div th:if="${requisitoInst.requisitoTempl.tipoRisposta != null and (requisitoInst.requisitoTempl.tipoRisposta.nome eq 'Quantitativo' or requisitoInst.requisitoTempl.tipoRisposta.nome eq 'Quantitativa')}">
+											<input style="width:80px" js:widget="widgetType:'dijit.form.TextBox'" type="text" 
+													th:field="*{filteredRequisitoInstL[__${requisitoInstStat.index}__].valutazione}" th:disabled="${!theAclService.userCanEvaluateRequisito(pageBean.domandaStato,userBean,requisitoInst)}"/>
+										</div>
+										
+										<!-- autovalutazione di tipo 'Soglia' -->
+										<div th:if="${requisitoInst.requisitoTempl.tipoRisposta != null and requisitoInst.requisitoTempl.tipoRisposta.nome eq 'Soglia'}">
+											<th:block th:if="${requisitoInst.tipoValutazione==T(it.tredi.auac.TipoValutazioneVerificaEnum).MANUALE or requisitoInst.tipoValutazione==T(it.tredi.auac.TipoValutazioneVerificaEnum).SEMIAUTOMATICA}">
+								  				<select th:field="*{filteredRequisitoInstL[__${requisitoInstStat.index}__].valutazione}" js:widget="widgetType:'dijit.form.Select'" style="width:80px;"
+								  						th:disabled="${!theAclService.userCanEvaluateRequisito(pageBean.domandaStato,userBean,requisitoInst)}">
+													<option value="">--------------</option>
+												  	<option th:each="type : ${T(it.tredi.auac.ValutazioneTipoSogliaEnum).values()}" th:value="${type.key}" th:text="#{__${type.value}__}"></option>
+												</select>						
+											</th:block>
+											<th:block th:if="${requisitoInst.tipoValutazione==T(it.tredi.auac.TipoValutazioneVerificaEnum).AUTOMATICA}" th:text="${theUtilService.getValutazioneFormattedText(requisitoInst,T(it.tredi.auac.TypeViewEnum).WEB)}">
+											</th:block>
+										</div>
+										
+										<!-- autovalutazione di tipo 'Si/No' -->
+										<div th:if="${requisitoInst.requisitoTempl.tipoRisposta != null and requisitoInst.requisitoTempl.tipoRisposta.nome eq 'Si/No'}">
+											<th:block th:if="${requisitoInst.tipoValutazione==T(it.tredi.auac.TipoValutazioneVerificaEnum).MANUALE or requisitoInst.tipoValutazione==T(it.tredi.auac.TipoValutazioneVerificaEnum).SEMIAUTOMATICA}">
+								  				<select th:field="*{filteredRequisitoInstL[__${requisitoInstStat.index}__].valutazione}" js:widget="widgetType:'dijit.form.Select'" style="width:80px;"
+								  						th:disabled="${!theAclService.userCanEvaluateRequisito(pageBean.domandaStato,userBean,requisitoInst)}">
+													<option value="">--------------</option>
+												  	<option th:each="type : ${T(it.tredi.auac.ValutazioneTipoSiNoEnum).values()}" th:value="${type.key}" th:text="#{__${type.value}__}"></option>
+												</select>						
+											</th:block>
+											<th:block th:if="${requisitoInst.tipoValutazione==T(it.tredi.auac.TipoValutazioneVerificaEnum).AUTOMATICA}" th:text="${theUtilService.getValutazioneFormattedText(requisitoInst,T(it.tredi.auac.TypeViewEnum).WEB)}">
+											</th:block>
+										</div>																		
+									
+									</td>
+									<!-- Evidenze -->
+									<td rowspan="2" style="text-align:center;">
+										<a th:class="${!#strings.isEmpty(requisitoInst.evidenze) or !#strings.isEmpty(requisitoInst.allegatiNRecord)}?'anchor':'anchor_hidden'"
+											js:ajax="formId:'form',event:'onclick',params:{_eventId:'editEvidenze',requisitoInstClientId:'${requisitoInst['clientid']}',readonly:'true'}" 
+				  							th:id="${#ids.seq('showEvidenzeLink')}" >evidenze</a>
+										<input th:if="${theAclService.userCanEvaluateRequisito(pageBean.domandaStato,userBean,requisitoInst)}"
+											style="border: 0px solid white; vertical-align: middle; margin-bottom: 2px;"
+											th:src="'images/unlk.gif'"
+											js:ajax="formId:'form',event:'onclick',params:{_eventId:'editEvidenze',requisitoInstClientId:'${requisitoInst['clientid']}',readonly:'false',index:'${requisitoInstStat.index+1}'}"
+											th:id="${#ids.seq('editEvidenzeButton')}" type="image" />
+									</td>
+									<!-- Note -->
+									<td style="text-align:center;">
+										<a th:class="${!#strings.isEmpty(requisitoInst.note) or !#strings.isEmpty(requisitoInst.autoValutazione)}?'anchor':'anchor_hidden'" 
+											js:ajax="formId:'form',event:'onclick',params:{_eventId:'editNote',requisitoInstClientId:'${requisitoInst['clientid']}',readonly:'true',editNoteVerifica:'false'}" 
+				  							th:id="${#ids.seq('showNoteLink')}" >note</a>
+										<input th:if="${theAclService.userCanEvaluateRequisito(pageBean.domandaStato,userBean,requisitoInst)}"
+											style="border: 0px solid white; vertical-align: middle; margin-bottom: 2px;"
+											th:src="'images/unlk.gif'"
+											js:ajax="formId:'form',event:'onclick',params:{_eventId:'editNote',requisitoInstClientId:'${requisitoInst['clientid']}',readonly:'false',editNoteVerifica:'false',index:'${requisitoInstStat.index+1}'}"
+											th:id="${#ids.seq('editNoteButton')}" type="image" />
+									</td>
+									<!-- Storia -->
+									<!-- ${requisitoInst.storicoRisposteRequisitis != null} and  -->
+									<td rowspan="2" style="text-align:center;">
+										<a th:class="${requisitoInst.numStorico}>0?'anchor':'anchor_hidden'" class="anchor" 
+											js:ajax="formId:'form',event:'onclick',params:{_eventId:'showStoriaRequisito',requisitoInstClientId:'${requisitoInst['clientid']}'}" 
+				  							th:id="${#ids.seq('showStoriaRequisitoLink')}" >storia</a>
+									</td>
+									<!-- Azioni -->
+									<td rowspan="2" style="text-align:center;">
+										<input th:if="${theAclService.userCanEditDomanda(userBean.ruolo,pageBean.domandaStato)}"
+										title="Copia Note/Evidenze del requisito"
+										js:ajax="formId:'form',event:'onclick',params:{_eventId:'copyNoteEvidenzeRequisito',index:${requisitoInstStat.index}}"
+										th:id="${#ids.seq('copyNoteEvidenzeRequisitoButton')}" type="image"
+										src="images/copy.gif" />
+										<input th:if="${hasVerifToSave}"
+										title="Copia Note Verificatore del requisito"
+										js:ajax="formId:'form',event:'onclick',params:{_eventId:'copyNoteVerifRequisito',index:${requisitoInstStat.index}}"
+										th:id="${#ids.seq('copyNoteVerifRequisitoButton')}" type="image"
+										src="images/copy.gif" />
+									</td>
+								</tr>
+								
+								<tr th:class="${((requisitoInst.requisitoTempl.tipoRisposta == null or requisitoInst.requisitoTempl.tipoRisposta.nome == 'Titolo') and requisitoInst.verificatore!=null) or (requisitoInst.requisitoTempl.tipoRisposta != null and requisitoInst.requisitoTempl.tipoRisposta.nome ne 'Titolo' and !#strings.isEmpty(requisitoInst.valutazioneVerificatore))}?'rvy_tr_row':'rv_tr_row'">
+									<!-- 'Assegnazione' riga 2 -->
+									<td style="width:120px;" th:if="${!userBean.COLLABORATORE_VALUTAZIONE}">
+										<div th:if="${requisitoInst.verificatore}">
+											<span th:title="${requisitoInst.verificatore.anagraficaUtenteModel.cognomeNome}" style="width:120px;display:inline-block;white-space:nowrap;overflow:hidden !important;text-overflow:ellipsis;" th:text="${requisitoInst.verificatore.anagraficaUtenteModel.cognomeNome}"></span>
+										</div>
+									</td>
+									<!-- Autovalutazione riga 2 - Verifica -->
+									<td>
+										<!-- verifica autovalutazione di tipo 'Quantitativa' -->
+										<div th:if="${requisitoInst.requisitoTempl.tipoRisposta != null and (requisitoInst.requisitoTempl.tipoRisposta.nome eq 'Quantitativo' or requisitoInst.requisitoTempl.tipoRisposta.nome eq 'Quantitativa')}">
+											<input style="width:80px" js:widget="widgetType:'dijit.form.TextBox'" type="text" 
+													th:field="*{filteredRequisitoInstL[__${requisitoInstStat.index}__].valutazioneVerificatore}" th:disabled="${!theAclService.userCanVerifyRequisito(pageBean.domandaStato,userBean,requisitoInst)}"/>
+										</div>
+										
+										<!-- verifica autovalutazione di tipo 'Soglia' -->
+										<div th:if="${requisitoInst.requisitoTempl.tipoRisposta != null and requisitoInst.requisitoTempl.tipoRisposta.nome eq 'Soglia'}">
+											<th:block th:if="${requisitoInst.tipoVerifica==T(it.tredi.auac.TipoValutazioneVerificaEnum).MANUALE or requisitoInst.tipoVerifica==T(it.tredi.auac.TipoValutazioneVerificaEnum).SEMIAUTOMATICA}">
+								  				<select th:field="*{filteredRequisitoInstL[__${requisitoInstStat.index}__].valutazioneVerificatore}" js:widget="widgetType:'dijit.form.Select'" style="width:80px;"
+								  						th:disabled="${!theAclService.userCanVerifyRequisito(pageBean.domandaStato,userBean,requisitoInst)}">
+													<option value="">--------------</option>
+												  	<option th:each="type : ${T(it.tredi.auac.ValutazioneVerificatoreTipoSogliaEnum).values()}" th:value="${type.key}" th:text="#{__${type.value}__}"></option>
+												</select>
+											</th:block>						
+											<th:block th:if="${requisitoInst.tipoVerifica==T(it.tredi.auac.TipoValutazioneVerificaEnum).AUTOMATICA}" th:text="${theUtilService.getValutazioneVerificatoreFormattedText(requisitoInst,T(it.tredi.auac.TypeViewEnum).WEB)}">
+											</th:block>
+										</div>
+										
+										<!-- verifica autovalutazione di tipo 'Si/No' -->
+										<div th:if="${requisitoInst.requisitoTempl.tipoRisposta != null and requisitoInst.requisitoTempl.tipoRisposta.nome eq 'Si/No'}">
+											<th:block th:if="${requisitoInst.tipoVerifica==T(it.tredi.auac.TipoValutazioneVerificaEnum).MANUALE or requisitoInst.tipoVerifica==T(it.tredi.auac.TipoValutazioneVerificaEnum).SEMIAUTOMATICA}">
+								  				<select th:field="*{filteredRequisitoInstL[__${requisitoInstStat.index}__].valutazioneVerificatore}" js:widget="widgetType:'dijit.form.Select'" style="width:80px;"
+								  						th:disabled="${!theAclService.userCanVerifyRequisito(pageBean.domandaStato,userBean,requisitoInst)}">
+													<option value="">--------------</option>
+												  	<option th:each="type : ${T(it.tredi.auac.ValutazioneVerificatoreTipoSiNoEnum).values()}" th:value="${type.key}" th:text="#{__${type.value}__}"></option>
+												</select>
+											</th:block>						
+											<th:block th:if="${requisitoInst.tipoVerifica==T(it.tredi.auac.TipoValutazioneVerificaEnum).AUTOMATICA}" th:text="${theUtilService.getValutazioneVerificatoreFormattedText(requisitoInst,T(it.tredi.auac.TypeViewEnum).WEB)}">
+											</th:block>
+										</div>																		
+										
+									</td>
+									<!-- Note riga 2 - Verifica -->
+									<td style="text-align:center;">
+										<a th:class="${!#strings.isEmpty(requisitoInst.noteVerificatore) or !#strings.isEmpty(requisitoInst.autoValutazioneVerificatore)}?'anchor':'anchor_hidden'" 
+											js:ajax="formId:'form',event:'onclick',params:{_eventId:'editNote',requisitoInstClientId:'${requisitoInst['clientid']}',readonly:'true',editNoteVerifica:'true'}" 
+				  							th:id="${#ids.seq('showNoteVerifLink')}" >note</a>
+										<input th:if="${theAclService.userCanVerifyRequisito(pageBean.domandaStato,userBean,requisitoInst)}"
+											style="border: 0px solid white; vertical-align: middle; margin-bottom: 2px;"
+											th:src="'images/unlk.gif'"
+											js:ajax="formId:'form',event:'onclick',params:{_eventId:'editNote',requisitoInstClientId:'${requisitoInst['clientid']}',readonly:'false',editNoteVerifica:'true',index:'${requisitoInstStat.index+1}'}"
+											th:id="${#ids.seq('editNoteVerifButton')}" type="image" />
+									</td>
+									
+								</tr>
+							
+							</th:block>
+						
+							<!--/* In caso di requisito senza verifica viene inserita 1 sola riga */-->
+							<th:block th:if="not ${pageBean.showVerificaRow(requisitoInst)}">
+								
+								<tr class="requisiti_table_row">
+									<td>
+										<input js:widget="widgetType:'dijit.form.CheckBox',widgetAttrs:{}" type="checkbox" th:id="${#ids.seq('requisitoCheck')}"
+												js:ajax="formId:'form',event:'onChange',params:{_eventId:'checkRequisito',index:${requisitoInstStat.index}}" 
+												th:checked="*{requisitoChecked(__${requisitoInstStat.index}__)}" />
+									</td>
+									<td th:style="${requisitoInst.requisitoTempl.tipoRisposta != null and requisitoInst.requisitoTempl.tipoRisposta.nome ne 'Titolo' and !#strings.isEmpty(requisitoInst.valutazione)}?'background-color:#36943E;color:white;'"
+											 th:text="${requisitoInst.requisitoTempl.nome}"></td>
+									<td th:colspan="${!userBean.COLLABORATORE_VALUTAZIONE} and *{searchAllRequisiti}?'2':'7'" th:style="${requisitoInst.requisitoTempl.tipoRisposta != null and requisitoInst.requisitoTempl.tipoRisposta.nome eq 'Titolo'}?'font-weight:bold;'" th:text="${requisitoInst.requisitoTempl.testo}"></td>
+									<!-- 'Denominazione UO/UDO' -->
+									<td style="width:120px;" th:if="${userBean.COLLABORATORE_VALUTAZIONE} or *{searchAllRequisiti}">
+										<th:block th:switch="${requisitoInst.type}"> 
+										  <span th:case="'uo'" th:text="${requisitoInst.uoInst.denominazioneConId}"></span>
+										  <a th:case="'ud'" class="anchor" 
+												js:ajax="formId:'form',event:'onclick',params:{_eventId:'showUdoInst',udoInstClientId:'${requisitoInst.udoInst.clientid}',readonly:'true'}" 
+					  							th:id="${#ids.seq('showUdoInstLink')}" th:text="${requisitoInst.udoInst.descr}"></a>
+										  <span th:case="'st'" th:text="${requisitoInst.strutturaInst.denominazione}">Struttura</span>
+										  <span th:case="'ed'" th:text="${requisitoInst.edificioInst.descr}">Edificio</span>
+										  <span th:case="*">Generale Aziendale</span> 
+										</th:block>
+									</td>
+									
+									<td style="width:20px;" th:if="${userBean.COLLABORATORE_VALUTAZIONE} or *{searchAllRequisiti}" th:text="${requisitoInst.udoInst != null}?${requisitoInst.udoInst.stabilimento}:''">
+									</td>
+									<td style="width:20px;" th:if="${userBean.COLLABORATORE_VALUTAZIONE} or *{searchAllRequisiti}" th:text="${requisitoInst.udoInst != null}?${requisitoInst.udoInst.blocco}:''">
+									</td>
+									<td style="width:20px;" th:if="${userBean.COLLABORATORE_VALUTAZIONE} or *{searchAllRequisiti}" th:text="${requisitoInst.udoInst != null}?${requisitoInst.udoInst.piano}:''">
+									</td>
+									<td style="width:20px;" th:if="${userBean.COLLABORATORE_VALUTAZIONE} or *{searchAllRequisiti}" th:text="${requisitoInst.udoInst != null}?${requisitoInst.udoInst.progressivo}:''">
+									</td>
+									<td style="width:100px;" th:if="${userBean.COLLABORATORE_VALUTAZIONE} or *{searchAllRequisiti}" th:text="${requisitoInst.udoInst != null}?${requisitoInst.udoInst.denominazioneSede}:''">
+									</td>
+									<!-- 'Assegnazione' -->
+									<td style="width:120px;" th:if="${!userBean.COLLABORATORE_VALUTAZIONE}">
+										<div th:if="${requisitoInst.utenteModel}">
+											<span th:if="${requisitoInst.utenteModel.uoModel}" th:title="${requisitoInst.utenteModel.uoModel.denominazioneConId}" style="width:120px;display:inline-block;white-space:nowrap;overflow:hidden !important;text-overflow:ellipsis;" th:text="${requisitoInst.utenteModel.uoModel.denominazione}"></span>							
+											<span th:title="${requisitoInst.utenteModel.anagraficaUtenteModel.cognome} + ' ' + ${requisitoInst.utenteModel.anagraficaUtenteModel.nome}" style="width:120px;display:inline-block;white-space:nowrap;overflow:hidden !important;text-overflow:ellipsis;" th:text="${requisitoInst.utenteModel.anagraficaUtenteModel.cognome} + ' ' + ${requisitoInst.utenteModel.anagraficaUtenteModel.nome}"></span>
+										</div>
+									</td>
+									<!-- autovalutazione -->
+									<td>
+										<!-- autovalutazione di tipo 'Quantitativa' -->
+										<div th:if="${requisitoInst.requisitoTempl.tipoRisposta != null and (requisitoInst.requisitoTempl.tipoRisposta.nome eq 'Quantitativo' or requisitoInst.requisitoTempl.tipoRisposta.nome eq 'Quantitativa')}">
+											<input style="width:80px" js:widget="widgetType:'dijit.form.TextBox'" type="text" 
+													th:field="*{filteredRequisitoInstL[__${requisitoInstStat.index}__].valutazione}" th:disabled="${!theAclService.userCanEvaluateRequisito(pageBean.domandaStato,userBean,requisitoInst)}"/>
+										</div>
+										
+										<!-- autovalutazione di tipo 'Soglia' -->
+										<div th:if="${requisitoInst.requisitoTempl.tipoRisposta != null and requisitoInst.requisitoTempl.tipoRisposta.nome eq 'Soglia'}">
+											<th:block th:if="${requisitoInst.tipoValutazione==T(it.tredi.auac.TipoValutazioneVerificaEnum).MANUALE or requisitoInst.tipoValutazione==T(it.tredi.auac.TipoValutazioneVerificaEnum).SEMIAUTOMATICA}">
+								  				<select th:field="*{filteredRequisitoInstL[__${requisitoInstStat.index}__].valutazione}" js:widget="widgetType:'dijit.form.Select'" style="width:80px;"
+								  						th:disabled="${!theAclService.userCanEvaluateRequisito(pageBean.domandaStato,userBean,requisitoInst)}">
+													<option value="">--------------</option>
+												  	<option th:each="type : ${T(it.tredi.auac.ValutazioneTipoSogliaEnum).values()}" th:value="${type.key}" th:text="#{__${type.value}__}"></option>
+												</select>						
+											</th:block>
+											<th:block th:if="${requisitoInst.tipoValutazione==T(it.tredi.auac.TipoValutazioneVerificaEnum).AUTOMATICA}" th:text="${theUtilService.getValutazioneFormattedText(requisitoInst,T(it.tredi.auac.TypeViewEnum).WEB)}">
+											</th:block>
+										</div>
+										
+										<!-- autovalutazione di tipo 'Si/No' -->
+										<div th:if="${requisitoInst.requisitoTempl.tipoRisposta != null and requisitoInst.requisitoTempl.tipoRisposta.nome eq 'Si/No'}">
+											<th:block th:if="${requisitoInst.tipoValutazione==T(it.tredi.auac.TipoValutazioneVerificaEnum).MANUALE or requisitoInst.tipoValutazione==T(it.tredi.auac.TipoValutazioneVerificaEnum).SEMIAUTOMATICA}">
+							  				<select th:field="*{filteredRequisitoInstL[__${requisitoInstStat.index}__].valutazione}" js:widget="widgetType:'dijit.form.Select'" style="width:80px;"
+							  						th:disabled="${!theAclService.userCanEvaluateRequisito(pageBean.domandaStato,userBean,requisitoInst)}">
+												<option value="">--------------</option>
+												<option th:each="type : ${T(it.tredi.auac.ValutazioneTipoSiNoEnum).values()}" th:value="${type.key}" th:text="#{__${type.value}__}"></option>
+											</select>						
+											</th:block>
+											<th:block th:if="${requisitoInst.tipoValutazione==T(it.tredi.auac.TipoValutazioneVerificaEnum).AUTOMATICA}" th:text="${theUtilService.getValutazioneFormattedText(requisitoInst,T(it.tredi.auac.TypeViewEnum).WEB)}">
+											</th:block>
+										</div>																		
+									
+									</td>
+									<!-- Evidenze -->
+									<td style="text-align:center;">
+										<a th:class="${!#strings.isEmpty(requisitoInst.evidenze) or !#strings.isEmpty(requisitoInst.allegatiNRecord)}?'anchor':'anchor_hidden'"
+											js:ajax="formId:'form',event:'onclick',params:{_eventId:'editEvidenze',requisitoInstClientId:'${requisitoInst['clientid']}',readonly:'true'}" 
+				  							th:id="${#ids.seq('showEvidenzeLink')}" >evidenze</a>
+										<input th:if="${theAclService.userCanEvaluateRequisito(pageBean.domandaStato,userBean,requisitoInst)}"
+											style="border: 0px solid white; vertical-align: middle; margin-bottom: 2px;"
+											th:src="'images/unlk.gif'"
+											js:ajax="formId:'form',event:'onclick',params:{_eventId:'editEvidenze',requisitoInstClientId:'${requisitoInst['clientid']}',readonly:'false',index:'${requisitoInstStat.index+1}'}"
+											th:id="${#ids.seq('editEvidenzeButton')}" type="image" />
+									</td>
+									<!-- Note -->
+									<td style="text-align:center;">
+										<a th:class="${  !#strings.isEmpty(requisitoInst.note) or !#strings.isEmpty(requisitoInst.autoValutazione)  }?'anchor':'anchor_hidden'" 
+											js:ajax="formId:'form',event:'onclick',params:{_eventId:'editNote',requisitoInstClientId:'${requisitoInst['clientid']}',readonly:'true',editNoteVerifica:'false'}" 
+				  							th:id="${#ids.seq('showNoteLink')}" >note</a>
+										<input th:if="${theAclService.userCanEvaluateRequisito(pageBean.domandaStato,userBean,requisitoInst)}"
+											style="border: 0px solid white; vertical-align: middle; margin-bottom: 2px;"
+											th:src="'images/unlk.gif'"
+											js:ajax="formId:'form',event:'onclick',params:{_eventId:'editNote',requisitoInstClientId:'${requisitoInst['clientid']}',readonly:'false',editNoteVerifica:'false',index:'${requisitoInstStat.index+1}'}"
+											th:id="${#ids.seq('editNoteButton')}" type="image" />
+									</td>
+									<!-- ${requisitoInst.storicoRisposteRequisitis != null} and  -->
+									<td style="text-align:center;">
+										<a th:class="${requisitoInst.numStorico}>0?'anchor':'anchor_hidden'" class="anchor" 
+											js:ajax="formId:'form',event:'onclick',params:{_eventId:'showStoriaRequisito',requisitoInstClientId:'${requisitoInst['clientid']}'}" 
+				  							th:id="${#ids.seq('showStoriaRequisitoLink')}" >storia</a>
+									</td>
+									<td style="text-align:center;">
+										<input th:if="${theAclService.userCanEditDomanda(userBean.ruolo,pageBean.domandaStato)}"
+										title="Copia Note/Evidenze del requisito"
+										js:ajax="formId:'form',event:'onclick',params:{_eventId:'copyNoteEvidenzeRequisito',index:${requisitoInstStat.index}}"
+										th:id="${#ids.seq('copyNoteEvidenzeRequisitoButton')}" type="image"
+										src="images/copy.gif" />
+									</td>							
+								</tr>
+							
+							</th:block>
+						
+						</th:block>	
+						
+												
+					</tbody>
+				</table>
+				<div class="form-frames-container">
+				<div class="frame-container">
+					<div class="frame-toolbar-container">
+						<span class="panel-toolbar-zone"> <span
+							style="float: right; margin-right: 20px;"
+							class="frame-toolbar-caption"> <input
+								style="border: 0px solid white; vertical-align: middle; margin-bottom: 2px;"
+								th:src="'images/pagination/first_' + *{canFirst} + '.gif'"
+								js:ajax="formId:'form',event:'onclick',params:{_eventId:'pageFirst'}"
+								id="pageFirst2" type="image" /> <input
+								style="border: 0px solid white; vertical-align: middle; margin-bottom: 2px;"
+								th:src="'images/pagination/prev_' + *{canPrev} + '.gif'"
+								js:ajax="formId:'form',event:'onclick',params:{_eventId:'pagePrev'}"
+								id="procPrev2" type="image" /> <span
+								style="margin: 0px 5px 0px 5px;"
+								th:text="'Pagina ' + *{pageIndex} + ' di ' + *{pageCount}">Pag
+									0 di 0</span> <input
+								style="border: 0px solid white; vertical-align: middle; margin-bottom: 2px;"
+								th:src="'images/pagination/next_' + *{canNext} + '.gif'"
+								js:ajax="formId:'form',event:'onclick',params:{_eventId:'pageNext'}"
+								id="pageNext2" type="image" /> <input
+								style="border: 0px solid white; vertical-align: middle; margin-bottom: 2px;"
+								th:src="'images/pagination/last_' + *{canLast} + '.gif'"
+								js:ajax="formId:'form',event:'onclick',params:{_eventId:'pageLast'}"
+								id="pageLast2" type="image" />
+							</span> 
+						</span>
+					</div>
+				</div>
+			</div>			
+			</div>
+
+		</div>
+		<!-- lista_holder -->
+		</th:block>
+	</div>
+	
+	<div layout:fragment="footer" th:remove="tag">
+		<div th:substituteby="common :: defaultFooter"></div>
+	</div>
+
+</body>
+
+</html>
+
+
+

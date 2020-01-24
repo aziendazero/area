@@ -1,0 +1,63 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:js="http://www.3di.it/thymeleaf/springJsDecorator">
+
+	<head>
+		<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+	    <title>Assegnazione massiva Autovalutazione</title>
+	   
+	   	<link th:substituteby="common :: dojo"/>
+	   	<link th:substituteby="common :: spring-js"/>
+	   	<link th:substituteby="common :: spring-js-decorator"/>
+
+		<!-- Page custom CSS -->
+		<link type="text/css" rel="stylesheet" th:href="@{/resources/css/index.css}"/>
+		
+		<script type="text/javascript">
+			dojo.style(dijit.byId(topDialogId).closeButtonNode,"display","none"); //server per disabilitare il pulsante di chiusura del dialog
+			dijit.byId(topDialogId).set("title", "ASSEGNAZIONE MASSIVA AUTOVALUTAZIONE");
+		</script>
+	</head>
+	
+  	<body class="claro">
+  
+	  	<div style="width:400px;">			  	
+
+			<form method="POST" id="amForm" th:object="${pageBean}" th:action="${flowExecutionUrl}">
+		
+				<!-- header videata 
+				<div class="form-caption-container">
+					<span class="form-caption-text">Assegnazione massiva Autovalutazione</span>
+				</div>
+				-->
+					
+				<div style="width:100%;text-align:center;">
+					<div id="progressBar"></div>
+					<script th:inline="javascript" th:if="*{amJobBean ne null and !amJobBean.completed}">
+					/*<![CDATA[*/
+						/*[+										
+						require(["dijit/ProgressBar", "dojo/_base/window", "dojo/domReady!"], function(ProgressBar, win){
+						    var myProgressBar = new ProgressBar({
+						        style: "width: 300px;margin-left:50px;", closable:false
+						    }).placeAt('progressBar');
+						    myProgressBar.set("maximum", [[*{amJobBean.total}]]);
+						    myProgressBar.set("value", [[*{amJobBean.current}]]);
+						    setTimeout(function(){Spring.remoting.submitForm('','amForm',{_eventId:'refresh'})},'5000');
+						});
+					  	+]*/	 
+					/*]]>*/
+					</script>					
+					<div th:if="*{amJobBean.completed}">Operazione completata</div>
+					<input style="margin-top:10px;"
+						th:if="*{amJobBean.completed}"
+						js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Chiudi'}"
+						js:ajax="formId:'amForm',event:'onClick',params:{_eventId:'close'}"
+						id="closeButton" name="_eventId_close"
+						value="Chiudi" type="submit" />				
+				</div>
+					
+			</form>
+			
+	  	</div>
+  
+	</body>
+</html>

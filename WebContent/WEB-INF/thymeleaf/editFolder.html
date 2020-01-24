@@ -1,0 +1,740 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:js="http://www.3di.it/thymeleaf/springJsDecorator" 
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+		layout:decorator="templateFHMB">
+
+	<head>
+	    <title>Inserimento/Modifica domanda</title>
+	    	<script type="text/javascript" th:src="@{/resources/js/jquery-1.11.2.min.js}"></script>
+	    <!-- CSS per layout con menu -->
+	    <link th:substituteby="common :: menuCSS" />
+	  	<link th:substituteby="common :: tooltipster" />
+    </head>
+		
+  	<body class="claro">
+
+		<div layout:fragment="header" th:remove="tag">
+			<div th:substituteby="common :: defaultHeader"></div>
+		</div>
+	
+		<div layout:fragment="menu" th:remove="tag">
+			<div th:substituteby="common :: defaultMenu"></div>
+		</div>
+		
+		<div layout:fragment="body" th:remove="tag">
+	
+			<form method="POST" id="edit_folder_form" th:object="${editFolderPageBean}" th:action="${flowExecutionUrl}" onkeypress="return event.keyCode != 13;">
+	
+				<div th:if="${userBean.TITOLARE or userBean.OPERATORE_TITOLARE}" th:remove="tag"> <!-- TITOLARE, OPERATORE_TITOLARE -->
+				
+				
+					<div class="fieldset_holder" th:if="${isModify}">
+		
+						<!-- header videata -->
+						<div class="form-caption-container">
+							<span class="form-caption-text"
+								th:text="'Fascicolo del titolare: ' + ${showFolderPageBean.titolareFolderSubject}">Fascicolo
+								del titolare</span>
+						</div>
+						
+						<div class="form-frames-container">
+							<div class="frame-container">
+								<div class="frame-toolbar-container">
+									<span class="panel-toolbar-zone">
+										 <span class="frame-toolbar-caption"> <img
+												title="Fascicolo di Procedimento" border="0"
+												src="resources/images/folder24_proc.png" /> <span
+												style="vertical-align: top;" th:text="${showFolderPageBean.fascicolo.oggetto}"></span>
+										</span>
+									</span>
+								</div>
+							</div>
+						</div>
+						<!-- form-frames-container -->
+		
+						<table class="fieldset row" style="width: 850px">
+							<tbody>
+								<tr>
+									<td>
+										<table class="row">
+											<tbody>
+												<tr>
+													<td style="width: 15%;" class="label">Data creazione</td>
+													<td style="width: 85%;"><input style="width: 100px;"
+														id="dataCreazione"
+														js:widget="widgetType:'dijit.form.TextBox'" type="text"
+														th:value="${showFolderPageBean.fascicolo.dataCreazione}" readonly="readonly" />
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<table class="row">
+											<tbody>
+												<tr>
+													<td style="width: 15%;" class="label">Numero Procedimento</td>
+													<td style="width: 85%;"><input style="width: 100px;"
+														id="numeroProcedimento"
+														js:widget="widgetType:'dijit.form.TextBox'" type="text"
+														th:value="${showFolderPageBean.fascicolo.numeroProcedimento}" readonly="readonly" />
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<table class="row">
+											<tbody>
+												<tr>
+													<td style="width: 15%;" class="label">Data invio Domanda</td>
+													<td style="width: 85%;"><input style="width: 100px;"
+														id="dataInvioDomanda"
+														js:widget="widgetType:'dijit.form.TextBox'" type="text"
+														th:value="${showFolderPageBean.fascicolo.dataInvioDomanda}" readonly="readonly" />
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<table class="row">
+											<tbody>
+												<tr>
+													<td style="width: 15%;" class="label">Data conclusione</td>
+													<td style="width: 85%;"><input style="width: 100px;"
+														id="dataConclusione"
+														js:widget="widgetType:'dijit.form.TextBox'" type="text"
+														th:value="${showFolderPageBean.fascicolo.dataConclusione}" readonly="readonly" />
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<table class="row">
+											<tbody>
+												<tr>
+													<td style="width: 15%;" class="label">Stato</td>
+													<td style="width: 85%;"><input style="width: 200px;"
+														id="stato" js:widget="widgetType:'dijit.form.TextBox'"
+														type="text" th:value="${showFolderPageBean.fascicolo.folderStatus}"
+														readonly="readonly" /></td>
+												</tr>
+											</tbody>
+										</table>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>				
+						
+
+					<div class="lista_holder">
+					
+						<!-- header videata -->
+						<div class="form-caption-container" >
+							<span class="form-caption-text" th:text="'Unità di offerta per il titolare ' + *{titolareModel.ragSoc}">Unità di offerta per il titolare</span>
+						</div>
+						
+						<!-- Increased margin-bottom to make room for the tooltip - A.GJ -->
+						<div id="messages">
+							<div style="border:1px solid red;padding:10px;margin:10px 0px 60px 0px" th:if="${#fields.hasErrors('messages')}">
+								<div th:each="error:${#fields.errors('messages')}" style="margin-top:1px;"><img style="vertical-align:bottom;" border="0" src="images/mstop_sm.gif" /> <span th:text="${error}"/></div>
+							</div>
+						</div>				
+						
+	   
+						<table class="row" id="titolareToolsTable" th:if="*{fascicoli.titleL}">
+							<tbody>
+								<tr>
+									<td style="width:50%">
+										<script th:inline="javascript">
+										/*<![CDATA[*/
+											/*[+
+												 //Script should re-render together with the table
+												$(document).ready(function(){
+													var tipoProcSelError = [[${#fields.hasErrors('tipoProcSelected')}]];
+													var oggettoDomandaError = [[${#fields.hasErrors('oggettoDomanda')}]];
+													
+												    if(tipoProcSelError){
+												   	 	$('#tipoProcSelectedWrapper').tooltipster({
+													        trigger: 'custom',
+													        position: 'top',
+													        	theme: 'tooltipster-borderless',
+													        	trackOrigin: 'true', //Deals with the dynamic width
+													        	maxWidth: 170												
+													    });
+												    		$('#tipoProcSelectedWrapper').tooltipster('content', 'Selezionare una tipologia di procedimento').tooltipster('show');												    		
+												    }
+												    if(oggettoDomandaError){
+												    		$('#oggettoDomandaWrapper').tooltipster({
+													        trigger: 'custom',
+													        position: 'top',
+													        trackOrigin: 'true',
+													        theme: 'tooltipster-borderless',
+													        functionPosition: function(instance, helper, data){ //offset tooltip to prevent overlaying
+													            data.coord.left += 10;			
+													    			return data;
+													        }
+													    });
+												    		$('#oggettoDomandaWrapper').tooltipster('content', 'Selezionare un tipo di domanda').tooltipster('show');
+												    }
+												    							    		
+												});
+										  	+]*/	 
+										/*]]>*/
+										</script>
+
+										<div th:if="${!isModify}">
+							  				<div id = "tipoProcSelectedWrapper" title="" style="display: inline;"><select th:field="*{tipoProcSelected}" js:widget="widgetType:'dijit.form.Select'">
+												<option value="">---seleziona tipo procedimento---</option>
+											  	<option th:each="tipo:*{tipiProcL}" th:value="${tipo.idTipo}" th:text="${tipo.descr}">Procedimento</option>						  
+											</select></div>
+							  				<div id = "oggettoDomandaWrapper" title="" style="display: inline;"><select th:field="*{oggettoDomanda}" js:widget="widgetType:'dijit.form.Select'" >
+												<option value="">---seleziona tipo domanda---</option>
+												<option value="Complessiva">Complessiva</option>
+												<option value="Parziale">Parziale</option>
+											</select></div>
+											<script >
+											    	dojo.addOnLoad(function(){
+											    		//hide tooltips onChange. Can't be an inline script because it wont work after rendering							
+											    		   dojo.connect(dijit.byId("tipoProcSelected"), 'onChange', function(event){ 
+											    		    	   	    console.log('destroying tooltip');
+											    		    	   	    var tipoProcSelectedTooltip = $('#tipoProcSelectedWrapper').tooltipster('instance');
+											    		    	   	    if(tipoProcSelectedTooltip != null){
+											    		    	   	    		var value = this.get("value");
+											    		    	   	    		if(value === ""){
+											    		    	   	    			tipoProcSelectedTooltip.show();
+											    		    	   	    		}
+											    		    	   	    		else
+											    		    	   	    			tipoProcSelectedTooltip.hide();
+											    		    	   	    }
+											    		       });
+											    		
+											    		//OggetoDomanda Tooltip
+											    		   dojo.connect(dijit.byId("oggettoDomanda"), 'onChange', function(event){ 
+									    		    	   	    console.log('destroying tooltip');
+									    		    	   	    var oggettoDomandaTooltip = $('#oggettoDomandaWrapper').tooltipster('instance');
+									    		    	   	    if(oggettoDomandaTooltip != null){
+									    		    	   	    		var value = this.get("value");
+									    		    	   	    		if(value === "")
+									    		    	   	    			oggettoDomandaTooltip.show();
+									    		    	   	    		else
+									    		    	   	    			oggettoDomandaTooltip.hide();
+									    		    	   	    }
+									    		       });
+											    	});					    		
+										</script>
+											<input js:confirm="event:'onClick',message:'Procedere con l\'operazione?'" js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Creazione Domanda Titolare'}" js:ajax="formId:'edit_folder_form',event:'onClick',params:{_eventId:'creaDomaTit'}" id="creaDomaTitButton" name="_eventId_creaDomaTit" value="Creazione Domanda Titolare" type="submit"/>
+										</div>
+										<div th:if="${isModify}">
+											<input js:confirm="event:'onClick',message:'Procedere con l\'operazione?'" js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Aggiorna Domanda'}" js:ajax="formId:'edit_folder_form',event:'onClick',params:{_eventId:'updateDomaTit'}" id="updateDomaTitButton" name="_eventId_updateDomaTit" value="Aggiorna Domanda" type="submit"/>
+											<input js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Annulla'}" js:ajax="formId:'edit_folder_form',event:'onClick',params:{_eventId:'cancelDomaTit'}" id="cancelDomaTitButton" name="_eventId_cancelDomaTit" value="Annulla" type="submit"/>										
+										</div>
+						  			</td>
+						  			<td>
+						  				<div id="checkedUdoListAnchor">
+						  					<span th:text="'Sono state selezionate:'"></span> 
+						  					<a th:if="*{!#maps.isEmpty(checkM)}" class="anchor" js:ajax="formId:'edit_folder_form',event:'onclick',params:{_eventId:'showCheckedUdoList'}" 
+						  							id="selectedUdoLink" th:href="${flowExecutionUrl} + '&amp;_eventId=showCheckedUdoList'"
+						  							th:text="*{numberUoSelected} + ' Unità Operative ' + *{numberUdoSelected} + ' Unità di Offerta'">n Unità Operative n Unità di Offerta</a>
+				  							<span th:if="*{#maps.isEmpty(checkM)}">0 Unità operative e 0 Unità di Offerta</span>
+						  				</div>
+						  				
+						  			</td>
+								</tr>
+							</tbody>
+						</table>				
+						
+						<div class="form-frames-container" >							
+							<div class="frame-container">
+								<div class="frame-toolbar-container" >
+									<span class="panel-toolbar-zone">
+										<span class="frame-toolbar-caption" >Elenco UDO</span>
+									</span>
+								</div>
+							</div>								
+						</div> <!-- form-frames-container -->		
+						
+						<br />
+						<table class="row" id="tblRicercaUdo">
+							<tbody>
+								<tr>
+									<td style="width: 15%;" class="label">Codice Ulss</td>
+									<td style="width: 20%;">
+										<input th:field="*{subStringCodiceUlssDaCercare}" id="idCodiceUlssDaCercare" js:widget="widgetType:'dijit.form.TextBox'" type="text" />
+									</td>
+									<td style="width: 10%; padding-left: 5px; padding-right: 5px;" class="label">Codice Ex Ulss</td>
+									<td style="width: 20%;">
+										<input th:field="*{subStringCodiceExUlssDaCercare}" id="idBCodiceExUlssDaCercare" js:widget="widgetType:'dijit.form.TextBox'" type="text" />
+									</td>
+									<td style="width: 1%;"></td>
+									<td style="width: 44%"></td>
+								</tr>
+								<tr>
+									<td style="width: 15%;" class="label">Denominazione</td>
+									<td style="width: 50%;" colspan="3"><input
+										th:field="*{subStringDenominazioneDaCercare}" style="width: 100%;"
+										id="idDenominazioneDaCercare"
+										js:widget="widgetType:'dijit.form.TextBox'" type="text" /></td>
+									<td style="width: 1%;"></td>
+									<td style="width: 44%"></td>
+								</tr>
+								<tr>
+									<td style="width: 15%;" class="label">Tipo Udo</td>
+									<td style="width: 50%;" colspan="3"><input
+										th:field="*{subStringTipoUdoDaCercare}" style="width: 100%;"
+										id="idTipoUdoDaCercare"
+										js:widget="widgetType:'dijit.form.TextBox'" type="text" /></td>
+									<td style="width: 1%;"></td>
+									<td style="width: 44%"></td>
+								</tr>
+								<tr>
+									<td style="width: 15%;" class="label">Disciplina</td>
+									<td style="width: 20%;">
+										<input th:field="*{subStringDisciplinaDaCercare}" id="idDisciplinaDaCercare" js:widget="widgetType:'dijit.form.TextBox'" type="text" />
+									</td>
+									<td style="width: 10%; padding-left: 5px; padding-right: 5px;" class="label">Branca</td>
+									<td style="width: 20%;">
+										<input th:field="*{subStringBrancaDaCercare}" id="idBrancaDaCercare" js:widget="widgetType:'dijit.form.TextBox'" type="text" />
+									</td>
+									<td style="width: 1%;"></td>
+									<td style="width: 44%"></td>
+								</tr>
+								<tr>
+									<td style="width: 15%;" class="label">Sede Operativa</td>
+									<td style="width: 20%;">
+										<input th:field="*{subStringSedeOperativaDaCercare}" id="idSedeOperativaDaCercare" js:widget="widgetType:'dijit.form.TextBox'" type="text" />
+									</td>
+									<td style="width: 10%; padding-left: 5px; padding-right: 5px; white-space: nowrap;" class="label">Unità Operativa</td>
+									<td style="width: 20%;">
+										<input th:field="*{subStringUODaCercare}" id="idUODaCercare" js:widget="widgetType:'dijit.form.TextBox'" type="text" />
+									</td>
+									<td style="width: 1%;"></td>
+									<td style="width: 44%"></td>
+								</tr>
+								<tr>
+									<td style="width: 15%;" class="label">Direttore</td>
+									<td style="width: 50%;" colspan="3"><input
+										th:field="*{subStringDirettoreDaCercare}" style="width: 100%;"
+										id="idDirettoreDaCercare"
+										js:widget="widgetType:'dijit.form.TextBox'" type="text" /></td>
+									<td style="width: 1%;"></td>
+									<td style="width: 44%"></td>
+								</tr>
+								<tr>
+									<td style="width: 15%;" class="label">Codice Univoco</td>
+									<td style="width: 50%;" colspan="3"><input
+										th:field="*{subStringCodiceUnivocoDaCercare}" style="width: 100%;"
+										id="idCodiceUnivocoDaCercare"
+										js:widget="widgetType:'dijit.form.TextBox'" type="text" /></td>
+									<td style="width: 1%;"></td>
+									<td style="width: 44%"></td>
+								</tr>
+								<tr>
+									<td colspan="6"><input
+										js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Applica filtri'}"
+										js:ajax="formId:'edit_folder_form',event:'onClick',params:{_eventId:'filtraUdoTitolare'}"
+										id="filtraSulleUdoDelTitolare"
+										name="_eventId_filtraUdoTitolare" value="Applica filtri"
+										type="submit" /><input
+										js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Pulisci'}"
+										js:ajax="formId:'edit_folder_form',event:'onClick',params:{_eventId:'svuotaCampiRicercaTitolare'}"
+										id="svuotaCampiRicercaTitolare"
+										name="_eventId_svuotaCampiRicercaTitolare" value="Pulisci"
+										type="submit" />&nbsp;&nbsp;&nbsp;
+										<!-- <input js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Carica tutte le UDO'}" 
+										js:ajax="formId:'edit_folder_form',event:'onClick',params:{_eventId:'showAllUdoList'}" 
+										id="showAllUdoListButton" name="_eventId_showAllUdoList" value="Carica tutte le UDO" type="submit"/>	 -->		  				
+										</td>
+								</tr>
+								
+							</tbody>
+						</table>
+						<br />
+						
+						<!--lista holder -->
+						<div class="fixed_header_scrollable_table" id="listaUdoDiv" >
+							<div class="header-background"> </div>
+							<div class="fixed_header_table_inner">								
+								<table class="lista_fixed" id="listaUdoTable">
+									<tbody>
+										<tr>
+											<td class="listTableHeader">
+												<div class="fixed_header">
+													<input js:ajax="formId:'edit_folder_form',event:'onChange',params:{_eventId:'checkAllUdo'}" js:widget="widgetType:'dijit.form.CheckBox',widgetAttrs:{}" type="checkbox" th:field="*{allChecked}"/>
+												</div>
+											</td>
+											<td class="listTableHeader"><div class="fixed_header">Codice Univoco</div></td>
+											<td class="listTableHeader"><div class="fixed_header">Denominazione</div></td>
+											<td class="listTableHeader"><div class="fixed_header">Tipologia UDO</div></td>
+											<td class="listTableHeader"><div class="fixed_header">Discipline/Ambiti</div></td>
+											<td class="listTableHeader"><div class="fixed_header" style="line-height: normal;">Branche<br/>Attività (cod &ldquo;spe&rdquo;)</div></td>
+										</tr>
+										<tr  th:if="*{udoUoL} and *{!#lists.isEmpty(udoUoL)}" th:each="udo:*{udoUoL}" th:class="*{activeRowIndex}==${udoStat.index}?'active'" style="height:43px;" 
+												th:onclick="'setRowsClass(this);if(event.target.tagName==\'INPUT\')return true;Spring.remoting.submitForm(\'\',\'edit_folder_form\',{_eventId:\'setActiveRowIndex\',index:\'' + ${udoStat.index} + '\',changeCheck:false,checked:false});'"
+												th:attr="isudo=${udo.isUdo()}?'y':'n',uoid=${udo.uoClientId}" >
+											<td style="min-width:20px;">
+												<input js:widget="widgetType:'dijit.form.CheckBox',widgetAttrs:{onChange: 'updateUdoUoCheckbox(this, ${udo.isUdo()}, \'${udo.uoClientId}\', ${udoStat.index})' }" type="checkbox" th:id="${#ids.seq('udoCheck')}"
+														th:checked="*{checked(__${udoStat.index}__)}" />
+											</td>
+											<td th:style="${udo.isUdo()}?'background-color:#36943E;min-width:85px;':'font-weight:bold;min-width:325px;'" th:colspan="${udo.isUdo()}? '1' : '5'" th:text="${udo.isUdo()}?${udo.idUnivoco}:${udo.descr}">&nbsp;</td>
+											<td th:if="${udo.isUdo()}" th:text="${udo.descr}" style="min-width:85px;"></td>
+											<td th:if="${udo.isUdo()}" th:text="${udo.tipoUdoTempl.descr}" style="min-width:80px;"></td>
+											<td th:if="${udo.isUdo()}" style="min-width:80px;">
+												<span th:each="disciplina:${udo.bindUdoDisciplinas}" th:remove="tag">
+				 									<span th:remove="tag" th:if="${disciplinaStat.index} lt 5"><span th:remove="tag" th:text="${disciplina.descr}"></span><span th:remove="tag" th:text="${disciplinaStat.count ne 5 and disciplinaStat.count lt disciplinaStat.size}?', ':''"></span></span>
+				 									<span th:remove="tag" th:if="${disciplinaStat.index} eq 5">...</span>
+				
+												</span>
+											</td>
+											<td th:if="${udo.isUdo()}" style="min-width:120px;">
+				 								<span th:each="branca:${udo.brancaTempls}" th:remove="tag">
+				 									<span th:remove="tag" th:if="${brancaStat.index} lt 5"><span th:remove="tag" th:text="${branca.codice + ' - ' + branca.descr}"></span><span th:remove="tag" th:text="${brancaStat.count ne 5 and brancaStat.count lt brancaStat.size}?', ':''"></span></span>
+				 									<span th:remove="tag" th:if="${brancaStat.index} eq 5">...</span>
+												</span>		 					
+											</td>
+										</tr>
+									</tbody>
+								</table> 
+							</div>
+						</div>	
+							<!-- Dettaglio della UDO -->	
+							<!--  agjoni 31/01/2018 put listaUDOPabelDiv outside  listaUdoDiv, scrallable table was preventing it to display properly-->	
+							<div id="listaUDOPanelDiv">
+								<table id="listaUDOPanel" class="fieldset row" style="width:800px;margin-top:15px;" th:if="*{udoUoL} and *{!#lists.isEmpty(udoUoL)} and *{udoUoL[__*{activeRowIndex}__].isUdo()}">
+									<tbody>
+										<tr>
+											<td>
+												<table class="row">
+													<tbody>
+														<tr>
+															<td style="width:20%;" class="label">Cod. ULSS</td>
+															<td style="width:25%;">
+																<input style="width:100%;" id="codULSS" js:widget="widgetType:'dijit.form.TextBox'" type="text" th:value="*{udoUoL[__*{activeRowIndex}__].udoModel.codiceAziendaUlss}" readonly="readonly"/>
+															</td>
+															<td style="width:30%;" class="label secondo">Ex. Cod. ULSS</td>
+															<td style="width:25%;">
+																<input style="width:100%;" id="exCodULSS" js:widget="widgetType:'dijit.form.TextBox'" type="text" th:value="*{udoUoL[__*{activeRowIndex}__].udoModel.codiceUlssPrecedente}" readonly="readonly"/>
+															</td>											
+														</tr>											
+													</tbody>
+												</table>
+											</td>
+										</tr>					
+
+										<tr>
+											<td>
+												<table class="row">
+													<tbody>
+														<tr>
+															<td style="width:20%;" class="label">Codice struttura/Denominazione</td>
+															<td style="width:80%;">
+																<input style="width:100%;" id="codiceStruttura" js:widget="widgetType:'dijit.form.TextBox'" type="text" th:value="*{udoUoL[__*{activeRowIndex}__].udoModel.codiceFlussoMinisteriale} + ' - ' + *{udoUoL[__*{activeRowIndex}__].udoModel.descFlussoMinisteriale}" readonly="readonly"/>
+															</td>
+														</tr>
+													</tbody>
+												</table>
+											</td>
+										</tr>		
+
+										<tr>
+											<td>
+												<table class="row">
+													<tbody>
+														<tr>
+															<td style="width:20%;" class="label">Struttura Fisica</td>
+															<td style="width:80%;">
+																<input style="width:100%;" id="strutturaFisica" js:widget="widgetType:'dijit.form.TextBox'" type="text" th:value="*{udoUoL[__*{activeRowIndex}__].udoModel.sedeOperModel.strutturaModel.denominazione}" readonly="readonly"/>
+															</td>
+														</tr>
+													</tbody>
+												</table>
+											</td>
+										</tr>		
+										<tr>
+											<td>
+												<table class="row">
+													<tbody>
+														<tr>
+															<td style="width:20%;" class="label">Unità Operativa</td>
+															<td style="width:80%;">
+																<input style="width:100%;" id="unitaOrganizzativa" js:widget="widgetType:'dijit.form.TextBox'" type="text" th:value="*{udoUoL[__*{activeRowIndex}__].udoModel.uoModel.denominazioneConId}" readonly="readonly"/>
+															</td>
+														</tr>		
+														
+													</tbody>
+												</table>
+											</td>
+										</tr>			
+										<tr>
+											<td>
+												<table class="row">
+													<tbody>																		
+														<tr>
+															<td style="width:20%;" class="label">Sede Operativa</td>
+															<td style="width:80%;">
+																<input style="width:100%;" id="sedeOperativa" js:widget="widgetType:'dijit.form.TextBox'" type="text" th:value="*{udoUoL[__*{activeRowIndex}__].udoModel.sedeOperModel.denominazione}" readonly="readonly"/>
+															</td>
+														</tr>										
+													</tbody>
+												</table>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<table class="row">
+													<tbody>
+														<tr>
+															<td style="width:20%;" class="label">Indirizzo</td>
+															<td style="width:10%;">
+																<input style="width:100%;" id="via" js:widget="widgetType:'dijit.form.TextBox'" type="text" th:value="*{udoUoL[__*{activeRowIndex}__].udoModel.sedeOperModel.toponimoStradale}" readonly="readonly"/>
+															</td>
+															<td style="width:5%;" class="label secondo">&#160;</td>
+															<td style="width:45%;">
+																<input style="width:100%;" id="indirizzo" js:widget="widgetType:'dijit.form.TextBox'" type="text" th:value="*{udoUoL[__*{activeRowIndex}__].udoModel.sedeOperModel.viaPiazza}" readonly="readonly"/>
+															</td>
+															<td style="width:8%;" class="label secondo">Civico</td>
+															<td style="width:12%;">
+																<input style="width:100%;" id="civico" js:widget="widgetType:'dijit.form.TextBox'" type="text" th:value="*{udoUoL[__*{activeRowIndex}__].udoModel.sedeOperModel.civico}" readonly="readonly"/>
+															</td>																															
+														</tr>											
+													</tbody>
+												</table>
+											</td>
+										</tr>	
+										<tr>
+											<td>
+												<table class="row">
+													<tbody>
+														<tr>
+															<td style="width:20%;" class="label">Comune</td>
+															<td style="width:45%;">
+																<input style="width:100%;" id="comune" js:widget="widgetType:'dijit.form.TextBox'" type="text" th:value="*{udoUoL[__*{activeRowIndex}__].udoModel.sedeOperModel.comune}" readonly="readonly"/>
+															</td>
+															<td style="width:5%;" class="label secondo">CAP</td>
+															<td style="width:10%;">
+																<input style="width:100%;" id="cap" js:widget="widgetType:'dijit.form.TextBox'" type="text" th:value="*{udoUoL[__*{activeRowIndex}__].udoModel.sedeOperModel.cap}" readonly="readonly"/>
+															</td>
+															<td style="width:8%;" class="label secondo">Prov.</td>
+															<td style="width:12%;">
+																<input style="width:100%;" id="prov" js:widget="widgetType:'dijit.form.TextBox'" type="text" th:value="*{udoUoL[__*{activeRowIndex}__].udoModel.sedeOperModel.provincia}" readonly="readonly"/>
+															</td>																															
+														</tr>											
+													</tbody>
+												</table>
+											</td>
+										</tr>												
+										<tr>
+											<td>
+												<table class="row">
+													<tbody>																		
+														<tr>
+															<td style="width:20%;" class="label">Punto Fisico</td>
+															<td style="width:80%;">
+																<input style="width:100%;" id="puntoFisico" js:widget="widgetType:'dijit.form.TextBox'" type="text" th:value="*{udoUoL[__*{activeRowIndex}__].udoModel.sedeOperModel.tipoPuntoFisico}" readonly="readonly"/>
+															</td>
+														</tr>										
+													</tbody>
+												</table>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<table class="row">
+													<tbody>
+														<tr>
+															<td style="width:20%;" class="label">Edificio</td>
+															<td style="width:20%;">
+																<input style="width:100%;" id="stabilimento" js:widget="widgetType:'dijit.form.TextBox'" type="text" th:value="*{udoUoL[__*{activeRowIndex}__].udoModel.stabilimento}" readonly="readonly"/>
+															</td>
+															<td style="width:15%;" class="label secondo">Blocco</td>
+															<td style="width:45%;">
+																<input style="width:100%;" id="blocco" js:widget="widgetType:'dijit.form.TextBox'" type="text" th:value="*{udoUoL[__*{activeRowIndex}__].udoModel.blocco}" readonly="readonly"/>
+															</td>											
+														</tr>											
+													</tbody>
+												</table>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<table class="row">
+													<tbody>
+														<tr>
+															<td style="width:20%;" class="label">Piano</td>
+															<td style="width:20%;">
+																<input style="width:100%;" id="piano" js:widget="widgetType:'dijit.form.TextBox'" type="text" th:value="*{udoUoL[__*{activeRowIndex}__].udoModel.piano}" readonly="readonly"/>
+															</td>
+															<td style="width:15%;" class="label secondo">Progressivo</td>
+															<td style="width:45%;">
+																<input style="width:100%;" id="progressivo" js:widget="widgetType:'dijit.form.TextBox'" type="text" th:value="*{udoUoL[__*{activeRowIndex}__].udoModel.progressivo}" readonly="readonly"/>
+															</td>											
+														</tr>											
+													</tbody>
+												</table>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<table class="row">
+													<tbody>
+														<tr>
+															<td style="width:20%;" class="label">Direttore Sanitario</td>
+															<td style="width:25%;">
+																<input style="width:100%;" id="dirSanitarioCogn" js:widget="widgetType:'dijit.form.TextBox'" type="text" th:value="*{udoUoL[__*{activeRowIndex}__].udoModel.dirSanitarioCogn}" readonly="readonly"/>
+															</td>
+															<td style="width:25%;">
+																<input style="width:100%;" id="dirSanitarioNome" js:widget="widgetType:'dijit.form.TextBox'" type="text" th:value="*{udoUoL[__*{activeRowIndex}__].udoModel.dirSanitarioNome}" readonly="readonly"/>
+															</td>
+															<td style="width:30%;">
+																<input style="width:100%;" id="dirSanitarioCfisc" js:widget="widgetType:'dijit.form.TextBox'" type="text" th:value="*{udoUoL[__*{activeRowIndex}__].udoModel.dirSanitarioCfisc}" readonly="readonly"/>
+															</td>																															
+														</tr>											
+													</tbody>
+												</table>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<table class="row">
+													<tbody>																		
+														<tr>
+															<td style="width:20%;" class="label">Stato UDO</td>
+															<td style="width:20%;">
+																<input style="width:100%;" id="statoUdo" js:widget="widgetType:'dijit.form.TextBox'" type="text" th:value="*{udoUoL[__*{activeRowIndex}__].udoModel.stato}" readonly="readonly"/>
+															</td>
+															<td style="width:15%;" class="label secondo">Scadenza</td>
+															<td style="width:45%;">
+																<input style="width:100%;" id="scadenza" js:widget="widgetType:'dijit.form.TextBox'" type="text" th:if="*{udoUoL[__*{activeRowIndex}__].udoModel.scadenza ne null}" th:value="*{#dates.format(udoUoL[__*{activeRowIndex}__].udoModel.scadenza,'dd/MM/yyyy')}" readonly="readonly"/>
+															</td>	
+														</tr>										
+													</tbody>
+												</table>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<table class="row">
+													<tbody>
+														<tr>
+															<td style="width:20%;" class="label">Modulo</td>
+															<td style="width:80%;">
+																<input style="width:100%;" id="moduloUdo" js:widget="widgetType:'dijit.form.TextBox'" type="text" th:value="*{udoUoL[__*{activeRowIndex}__].udoModel.flagModulo}=='Y'?'Si':'No'" readonly="readonly"/>
+															</td>
+														</tr>		
+														
+													</tbody>
+												</table>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<table class="row">
+													<tbody>
+														<tr>
+															<td style="width:20%;" class="label">Week</td>
+															<td style="width:80%;">
+																<input style="width:100%;" id="moduloUdo" js:widget="widgetType:'dijit.form.TextBox'" type="text" th:value="*{udoUoL[__*{activeRowIndex}__].udoModel.week}=='Y'?'Si':'No'" readonly="readonly"/>
+															</td>
+														</tr>		
+														
+													</tbody>
+												</table>
+											</td>
+										</tr>
+										
+
+						<tr>
+							<td>
+								<table class="row">
+									<tbody th:if="*{udoUoL[__*{activeRowIndex}__].udoModel.fattProdUdoModels} and *{udoUoL[__*{activeRowIndex}__].udoModel.fattProdUdoModels.size() > 0}">
+										<tr th:each="fattProd:*{udoUoL[__*{activeRowIndex}__].udoModel.fattProdUdoModels}">
+											<td style="width:20%;" class="label"><span th:if="${fattProdStat.index} eq 0">Fattori produttivi</span></td>
+											<td style="width:80%;">
+												<input style="width:100%;" th:id="'fp' + ${fattProdStat.count}" js:widget="widgetType:'dijit.form.TextBox'" type="text" th:value="${fattProd.fullDescr}" readonly="readonly"/>
+											</td>
+										</tr>		
+										
+									</tbody>
+									<tbody th:if="*{udoUoL[__*{activeRowIndex}__].udoModel.fattProdUdoModels == null} or *{udoUoL[__*{activeRowIndex}__].udoModel.fattProdUdoModels.size() == 0}">
+										<tr>
+											<td style="width:20%;" class="label">Fattori produttivi</td>
+											<td style="width:80%;">
+												<input style="width:100%;" id="fattPr" js:widget="widgetType:'dijit.form.TextBox'" type="text" readonly="readonly"/>
+											</td>
+										</tr>		
+										
+									</tbody>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<table class="row">
+									<tbody th:if="*{udoUoL[__*{activeRowIndex}__].udoModel.bindUdoDisciplinas} and *{udoUoL[__*{activeRowIndex}__].udoModel.bindUdoDisciplinas.size() > 0}">
+										<tr th:each="disciplina:*{udoUoL[__*{activeRowIndex}__].udoModel.bindUdoDisciplinas}">
+											<td style="width:20%;" class="label"><span th:if="${disciplinaStat.index} eq 0">Discipline/Ambiti</span></td>
+											<td style="width:80%;">
+												<input style="width:100%;" th:id="'disc' + ${disciplinaStat.count}" js:widget="widgetType:'dijit.form.TextBox'" type="text" th:value="${disciplina.fullDescr}" readonly="readonly"/>
+											</td>
+										</tr>		
+										
+									</tbody>
+									<tbody th:if="*{udoUoL[__*{activeRowIndex}__].udoModel.bindUdoDisciplinas == null} or *{udoUoL[__*{activeRowIndex}__].udoModel.bindUdoDisciplinas.size() == 0}">
+										<tr>
+											<td style="width:20%;" class="label">Discipline/Ambiti</td>
+											<td style="width:80%;">
+												<input style="width:100%;" id="discip" js:widget="widgetType:'dijit.form.TextBox'" type="text" readonly="readonly"/>
+											</td>
+										</tr>		
+										
+									</tbody>
+								</table>
+							</td>
+						</tr>
+										
+										
+										<tr>
+											<td>
+												<table class="row">
+													<tbody>
+														<tr>
+															<td style="width:20%;" class="label">Note</td>
+															<td style="width:80%;">
+																<input style="width:100%;" id="annotazioniUdo" js:widget="widgetType:'dijit.form.TextBox'" type="text" th:value="*{udoUoL[__*{activeRowIndex}__].udoModel.annotations}" readonly="readonly"/>
+															</td>
+														</tr>		
+														
+													</tbody>
+												</table>
+											</td>
+										</tr>
+									</tbody> 
+								</table>
+							</div>
+						
+					</div>
+				
+				</div>
+				
+			</form>
+		</div>	
+		<div layout:fragment="footer" th:remove="tag">
+			<div th:substituteby="common :: defaultFooter"></div>
+		</div>
+  	
+	</body>
+	
+</html>
+
+

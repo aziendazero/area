@@ -1,0 +1,3234 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:js="http://www.3di.it/thymeleaf/springJsDecorator"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="templateFHMBWithForm">
+
+<head>
+<title>Dettaglio Fascicolo</title>
+
+<!-- CSS per layout con menu -->
+<link th:substituteby="common :: menuCSS" />
+<link th:substituteby="common :: tooltipster" />
+
+
+<style type="text/css">
+.claro .overrideSelectWidth .dijitSelectLabel {
+    width: 110px;
+    overflow: hidden;
+}
+.claro .overrideSelectWidthTipReq .dijitSelectLabel {
+    width: 60px;
+    overflow: hidden;
+}
+</style>
+
+</head>
+
+<body class="claro">
+
+	<div layout:fragment="header" th:remove="tag">
+		<div th:substituteby="common :: defaultHeader"></div>
+	</div>
+
+	<div layout:fragment="menu" th:remove="tag">
+		<div class="sidebar_holder">
+			<div class="menu-container sidebar-left">
+				<!-- menu -->
+				<div class="menu-container-level-1" >
+					<div class="menu-commandset-level-1" >
+						<img class="menu-commandset-branchimage-level-1"/>
+						<!-- <img src="images/openedslev1.gif" class="menu-commandset-image-level-1"/>  -->
+						<a class="menu-commandset-link-level-1" >Menu</a>
+						<!-- <img style="float: right; margin:2px 2px 0 0;" src="images/openedslev1.gif" class="menu-commandset-imagedx-level-1" />  -->
+					</div>
+	
+					<div style="" class="submenu-container-level-1" >
+						<div class="menu-container-level-2" >
+							<div class="menu-command-level-2" >
+								<img src="images/cmdmlev2.gif" class="menu-command-branchimage-level-2"/>
+								<img style="display: none;" class="menu-command-image-level-2" />
+								<a onclick="displayOpenwaitmsg();" class="menu-command-link-level-2" th:href="${flowExecutionUrl} + '&amp;_eventId=home'">Home</a>
+							</div>
+						</div>
+					</div>
+					<div th:if="${userBean.mostraElencoDomandeConTask()}" style="" class="submenu-container-level-1" >
+						<div class="menu-container-level-2" >
+							<div class="menu-command-level-2" >
+								<img src="images/cmdmlev2.gif" class="menu-command-branchimage-level-2"/>
+								<img style="display: none;" class="menu-command-image-level-2" />
+								<a onclick="displayOpenwaitmsg();" class="menu-command-link-level-2" th:href="${flowExecutionUrl} + '&amp;_eventId=home&amp;avtask=1'">Domande con azioni da eseguire</a>
+							</div>
+						</div>
+					</div>				
+					<div th:if="${userBean.REGIONE}" style="" class="submenu-container-level-1" >
+						<div class="menu-container-level-2" >
+							<div class="menu-command-level-2" >
+								<img src="images/cmdmlev2.gif" class="menu-command-branchimage-level-2"/>
+								<img style="display: none;" class="menu-command-image-level-2" />
+								<a onclick="displayOpenwaitmsg();" class="menu-command-link-level-2" th:href="${flowExecutionUrl} + '&amp;_eventId=listeVerifica'">Liste di Verifica</a>
+							</div>
+						</div>
+					</div>				
+					<div th:if="${userBean.REGIONE}" style="" class="submenu-container-level-1" >
+						<div class="menu-container-level-2" >
+							<div class="menu-command-level-2" >
+								<img src="images/cmdmlev2.gif" class="menu-command-branchimage-level-2"/>
+								<img style="display: none;" class="menu-command-image-level-2" />
+								<a onclick="displayOpenwaitmsg();" class="menu-command-link-level-2" th:href="${flowExecutionUrl} + '&amp;_eventId=titolari'">Titolari atti</a>
+							</div>
+						</div>
+					</div>				
+
+					<div th:if="${userBean.TITOLARE or userBean.OPERATORE_TITOLARE}" style="" class="submenu-container-level-1" >
+						<div class="menu-container-level-2" >
+							<div class="menu-command-level-2" >
+								<img src="images/cmdmlev2.gif" class="menu-command-branchimage-level-2"/>
+								<img style="display: none;" class="menu-command-image-level-2" />
+								<a onclick="displayOpenwaitmsg();" class="menu-command-link-level-2" th:href="${flowExecutionUrl} + '&amp;_eventId=insertFolder'">Inserimento nuova domanda</a>
+							</div>
+						</div>
+					</div>					
+						<div style="" class="submenu-container-level-1" >
+							<div class="menu-container-level-2" >
+								<div class="menu-command-level-2" >
+									<img src="images/cmdmlev2.gif" class="menu-command-branchimage-level-2"/>
+									<img style="display: none;" class="menu-command-image-level-2" />
+									<a class="menu-command-link-level-2" th:href="${properties.getProperty('san_reg_ven.url')}" target="_blank">Torna alla sezione anagrafica</a>						
+								</div>
+							</div>
+						</div>					
+					<div style="" class="submenu-container-level-1" >
+						<div class="menu-container-level-2" >
+							<div class="menu-command-level-2" >
+								<img src="images/cmdmlev2.gif" class="menu-command-branchimage-level-2"/>
+								<img style="display: none;" class="menu-command-image-level-2" />
+								<a onclick="displayOpenwaitmsg();" class="menu-command-link-level-2" th:href="${flowExecutionUrl} + '&amp;_eventId=logout'">Logout</a>							
+							</div>
+						</div>
+					</div>					
+				</div>
+				
+				<!-- ricerca -->
+				<div th:remove="tag" th:if="${!userBean.VALUTATORE_INTERNO} and *{fascicolo.domandaClienId}!=''">
+					<div style="margin-top:20px;" class="frame-toolbar-container">
+						<span class="panel-toolbar-zone"> <span
+							class="frame-toolbar-caption">Ricerca su tutti i requisiti</span>
+						</span>
+					</div>
+					<table class="lista" style="width:100%;">
+						<tbody>
+							<tr>
+								<td class="listTableHeader">Id univoco REQ</td>
+								<td style="text-align:center;">
+									<input th:field="*{requisitoSearchBean.subStringIdUnivocoReq}" style="width: 100%;"
+										id="idIdUnivocoReq" js:widget="widgetType:'dijit.form.TextBox'" type="text" />
+								</td>
+							</tr>
+							<tr>
+								<td class="listTableHeader">Tipo requisito</td>
+								<td style="text-align:center;" class="overrideSelectWidthTipReq">
+					  				<select th:field="*{requisitoSearchBean.subStringTipoReq}" js:widget="widgetType:'dijit.form.Select',widgetAttrs:{forceWidth:true}" style="width: 90px;">
+										<option value="">--------------</option>
+									  	<option value="generale$">generale</option>
+									  	<option value="specifico$funzionale">spec. - funzionale</option>
+									  	<option value="specifico$tecnologico">spec. - tecnologico</option>
+									  	<option value="specifico$organizzativo">spec. - organizzativo</option>
+									  	<option value="specifico$strutturale">spec. - strutturale</option>
+									  	<option value="specifico$impiantistico">spec. - impiantistico</option>
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<td class="listTableHeader">Testo requisito</td>
+								<td style="text-align:center;">
+									<input th:field="*{requisitoSearchBean.subStringTestoReq}" style="width: 100%;"
+										id="idTestoReq" js:widget="widgetType:'dijit.form.TextBox'" type="text" />
+								</td>
+							</tr>
+							
+							<tr>
+								<td class="listTableHeader">Denominazione UO/UDO</td>
+								<td style="text-align:center;">
+									<input th:field="*{requisitoSearchBean.subStringDenominazione}" style="width: 100%;"
+										id="idDenominazioneUoUdoReq" js:widget="widgetType:'dijit.form.TextBox'" type="text" />
+								</td>
+							</tr>
+
+							<tr>
+								<td class="listTableHeader">Tipologia UDO</td>
+								<td style="text-align:center;">
+									<input th:field="*{requisitoSearchBean.subStringTipologiaUDO}" style="width: 100%;"
+										id="idTipologiaUDOReq" js:widget="widgetType:'dijit.form.TextBox'" type="text" />
+								</td>
+							</tr>
+
+							<tr>
+								<td class="listTableHeader">Edificio</td>
+								<td style="text-align:center;">
+									<input th:field="*{requisitoSearchBean.subStringStabilimento}" style="width: 100%;"
+										id="idStabilimentoUoUdoReq" js:widget="widgetType:'dijit.form.TextBox'" type="text" />
+								</td>
+							</tr>
+							<tr>
+								<td class="listTableHeader">Blocco</td>
+								<td style="text-align:center;">
+									<input th:field="*{requisitoSearchBean.subStringBlocco}" style="width: 100%;"
+										id="idBloccoUoUdoReq" js:widget="widgetType:'dijit.form.TextBox'" type="text" />
+								</td>
+							</tr>
+							<tr>
+								<td class="listTableHeader">Piano</td>
+								<td style="text-align:center;">
+									<input th:field="*{requisitoSearchBean.subStringPiano}" style="width: 100%;"
+										id="idPianoUoUdoReq" js:widget="widgetType:'dijit.form.TextBox'" type="text" />
+								</td>
+							</tr>
+
+							<tr>
+								<td class="listTableHeader">Progressivo</td>
+								<td style="text-align:center;">
+									<input th:field="*{requisitoSearchBean.subStringProgressivo}" style="width: 100%;"
+										id="idProgressivoUoUdoReq" js:widget="widgetType:'dijit.form.TextBox'" type="text" />
+								</td>
+							</tr>
+
+							<tr>
+								<td class="listTableHeader">Sede Operativa</td>
+								<td style="text-align:center;">
+									<input th:field="*{requisitoSearchBean.subStringSedeOperativa}" style="width: 100%;"
+										id="idSedeOperativaUoUdoReq" js:widget="widgetType:'dijit.form.TextBox'" type="text" />
+								</td>
+							</tr>
+							
+							<tr th:if="${!userBean.COLLABORATORE_VALUTAZIONE}">
+								<td class="listTableHeader">Assegnazione</td>
+								<td style="text-align:center;">
+									<input th:field="*{requisitoSearchBean.subStringAssegnazioneReq}" style="width: 100%;"
+										id="idAssegnazioneReq" js:widget="widgetType:'dijit.form.TextBox'" type="text" />
+								</td>
+							</tr>
+							<tr>
+								<td class="listTableHeader">Autovalutazione</td>
+								<td style="text-align:center;">
+									<input th:field="*{requisitoSearchBean.subStringAutovalutazioneReq}" style="width: 100%;"
+										id="idAutovalutazioneReq" js:widget="widgetType:'dijit.form.TextBox'" type="text" />
+								</td>
+							</tr>
+							<tr>
+								<td class="listTableHeader">Note</td>
+								<td style="text-align:center;">
+									<input th:field="*{requisitoSearchBean.subStringNoteReq}" style="width: 100%;"
+										id="idNoteReq" js:widget="widgetType:'dijit.form.TextBox'" type="text" />
+								</td>
+							</tr>
+							
+							<tr>
+								<td class="listTableHeader">Verificatore</td>
+								<td style="text-align:center;">
+									<input th:field="*{requisitoSearchBean.subStringVerificatoreReq}" style="width: 100%;"
+										id="idVerificatoreReq" js:widget="widgetType:'dijit.form.TextBox'" type="text" />
+								</td>
+							</tr>
+							<tr>
+								<td class="listTableHeader">Valutazione Verificatore</td>
+								<td style="text-align:center;">
+									<input th:field="*{requisitoSearchBean.subStringValutazioneVerificatoreReq}" style="width: 100%;"
+										id="idValutazioneVerificatoreReq" js:widget="widgetType:'dijit.form.TextBox'" type="text" />
+								</td>
+							</tr>
+							<tr>
+								<td class="listTableHeader">Note Verificatore</td>
+								<td style="text-align:center;">
+									<input th:field="*{requisitoSearchBean.subStringNoteVerificatoreReq}" style="width: 100%;"
+										id="idNoteVerificatoreReq" js:widget="widgetType:'dijit.form.TextBox'" type="text" />
+								</td>
+							</tr>
+							
+							<tr>
+								<td class="listTableHeader">Senza risposta</td>
+								<td style="text-align:center;">
+									<input type="checkbox" 
+										th:field="*{requisitoSearchBean.senzaValutazione}" 
+										id="idreqsenzaAutoVal"
+										js:widget="widgetType:'dijit.form.CheckBox',widgetAttrs:{}" />
+								</td>
+							</tr>
+							<tr>
+								<td class="listTableHeader">Non assegnati</td>
+								<td style="text-align:center;">
+									<input type="checkbox" 
+										th:field="*{requisitoSearchBean.nonAssegnati}" 
+										id="idreqNonAssegnati"
+										js:widget="widgetType:'dijit.form.CheckBox',widgetAttrs:{}" />
+								</td>
+							</tr>
+							
+							<tr>
+								<td class="listTableHeader">Senza risposta verificatore</td>
+								<td style="text-align:center;">
+									<input type="checkbox" 
+										th:field="*{requisitoSearchBean.senzaVerifica}" 
+										id="idreqsenzaVer"
+										js:widget="widgetType:'dijit.form.CheckBox',widgetAttrs:{}" />
+								</td>
+							</tr>
+							<tr>
+								<td class="listTableHeader">Non assegnati verifica</td>
+								<td style="text-align:center;">
+									<input type="checkbox" 
+										th:field="*{requisitoSearchBean.nonAssegnatiVerifica}" 
+										id="idreqNonAssegnatiVer"
+										js:widget="widgetType:'dijit.form.CheckBox',widgetAttrs:{}" />
+								</td>
+							</tr>
+							
+							
+							<tr>
+								<td colspan="2" style="text-align:center;">
+									<input
+										js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Applica filtri'}"
+										js:ajax="formId:'form',event:'onClick',params:{_eventId:'filtraRequisiti'}"
+										id="filtraRequisitiButton" name="_eventId_filtraRequisiti" value="Applica filtri" type="submit" />								
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				
+				<!-- assegnazione massiva -->
+				<div th:remove="tag" th:if="*{fascicolo.folderType}=='domanda_titolare' and ${theAclService.userCanEditDomanda(userBean.ruolo,pageBean.fascicolo.folderStatus)}">
+					<div style="margin-top:20px;" class="frame-toolbar-container">
+						<span class="panel-toolbar-zone"> <span
+							class="frame-toolbar-caption">Assegna tutti i selezionati</span>
+						</span>
+					</div>
+					<table class="lista" style="width:100%;">
+						<tbody>
+							<tr>
+								<td class="listTableHeader">UO</td>
+								<td style="text-align:center;" class="overrideSelectWidth">
+					  				<select th:field="*{uoSelected}" js:widget="widgetType:'dijit.form.Select',widgetAttrs:{forceWidth:true,onChange:function(b){Spring.remoting.submitForm('','form',{_eventId:'updatePersonaL'});}}" style="width:140px;">
+										<option value="">------------------------------</option>
+										<option th:each="uo:*{uoL}" th:value="${uo.id.clientid}" th:text="${uo.denominazioneConId}"></option>
+									</select>							
+								</td>
+							</tr>
+							<tr>
+								<td class="listTableHeader">Persona</td>
+								<td style="text-align:center;" class="overrideSelectWidth">
+					  				<select th:field="*{personaSelected}" js:widget="widgetType:'dijit.form.Select'" style="width:140px;">
+										<option value="">------------------------------</option>
+										<option th:each="persona:*{personaL}"  th:value="${persona.utenteModelClientid}" th:text="${persona.cognomeNome}"></option>
+									</select>
+								</td>
+							</tr>						
+							<tr>
+								<td colspan="2" style="text-align:center;">							
+									<input
+										js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Assegna'}"
+										js:ajax="formId:'form',event:'onClick',params:{_eventId:'assegnaRequisitoAll'}"
+										id="assegnaRequisitoAllButton" name="_eventId_assegnaRequisitoAll" value="Assegna" type="submit" />
+									<input
+										js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Invia Notifica'}"
+										js:ajax="formId:'form',event:'onClick',params:{_eventId:'notificaRequisitoAll'}"
+										id="notificaRequisitoAllButton" name="_eventId_notificaRequisitoAll" value="Invia Notifica" type="submit" />																					
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				
+				<!-- assegnazione massiva per utente appartenente ad uo -->
+				<div th:remove="tag" th:if="*{fascicolo.folderType}=='domanda_titolare' and ${theAclService.userCanEditDomanda(userBean.ruolo,pageBean.fascicolo.folderStatus)}">
+					<div style="margin-top:20px;" class="frame-toolbar-container">
+						<span class="panel-toolbar-zone"> <span
+							class="frame-toolbar-caption">Assegnazione massiva tramite UO</span>
+						</span>
+					</div>
+					<table class="lista" style="width:100%;">
+						<tbody>
+							<tr>
+								<td style="text-align:center;">							
+									<input
+										js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Assegnazione Massiva'}"
+										js:ajax="formId:'form',event:'onClick',params:{_eventId:'assegnaRequisitiMassivi'}"
+										id="assegnaRequisitiMassiviButton" name="_eventId_assegnaRequisitiMassivi" value="Assegnazione Massiva" type="submit" />
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+
+				<!-- assegnazione verifica massiva -->
+				<div th:remove="tag" th:if="${theAclService.userCanAssegnareVerificaDomanda(userBean,pageBean.fascicolo.folderStatus,pageBean.verificatoreTeamLeader)}">
+					<div style="margin-top:20px;" class="frame-toolbar-container">
+						<span class="panel-toolbar-zone"> <span
+							class="frame-toolbar-caption">Assegna verifica ai selezionati</span>
+						</span>
+					</div>
+					<table class="lista" style="width:100%;">
+						<tbody>
+							<tr>
+								<td class="listTableHeader">Persona</td>
+								<td style="text-align:center;" class="overrideSelectWidth">
+					  				<select th:field="*{personaSelected}" js:widget="widgetType:'dijit.form.Select'" style="width:140px;">
+										<option value="">------------------------------</option>
+										<option th:each="utenteModel:*{teamVerificatori}"  th:value="${utenteModel.clientid}" th:text="${utenteModel.anagraficaUtenteModel.cognomeNome}"></option>
+									</select>
+								</td>
+							</tr>						
+							<tr>
+								<td colspan="2" style="text-align:center;">							
+									<input
+										js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Applica'}"
+										js:ajax="formId:'form',event:'onClick',params:{_eventId:'assegnaVerificaRequisitoAll'}"
+										id="assegnaVerificaRequisitoAllButton" name="_eventId_assegnaVerificaRequisitoAll" value="Applica" type="submit" />											
+									<input
+										js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Invia Notifica'}"
+										js:ajax="formId:'form',event:'onClick',params:{_eventId:'notificaVerificaRequisitoAll'}"
+										id="notificaVerificaRequisitoAllButton" name="_eventId_notificaVerificaRequisitoAll" value="Invia Notifica" type="submit" />																					
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<!-- copia/incolla autovalutazione -->
+				<div id="copyPasteAutovalutazioneDiv">
+					<div th:if="*{fascicolo.folderType}=='domanda_titolare' and ${theAclService.userCanEditDomanda(userBean.ruolo,pageBean.fascicolo.folderStatus)}">
+						<div style="margin-top:20px;" class="frame-toolbar-container">
+							<span class="panel-toolbar-zone"> <span
+								class="frame-toolbar-caption">Copia/Incolla Autovalutazione</span>
+							</span>
+						</div>
+						<table class="lista" style="width:100%;">
+							<tbody>					
+								<tr>
+									<td colspan="2" style="text-align:center;">							
+										<div th:if="*{copiedUdoUoInst eq null}">Copiare una UDO/UO/ST/ED dall'elenco tramite l'apposito pulsante <img style="vertical-align:bottom;height:16px;" border="0" src="images/copy.gif" /></div>	
+										<div th:if="*{copiedUdoUoInst ne null}">Copiata Autovalutazione della UDO/UO/ST/ED: <span style="font-weight:bold;" th:text="*{copiedUdoUoInst.descr}">Denominazione</span></div>
+										<div style="margin-top:5px;" th:if="*{copiedUdoUoInst ne null}">Selezionare le UDO/UO/ST/ED dall'elenco e premere il pulsante Incolla</div>
+										<div style="margin-top:5px;" th:if="*{copiedUdoUoInst ne null}">
+											<input
+												th:if="*{!#maps.isEmpty(checkM)}"
+												js:confirm="event:'onclick',message:'#{crud.confirm}'"
+												js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Incolla'}"
+												js:ajax="formId:'form',event:'onClick',params:{_eventId:'pasteAutovalutazione'}"
+												id="incollaAutovalutazione" name="_eventId_pasteAutovalutazione"
+												value="Incolla" type="submit" />
+										</div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>												
+							
+				<!-- pulsantiera utente non COLLABORATORE_VALUTAZIONE -->
+				<div style="width:100%;text-align:center;margin-top:15px;" th:if="${!userBean.COLLABORATORE_VALUTAZIONE} and *{fascicolo.folderType}=='domanda_titolare'">
+					<input
+						js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Esporta selezione in pdf'}"
+						js:ajax="formId:'form',event:'onClick',params:{_eventId:'esportaSelezionatiToPdf'}"
+						id="esportaSelezionatiToPdf"
+						name="_eventId_esportaSelezionatiPdf" value="Esporta selezionati in pdf" type="submit" />									
+					<input
+						js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Esporta la domanda in pdf'}"
+						js:ajax="formId:'form',event:'onClick',params:{_eventId:'esportaDomandaToPdf'}"
+						id="esportaDomandaToPdf"
+						name="_eventId_esportaPdf" value="Esporta la domanda in pdf" type="submit" />
+
+					<input
+						th:if="${theAclService.userCanExportVerifica(pageBean.fascicolo.folderStatus, userBean)}"
+						js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Esporta verifica domanda in pdf'}"
+						js:ajax="formId:'form',event:'onClick',params:{_eventId:'esportaVerificaDomandaToPdf'}"
+						id="esportaVerificaDomandaToPdf"
+						name="_eventId_esportaVerificaDomandaPdf" value="Esporta verifica domanda in pdf" type="submit" />
+					<input
+						th:if="${theAclService.userCanExportVerifica(pageBean.fascicolo.folderStatus, userBean)}"
+						js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Esporta verifica selezione in pdf'}"
+						js:ajax="formId:'form',event:'onClick',params:{_eventId:'esportaVerificaSelezionatiToPdf'}"
+						id="esportaVerificaSelezionatiToPdf"
+						name="_eventId_esportaVerificaSelezionatiToPdf" value="Esporta verifica selezione in pdf" type="submit" />
+
+					<input
+						th:if="${theAclService.userCanCreateRapportoVerifica(userBean,pageBean.fascicolo.folderStatus,pageBean.verificatoreTeamLeader)}"
+						js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Esporta rapporto di verifica'}"
+						js:ajax="formId:'form',event:'onClick',params:{_eventId:'esportaRapportoDiVerifica'}"
+						id="esportaRapportoDiVerifica"
+						name="_eventId_esportaRapportoDiVerifica" value="Esporta rapporto di verifica" type="submit" />
+
+					<!-- input
+						js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Controllo posti letto'}"
+						js:ajax="formId:'form',event:'onClick',params:{_eventId:'checkPostiLettoDomanda'}"
+						id="checkPostiLettoDomanda"
+						name="_eventId_checkPostiLettoDomanda" value="Controllo completezza Udo" type="submit" / -->
+					<th:block th:if="${theUtilService.isGestioneListeRequisitiGeneraliSRActiveForDomanda(pageBean.getDomandaCreation())}">
+					<input
+						js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'AV-Punteggio per RG'}"
+						js:ajax="formId:'form',event:'onClick',params:{_eventId:'reportValutazioneRG'}"
+						id="reportValutazioneRG"
+						name="_eventId_reportValutazioneRG" value="AV-Punteggio per RG" type="submit" />
+					<input th:if="${pageBean.isDomandaPassataDaStatiVerifica()}"
+						js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'VdV-Punteggio per RG'}"
+						js:ajax="formId:'form',event:'onClick',params:{_eventId:'reportVerificaRG'}"
+						id="reportVerificaRG"
+						name="_eventId_reportVerificaRG" value="VdV-Punteggio per RG" type="submit" />
+						<th:block th:if="*{fascicolo.oggetto == 'Accreditamento'}">
+						<input
+							js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'AV-Punteggio per Area'}"
+							js:ajax="formId:'form',event:'onClick',params:{_eventId:'reportValutazioneRGArea'}"
+							id="reportValutazioneRGArea"
+							name="_eventId_reportValutazioneRGArea" value="AV-Punteggio per Area" type="submit" />
+						<input th:if="${pageBean.isDomandaPassataDaStatiVerifica()}"
+							js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'VdV-Punteggio per Area'}"
+							js:ajax="formId:'form',event:'onClick',params:{_eventId:'reportVerificaRGArea'}"
+							id="reportVerificaRGArea"
+							name="_eventId_reportVerificaRGArea" value="VdV-Punteggio per Udo" type="submit" />
+
+						<input
+							js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'AV-Punteggio per UdO'}"
+							js:ajax="formId:'form',event:'onClick',params:{_eventId:'reportValutazioneUdo'}"
+							id="reportValutazioneUdo"
+							name="_eventId_reportValutazioneUdo" value="AV-Punteggio per UdO" type="submit" />
+						<input th:if="${pageBean.isDomandaPassataDaStatiVerifica()}"
+							js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'VdV-Punteggio per UdO'}"
+							js:ajax="formId:'form',event:'onClick',params:{_eventId:'reportVerificaUdo'}"
+							id="reportVerificaUdo"
+							name="_eventId_reportVerificaUdo" value="VdV-Punteggio per UdO" type="submit" />
+
+						<input
+							js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'AV-Punteggio Complessivo'}"
+							js:ajax="formId:'form',event:'onClick',params:{_eventId:'reportValutazioneComplessiva'}"
+							id="reportValutazioneComplessiva"
+							name="_eventId_reportValutazioneComplessiva" value="AV-Punteggio Complessivo" type="submit" />
+						<input th:if="${pageBean.isDomandaPassataDaStatiVerifica()}"
+							js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'VdV-Punteggio Complessivo'}"
+							js:ajax="formId:'form',event:'onClick',params:{_eventId:'reportVerificaComplessiva'}"
+							id="reportVerificaComplessiva"
+							name="_eventId_reportVerificaComplessiva" value="VdV-Punteggio Complessivo" type="submit" />
+						</th:block>
+					</th:block>
+				</div>				
+				
+				<div style="width:100%;text-align:center" th:if="*{fascicolo.folderType}=='domanda_titolare' and ${theAclService.userCanCheckTipoUdo22Domanda(userBean.ruolo,pageBean.fascicolo.folderStatus)}">
+					<!-- <input
+						js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Controllo completezza Udo'}"
+						js:ajax="formId:'form',event:'onClick',params:{_eventId:'checkTipoUdo22Domanda'}"
+						id="checkTipoUdo22Domanda"
+						name="_eventId_checkTipoUdo22Domanda" value="Controllo completezza Udo" type="submit" /> -->
+					<input
+						js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Controllo completezza Udo in csv'}"
+						js:ajax="formId:'form',event:'onClick',params:{_eventId:'checkTipoUdo22DomandaToCsv'}"
+						id="checkTipoUdo22DomandaToCsv"
+						name="_eventId_checkTipoUdo22DomandaToCsv" value="Controllo completezza Udo in csv" type="submit" />
+				</div>
+				
+				<div style="width:100%;text-align:center" th:if="*{fascicolo.folderType}=='domanda_titolare' and ${theAclService.userCanCheckPostiLetto(userBean.ruolo,pageBean.fascicolo.folderStatus)}">
+					<input
+						js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Controllo posti letto'}"
+						js:ajax="formId:'form',event:'onClick',params:{_eventId:'checkPostiLettoDomanda'}"
+						id="checkPostiLettoDomanda"
+						name="_eventId_checkPostiLettoDomanda" value="Controllo completezza Udo" type="submit" />
+				</div>
+				
+				<!-- Added button Esporta controllo posti letto -->
+				<div style="width:100%;text-align:center" th:if="*{fascicolo.folderType}=='domanda_titolare' and ${theAclService.userCanCheckPostiLetto(userBean.ruolo,pageBean.fascicolo.folderStatus)}">
+					<input
+						js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Esporta controllo posti letto'}"
+						js:ajax="formId:'form',event:'onClick',params:{_eventId:'esportPostiLettoDomanda'}"
+						id="esportPostiLettoDomanda"
+						name="_eventId_esportPostiLettoDomanda" value="Esporta controllo posti letto" type="submit" />
+				</div>
+
+				<div style="width:100%;text-align:center" th:if="*{fascicolo.folderType}=='domanda_titolare' and ${theAclService.userCanInsertNoteMancanzaTipiUdo(userBean.ruolo,pageBean.fascicolo.folderStatus)}">
+					<input
+						js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Segnala la mancanza di tipi Udo'}"
+						js:ajax="formId:'form',event:'onClick',params:{_eventId:'editNoteMancanzaTipiUdo'}"
+						id="editNoteMancanzaTipiUdo"
+						name="_eventId_editNoteMancanzaTipiUdo" value="Segnala la mancanza di tipi Udo" type="submit" />
+				</div>
+				
+				<div style="width:100%;text-align:center" th:if="*{fascicolo.folderType}=='domanda_titolare'">
+					<input
+						js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Esporta Udo in csv'}"
+						js:ajax="formId:'form',event:'onClick',params:{_eventId:'esportaUdoCsv'}"
+						id="esportaUdoCsv"
+						name="_eventId_esportaUdoCsv" value="Esporta Udo in csv" type="submit" />
+				</div>
+				
+				<div style="width:100%;text-align:center" th:if="*{fascicolo.folderType}=='domanda_titolare' and ${theAclService.userCanGetCsvCompareUdo(userBean,pageBean)}">
+					<input
+						js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Esporta confronto Udo in csv'}"
+						js:ajax="formId:'form',event:'onClick',params:{_eventId:'esportaConfrontoUdoCsv'}"
+						id="esportaConfrontoUdoCsv"
+						name="_eventId_esportaConfrontoUdoCsv" value="Esporta confronto Udo in csv" type="submit" />
+				</div>
+
+				<div style="width:100%;text-align:center" th:if="*{fascicolo.folderType}=='domanda_titolare' and ${theAclService.userCanGetCsvRelazioneConclusiva(userBean,pageBean)}">
+					<input
+						js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Esporta report istruttoria Udo'}"
+						js:ajax="formId:'form',event:'onClick',params:{_eventId:'esportaCsvReportIstruttoriaUdo'}"
+						id="esportaCsvReportIstruttoriaUdo"
+						name="_eventId_esportaCsvReportIstruttoriaUdo" value="Esporta report istruttoria Udo" type="submit" />
+				</div>
+
+				<div style="width:100%;text-align:center" th:if="*{fascicolo.folderType}=='domanda_titolare' and ${theAclService.userCanGetTxtRelazioneConclusiva(userBean,pageBean)}">
+					<input
+						js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Esporta relazione conclusiva'}"
+						js:ajax="formId:'form',event:'onClick',params:{_eventId:'esportaRelazioneConclusiva'}"
+						id="esportaRelazioneConclusiva"
+						name="_eventId_esportaRelazioneConclusiva" value="Esporta relazione conclusiva" type="submit" />
+				</div>
+				
+				<div style="width:100%;text-align:center" th:if="false">
+					<input
+						js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Modifica delibera'}"
+						js:ajax="formId:'form',event:'onClick',params:{_eventId:'editDelibera'}"
+						id="editDelibera"
+						name="_eventId_editDelibera" value="Modifica delibera" type="submit" />
+				</div>
+			</div> <!-- menu-container -->
+		</div> <!-- sidebar_holder -->  	
+	</div>
+
+	<div layout:fragment="body" th:remove="tag">
+
+			<div class="fieldset_holder">
+
+				<!-- header videata -->
+				<div class="form-caption-container">
+					<span class="form-caption-text"
+						th:text="'Fascicolo del titolare: ' + *{titolareFolderSubject}">Fascicolo del titolare</span>
+				</div>
+				
+				<div id="messages">
+					<div style="border:1px solid red;padding:10px;margin:10px 0px 10px 0px" th:if="${#fields.hasErrors('messages')}">
+						<div th:each="error:${#fields.errors('messages')}" style="margin-top:1px;"><img style="vertical-align:bottom;" border="0" src="images/mstop_sm.gif" /> <span th:text="${error}"/></div>
+					</div>
+				</div>					
+				
+				<div class="form-frames-container">
+					<div class="frame-container">
+						<div class="frame-toolbar-container">
+							<span class="panel-toolbar-zone"> <span
+								style="float: right; margin-right: 20px;"
+								class="frame-toolbar-caption"> <input
+									style="border: 0px solid white; vertical-align: middle; margin-bottom: 2px;"
+									th:src="'images/pagination/first_' + *{fascicolo.canFirst} + '.gif'"
+									js:ajax="formId:'form',event:'onclick',params:{_eventId:'procFirst'}"
+									id="procFirst" type="image" /> <input
+									style="border: 0px solid white; vertical-align: middle; margin-bottom: 2px;"
+									th:src="'images/pagination/prev_' + *{fascicolo.canPrev} + '.gif'"
+									js:ajax="formId:'form',event:'onclick',params:{_eventId:'procPrev'}"
+									id="procPrev" type="image" /> <span
+									style="margin: 0px 5px 0px 5px;"
+									th:text="'Fascicolo ' + *{fascicolo.pageIndex} + ' di ' + *{fascicolo.pageCount}">Pag
+										0 di 0</span> <input
+									style="border: 0px solid white; vertical-align: middle; margin-bottom: 2px;"
+									th:src="'images/pagination/next_' + *{fascicolo.canNext} + '.gif'"
+									js:ajax="formId:'form',event:'onclick',params:{_eventId:'procNext'}"
+									id="procNext" type="image" /> <input
+									style="border: 0px solid white; vertical-align: middle; margin-bottom: 2px;"
+									th:src="'images/pagination/last_' + *{fascicolo.canLast} + '.gif'"
+									js:ajax="formId:'form',event:'onclick',params:{_eventId:'procLast'}"
+									id="procLast" type="image" />
+							</span> <span class="frame-toolbar-caption"> <img
+									th:if="*{fascicolo.folderType}=='titolare'"
+									title="Fascicolo del Titolare" border="0"
+									src="resources/images/folder24_titolare.png" /> <img
+									th:if="*{fascicolo.folderType}=='atti_titolare'"
+									title="Fascicolo degli Atti" border="0"
+									src="resources/images/folder24_atti.png" /> <img
+									th:if="*{fascicolo.folderType}=='domanda_titolare'"
+									title="Fascicolo di Procedimento" border="0"
+									src="resources/images/folder24_proc.png" /> <span
+									style="vertical-align: top;" th:text="*{fascicolo.oggetto}"></span>
+							</span>
+							</span>
+						</div>
+					</div>
+				</div>
+				<!-- form-frames-container -->
+
+				<table class="fieldset row" style="width: 850px">
+					<tbody>
+						<tr>
+							<td>
+								<table class="row">
+									<tbody>
+										<tr>
+											<td style="width: 15%;" class="label">Data creazione</td>
+											<td style="width: 85%;"><input style="width: 100px;"
+												id="dataCreazione"
+												js:widget="widgetType:'dijit.form.TextBox'" type="text"
+												th:value="*{fascicolo.dataCreazione}" readonly="readonly" />
+												<input type="hidden" id="domandaClientId" th:value="*{fascicolo.domandaClienId}" />
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</td>
+						</tr>
+
+						<tr th:if="*{fascicolo.folderType}=='domanda_titolare'">
+							<td>
+								<table class="row" id="tabOggDom">
+									<tbody>
+										<tr>
+											<td style="width: 15%;" class="label">Tipo domanda</td>
+											<!-- Vecchia gestione del campo oggetto domanda poteva essere compilato se non lo era già -->
+											<th:block th:unless="${theUtilService.isGestioneRequisitiDiversificatiPerTipoDomandaActiveForDomandaCreationDate(pageBean.getDomandaCreation(), pageBean.getTitolareDomanda())}">
+												<td style="width: 85%;" th:unless="(${userBean.REGIONE or userBean.AMMINISTRATORE}) or (${userBean.TITOLARE or userBean.OPERATORE_TITOLARE} and *{fascicolo.oggettoDomanda==null or fascicolo.oggettoDomanda.length()==0})">
+													<input style="width: 100px;"
+													id="oggettoDomanda"
+													js:widget="widgetType:'dijit.form.TextBox'" type="text"
+													th:value="*{fascicolo.oggettoDomanda}" readonly="readonly"/>
+												</td>
+												<td style="width: 85%;" th:if="(${userBean.REGIONE or userBean.AMMINISTRATORE}) or (${userBean.TITOLARE or userBean.OPERATORE_TITOLARE} and *{fascicolo.oggettoDomanda==null or fascicolo.oggettoDomanda.length()==0})">
+									  				<select th:field="*{fascicolo.oggettoDomanda}" js:widget="widgetType:'dijit.form.Select'" js:errors="true">
+														<option value="">---seleziona tipo domanda---</option>
+														<option value="Complessiva">Complessiva</option>
+														<option value="Parziale">Parziale</option>
+													</select>
+													<input js:confirm="event:'onClick',message:'Procedere con l\'operazione?'" js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Aggiorna oggetto'}" js:ajax="formId:'form',event:'onClick',params:{_eventId:'aggiornaOggetto'}" id="aggiornaOggettoButton" name="_eventId_aggiornaOggetto" value="Aggiorna oggetto" type="submit"/>
+												</td>
+											</th:block>
+											<!-- Nuova gestione del campo oggetto domanda, può essere compilato solo in alcuni stati e da alcuni ruoli 
+												e questo comporta la modifica dei requisiti generali e delle uo -->
+											<th:block th:if="${theUtilService.isGestioneRequisitiDiversificatiPerTipoDomandaActiveForDomandaCreationDate(pageBean.getDomandaCreation(), pageBean.getTitolareDomanda())}">
+												<td style="width: 85%;" th:unless="${theAclService.userCanEditOggettoDomanda(userBean, pageBean)}">
+													<input style="width: 100px;"
+													id="oggettoDomanda"
+													js:widget="widgetType:'dijit.form.TextBox'" type="text"
+													th:value="*{fascicolo.oggettoDomanda}" readonly="readonly"/>
+												</td>
+												<td style="width: 85%;" th:if="${theAclService.userCanEditOggettoDomanda(userBean, pageBean)}">
+									  				<select th:field="*{fascicolo.oggettoDomanda}" js:widget="widgetType:'dijit.form.Select'" js:errors="true">
+														<option value="">---seleziona Tipo domanda---</option>
+														<option value="Complessiva">Complessiva</option>
+														<option value="Parziale">Parziale</option>
+													</select>
+													<input js:confirm="event:'onClick',message:'Procedere con l\'operazione?'" js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Aggiorna oggetto'}" js:ajax="formId:'form',event:'onClick',params:{_eventId:'aggiornaOggetto'}" id="aggiornaOggettoButton" name="_eventId_aggiornaOggetto" value="Aggiorna oggetto" type="submit"/>
+												</td>
+											</th:block>
+										</tr>
+									</tbody>
+								</table>
+							</td>
+						</tr>
+
+						<tr th:if="*{fascicolo.folderType}=='domanda_titolare'">
+							<td>
+								<table class="row">
+									<tbody>
+										<tr>
+											<td style="width: 15%;" class="label">Numero Procedimento</td>
+											<td style="width: 85%;"><input style="width: 100px;"
+												id="numeroProcedimento"
+												js:widget="widgetType:'dijit.form.TextBox'" type="text"
+												th:value="*{fascicolo.numeroProcedimento}" readonly="readonly" />
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</td>
+						</tr>
+						<tr th:if="*{fascicolo.folderType}=='domanda_titolare'">
+							<td>
+								<table class="row">
+									<tbody>
+										<tr>
+											<td style="width: 15%;" class="label">Data invio Domanda</td>
+											<td style="width: 85%;"><input style="width: 100px;"
+												id="dataInvioDomanda"
+												js:widget="widgetType:'dijit.form.TextBox'" type="text"
+												th:value="*{fascicolo.dataInvioDomanda}" readonly="readonly" />
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</td>
+						</tr>
+						<tr th:if="*{fascicolo.folderType}=='domanda_titolare'">
+							<td>
+								<table class="row">
+									<tbody>
+										<tr>
+											<td style="width: 15%;" class="label">Data conclusione</td>
+											<td style="width: 85%;"><input style="width: 100px;"
+												id="dataConclusione"
+												js:widget="widgetType:'dijit.form.TextBox'" type="text"
+												th:value="*{fascicolo.dataConclusione}" readonly="readonly" />
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</td>
+						</tr>
+						<tr th:if="*{fascicolo.folderType}=='domanda_titolare'">
+							<td>
+								<table class="row">
+									<tbody>
+										<tr>
+											<td style="width: 15%;" class="label">Stato</td>
+											<td style="width: 85%;"><input style="width: 440px;"
+												id="stato" js:widget="widgetType:'dijit.form.TextBox'"
+												type="text" th:value="*{fascicolo.folderStatus}"
+												readonly="readonly" /></td>
+										</tr>
+									</tbody>
+								</table>
+							</td>
+						</tr>
+						<div th:remove="tag" th:if="${!userBean.COLLABORATORE_VALUTAZIONE}">
+							<tr
+								th:if="*{fascicolo.folderType}=='domanda_titolare' and *{fascicolo.prontoPerInvio} and (${userBean.TITOLARE or userBean.OPERATORE_TITOLARE})">
+								<td>
+									<table class="row">
+										<tbody>
+											<tr>
+												<td>
+													<input th:if="not (*{tipoUdo22TemplRichiestiMancanti} and *{tipoUdo22TemplRichiestiMancanti.size() > 0})"
+														js:confirm="event:'onClick',message:'Procedere con l\'invio della domanda?'"
+														js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Invia la domanda'}"
+														js:ajax="formId:'form',event:'onClick',params:{_eventId:'invioDomanda'}"
+														id="invioDomanda" name="_eventId_invioDomanda"
+														value="Invio della domanda" type="submit" />
+													<input th:if="*{tipoUdo22TemplRichiestiMancanti} and *{tipoUdo22TemplRichiestiMancanti.size() > 0}"
+														js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Invia la domanda'}"
+														js:ajax="formId:'form',event:'onClick',params:{_eventId:'alertTipoUdo22MancantiTipoTitolare'}"
+														id="alertTipoUdo22MancantiTipoTitolare" name="_eventId_alertTipoUdo22MancantiTipoTitolare"
+														value="Invio della domanda" type="submit" />
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</td>
+							</tr>
+							<tr th:if="*{fascicolo.folderType}=='domanda_titolare' and *{!fascicolo.prontoPerInvio} and (${userBean.TITOLARE or userBean.OPERATORE_TITOLARE}) and *{fascicolo.folderStatus}=='BOZZA' and *{motivoBloccoInvioReinvioDomandaEnum!=MotivoBloccoInvioReinvioDomandaEnum.NonApplicabile}">
+								<td>
+									<table class="row">
+										<tbody>
+											<tr>
+												<td style="height: 25px;">
+													<img th:title="#{__*{motivoBloccoInvioReinvioDomandaEnum.value}__}" border="0" src="images/qbef.gif" style="vertical-align:bottom;"/>
+													<span th:text="#{__*{motivoBloccoInvioReinvioDomandaEnum.value}__}">Motivo impossibilità invio domanda</span>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</td>
+							</tr>
+							<tr
+								th:if="*{fascicolo.folderType}=='domanda_titolare' and ${theAclService.userCanAddRemoveUdoUoDomanda(userBean.ruolo,pageBean.fascicolo.folderStatus)}">
+								<td>
+									<table class="row">
+										<tbody>
+											<tr>
+												<td>
+												<input
+													js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Aggiungi Udo/Uo'}"
+													js:ajax="formId:'form',event:'onClick',params:{_eventId:'modifyFolder'}"
+													id="modifyFolderButton" name="_eventId_modifyFolder"
+													value="Aggiungi Udo/Uo" type="submit" />
+												<input
+													js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Elimina Udo/Uo selezionate'}"
+													js:confirm="event:'onclick',message:'#{crud.confirm}'"
+													js:ajax="formId:'form',event:'onClick',params:{_eventId:'eliminaUdoUoSelezionate'}"
+													id="eliminaUdoUoSelezionate_btn"
+													name="_eventId_eliminaUdoUoSelezionate" value="Elimina Udo/Uo selezionate" type="submit" />									
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</td>
+							</tr>							
+							<tr
+								th:if="*{fascicolo.folderType}=='domanda_titolare' and *{fascicolo.eliminabile} == true and (${userBean.TITOLARE or userBean.OPERATORE_TITOLARE})">
+								<td>
+									<table class="row">
+										<tbody>
+											<tr>
+												<input
+													js:confirm="event:'onClick',message:'ATTENZIONE! Stai per eliminare la domanda. Procedere?'"
+													js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Elimina la domanda'}"
+													js:ajax="formId:'form',event:'onClick',params:{_eventId:'eliminaDomanda'}"
+													id="eliminaDomanda" name="_eventId_eliminaDomanda"
+													value="Elimina la domanda" type="submit" />
+											</tr>
+										</tbody>
+									</table>
+								</td>
+							</tr>
+							
+							<!-- inserimento di una nuova annotazione -->
+							<tr th:if="${theAclService.userCanEditNoteDomanda(userBean.ruolo,pageBean.fascicolo.folderStatus)}">
+								<td>
+									<table class="row">
+										<tbody>
+											<tr>
+												<td style="width: 15%;" class="label">Annotazione</td>
+												<td style="width: 50%;">
+													<textarea style="width:98%;"
+														th:field="*{nuovaAnnotazione}"
+														js:widget="widgetType:'dijit.form.SimpleTextarea',widgetAttrs:{class:'dijitReset',rows:3}">&#160;</textarea>												
+												</td>
+												<script th:inline="javascript">
+												/*<![CDATA[*/
+													/*[+
+														 //Script should re-render together with the table
+														$(document).ready(function(){
+															var nuovaAnnotazioneError = [[${#fields.hasErrors('nuovaAnnotazione')}]];
+															
+														    if(nuovaAnnotazioneError){
+														   	 	$('#nuovaAnnotazione').tooltipster({
+															        trigger: 'custom',
+															        position: 'top',
+															        	theme: 'tooltipster-borderless',
+															    });
+														    		$('#nuovaAnnotazione').tooltipster('content', [[${#fields.errors('nuovaAnnotazione')}]]).tooltipster('show');												    		
+														    }  							    		
+														});
+												  	+]*/	 
+												/*]]>*/
+												</script>
+												<script>
+													//nuovaAnnotazione tooltip
+												    	dojo.addOnLoad(function(){
+												    		//hide tooltips onChange. Can't be an inline script because it wont work after rendering							
+												    		   dojo.connect(dijit.byId("nuovaAnnotazione"), 'onChange', function(event){ 
+												    		    	   	    console.log('destroying tooltip');
+												    		    	   	    var nuovaAnnotazioneTooltip = $('#nuovaAnnotazione').tooltipster('instance');
+												    		    	   	    if(nuovaAnnotazioneTooltip != null){
+												    		    	   	    		var value = this.get("value");
+												    		    	   	    		if(value === ""){
+												    		    	   	    			nuovaAnnotazioneTooltip.show();
+												    		    	   	    		}
+												    		    	   	    		else
+												    		    	   	    			nuovaAnnotazioneTooltip.hide();
+												    		    	   	    }
+												    		       });
+												    	});
+												</script>
+												<td>
+													<input
+														js:confirm="event:'onClick',message:'Confermare l\'operazione?'"
+														js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Inserisci annotazione'}"
+														js:ajax="formId:'form',event:'onClick',params:{_eventId:'addPostit'}"
+														id="addPostitButton"
+														name="_eventId_addPostit"
+														type="submit" />											
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</td>
+							</tr>	
+							
+							<tr th:if="*{fascicolo.folderType}=='domanda_titolare' and ${theAclService.userCanEditFileDomanda(userBean.ruolo,pageBean.fascicolo.folderStatus)}">
+								<td>
+									<table class="row">
+										<tbody>
+											<tr>
+												<td style="width: 15%;" class="label">Oggetto</td>
+												<td style="width: 50%;">
+													<textarea style="width:98%;"
+														js:widget="widgetType:'dijit.form.SimpleTextarea',widgetAttrs:{class:'dijitReset',rows:3}"
+														th:field="*{oggettoAllegato}">&#160;</textarea>
+												</td>
+												<script th:inline="javascript">
+												/*<![CDATA[*/
+													/*[+
+														 //Script should re-render together with the table
+														$(document).ready(function(){
+															var oggettoAllegatoError = [[${#fields.hasErrors('oggettoAllegato')}]];
+															var docTypeAllegatoError = [[${#fields.hasErrors('docTypeAllegato')}]];
+															
+														    if(oggettoAllegatoError){
+														   	 	$('#oggettoAllegato').tooltipster({
+															        trigger: 'custom',
+															        position: 'left',
+															        	theme: 'tooltipster-borderless',
+															    });
+														    		$('#oggettoAllegato').tooltipster('content', [[${#fields.errors('oggettoAllegato')}]]).tooltipster('show');												    		
+														    }
+														    
+														    if(docTypeAllegatoError){
+														   	 	$('#docTypeAllegatoWrapper').tooltipster({
+															        trigger: 'custom',
+															        position: 'top',
+															        	theme: 'tooltipster-borderless',
+															    });
+														    		$('#docTypeAllegatoWrapper').tooltipster('content', [[${#fields.errors('docTypeAllegato')}]]).tooltipster('show');												    		
+														    }
+														});
+												  	+]*/	 
+												/*]]>*/
+												</script>
+												<script>
+													//oggettoAllegato tooltip
+												    	dojo.addOnLoad(function(){
+												    		//hide tooltips onChange. Can't be an inline script because it wont work after rendering							
+												    		   dojo.connect(dijit.byId("oggettoAllegato"), 'onChange', function(event){ 
+												    		    	   	    console.log('destroying tooltip');
+												    		    	   	    var oggettoAllegatoTooltip = $('#oggettoAllegato').tooltipster('instance');
+												    		    	   	    if(oggettoAllegatoTooltip != null){
+												    		    	   	    		var value = this.get("value");
+												    		    	   	    		if(value === ""){
+												    		    	   	    			oggettoAllegatoTooltip.show();
+												    		    	   	    		}
+												    		    	   	    		else
+												    		    	   	    			oggettoAllegatoTooltip.hide();
+												    		    	   	    }
+												    		       });
+												    	});
+												</script>
+												<td>
+													<div id = "docTypeAllegatoWrapper" style="display:inline;"><select th:field="*{docTypeAllegato}" js:widget="widgetType:'dijit.form.Select'" style="width:163px;">
+														<option value="">---seleziona tipo allegato---</option>
+														<option th:each="type : ${T(it.tredi.auac.DocTypeEnum).values()}" th:value="${type}" th:text="#{__${type.value}__}"></option>
+													</select></div>
+													<script>
+													//docTypeAllegatoWrapper tooltip
+												    	dojo.addOnLoad(function(){
+												    		   dojo.connect(dijit.byId("docTypeAllegato"), 'onChange', function(event){ 
+										    		    	   	    console.log('destroying tooltip');
+										    		    	   	    var docTypeAllegatoTooltip = $('#docTypeAllegatoWrapper').tooltipster('instance');
+										    		    	   	    if(docTypeAllegatoTooltip != null){
+										    		    	   	    		var value = this.get("value");
+										    		    	   	    		if(value === ""){
+										    		    	   	    			docTypeAllegatoTooltip.show();
+										    		    	   	    		}
+										    		    	   	    		else
+										    		    	   	    			docTypeAllegatoTooltip.hide();
+										    		    	   	    }
+										    		       });
+												    	});
+												</script>
+												<div id="uploader"></div>		
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<div id="resUploader"></div>
+												</td>
+												<td></td>
+											</tr>
+										</tbody>
+									</table>
+								</td>
+							</tr>		
+						</div>									
+					</tbody>
+				</table>
+				
+				<div th:remove="tag" th:if="${!userBean.COLLABORATORE_VALUTAZIONE}">
+					
+					<!-- tabella delle annotazioni -->
+					<div style="margin-left: 0px;" class="lista_holder"
+						th:if="*{fascicolo.postitL} and *{!#lists.isEmpty(fascicolo.postitL)}">
+						<div class="form-frames-container">
+							<div class="frame-container">
+								<div class="frame-toolbar-container">
+									<span class="panel-toolbar-zone"> <span
+										class="frame-toolbar-caption">Annotazioni</span>
+									</span>
+								</div>
+							</div>
+						</div>
+						<!-- form-frames-container -->
+	
+						<!-- lista holder -->
+						<div class="fixed_height_scrollable_table">
+							<table class="lista" id="postit">
+								<tbody>
+									<tr>
+										<td class="listTableHeader">Testo</td>
+										<td class="listTableHeader" style="width: 120px"><a class="anchor" js:ajax="formId:'form',event:'onclick',params:{_eventId:'orderOperatorePostIt'}" 
+				  							id="orderOpPostIt" th:href="${flowExecutionUrl} + '&amp;_eventId=orderOperatorePostIt'">Operatore</a> <img
+											title="Ordinamento decrescente"
+											th:if="*{fascicolo.postItOrderTypeEnum==T(it.tredi.auac.PostItOrderTypeEnum).OperatoreDecrescente}"
+											border="0" src="images/scrdn.gif" /><img
+											title="Ordinamento crescente"
+											th:if="*{fascicolo.postItOrderTypeEnum==T(it.tredi.auac.PostItOrderTypeEnum).OperatoreCrescente}"
+											border="0" src="images/scrup.gif" /></td>
+										<td class="listTableHeader" style="width: 110px"><a class="anchor" js:ajax="formId:'form',event:'onclick',params:{_eventId:'orderDataPostIt'}" 
+				  							id="orderDtPostIt" th:href="${flowExecutionUrl} + '&amp;_eventId=orderDataPostIt'">Data</a> <img
+											title="Ordinamento decrescente"
+											th:if="*{fascicolo.postItOrderTypeEnum==T(it.tredi.auac.PostItOrderTypeEnum).DataDecrescente}"
+											border="0" src="images/scrdn.gif" /><img
+											title="Ordinamento crescente"
+											th:if="*{fascicolo.postItOrderTypeEnum==T(it.tredi.auac.PostItOrderTypeEnum).DataCrescente}"
+											border="0" src="images/scrup.gif" /></td>
+										<td class="listTableHeader" style="width: 40px">Azioni</td>
+									</tr>
+									<tr th:each="postit:*{fascicolo.orderedPostitL}" style="height: 25px;">
+										<td>
+											<textarea readonly="readonly" th:id="${#ids.seq('testoPostit')}" js:widget="widgetType:'dijit.form.Textarea',widgetAttrs:{class:'dijitReset'}"
+												th:text="${postit.testo}">&nbsp;
+											</textarea>
+										</td>
+										<td th:if="${postit.admin} == true" th:text="${postit.operatore} + ' (' + ${postit.ruolo} + ') - Delega Admin'">&nbsp;</td>
+										<td th:if="${postit.admin} == false" th:text="${postit.operatore} + ' (' + ${postit.ruolo} + ')'">&nbsp;</td>
+										<td th:text="${postit.data} + ' - ' + ${postit.ora}">&nbsp;</td>
+										<td><input
+											th:if="${theAclService.userCanEditNoteDomanda(postit,userBean.ruolo,pageBean.fascicolo.folderStatus)}"
+											title="Rimuovi l'annotazione"
+											js:confirm="event:'onclick',message:'#{crud.confirm}'"
+											js:ajax="formId:'form',event:'onclick',params:{_eventId:'deletePostitGen',tipo:'${postit.tipo}',index:'${postit.xmlIndex}'}"
+											th:id="${#ids.seq('deletePostitButton')}" type="image"
+											src="images/delete_sm.gif" />
+											<input
+											th:if="${theAclService.userCanCheckNoteDomanda(postit,userBean.ruolo,pageBean.fascicolo.folderStatus)}"
+											title="Imposta l'annotazione come controllata"
+											js:confirm="event:'onclick',message:'#{crud.confirm}'"
+											js:ajax="formId:'form',event:'onclick',params:{_eventId:'checkPostitGen',tipo:'${postit.tipo}',index:'${postit.xmlIndex}'}"
+											th:id="${#ids.seq('checkPostitButton')}" type="image"
+											src="images/nmtuexecchk.gif" />
+											<img th:if="${theAclService.notaDomandaChecked(postit)}" 
+											title="Controllata" border="0" src="images/nmtuchk.gif" />
+											<img th:if="${theAclService.notaDomandaToCheck(postit)}" 
+											title="Da Controllare" border="0" src="images/nmtutochk.gif" /></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<!-- tabella delle annotazioni -->				
+					
+					<!-- tabella delle annotazioni -->
+					<!-- div style="margin-left: 0px;" class="lista_holder"
+						th:if="*{fascicolo.postitL} and *{!#lists.isEmpty(fascicolo.postitL)}">
+						<div class="form-frames-container">
+							<div class="frame-container">
+								<div class="frame-toolbar-container">
+									<span class="panel-toolbar-zone"> <span
+										class="frame-toolbar-caption">Annotazioni</span>
+									</span>
+								</div>
+							</div>
+						</div>
+						<div class="fixed_height_scrollable_table">
+							<table class="lista">
+								<tbody>
+									<tr>
+										<td class="listTableHeader">Testo</td>
+										<td class="listTableHeader" style="width: 120px">Operatore</td>
+										<td class="listTableHeader" style="width: 110px">Data</td>
+										<td class="listTableHeader" style="width: 40px">Azioni</td>
+									</tr>
+									<tr th:each="postit:*{fascicolo.postitL}" style="height: 25px;">
+										<td>
+											<textarea readonly="readonly" th:id="${#ids.seq('testoPostit')}" js:widget="widgetType:'dijit.form.Textarea',widgetAttrs:{class:'dijitReset'}"
+												th:text="${postit['testo']}">&nbsp;
+											</textarea>
+										</td>
+										<td th:text="${postit['operatore']} + ' (' + ${postit['ruolo']} + ')'">&nbsp;</td>
+										<td th:text="${postit['data']} + ' - ' + ${postit['ora']}">&nbsp;</td>
+										<td><input
+											th:if="${postit['isDeletable']} and ${theAclService.userCanEditNoteDomanda(userBean.ruolo,pageBean.fascicolo.folderStatus)}"
+											title="Rimuovi l'annotazione"
+											js:confirm="event:'onclick',message:'#{crud.confirm}'"
+											js:ajax="formId:'form',event:'onclick',params:{_eventId:'deletePostit',index:'${postitStat.index}'}"
+											th:id="${#ids.seq('deletePostitButton')}" type="image"
+											src="images/delete_sm.gif" /></td>										
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div -->
+					<!-- tabella delle annotazioni -->				
+	
+					<!-- tabella delle annotazioni mancanza udo -->
+					<!--  div id="noteMancazaTipiUdo">
+					<div style="margin-left: 0px;" class="lista_holder"
+						th:if="*{fascicolo.postitMancanzaTipiUdoL} and *{!#lists.isEmpty(fascicolo.postitMancanzaTipiUdoL)}">
+						<div class="form-frames-container">
+							<div class="frame-container">
+								<div class="frame-toolbar-container">
+									<span class="panel-toolbar-zone"> <span
+										class="frame-toolbar-caption">Note mancanza tipi Udo</span>
+									</span>
+								</div>
+							</div>
+						</div>
+						<div class="fixed_height_scrollable_table">
+							<table class="lista">
+								<tbody>
+									<tr>
+										<td class="listTableHeader">Testo</td>
+										<td class="listTableHeader" style="width: 120px">Operatore</td>
+										<td class="listTableHeader" style="width: 110px">Data</td>
+										<td class="listTableHeader" style="width: 40px">Azioni</td>
+									</tr>
+									<tr th:each="postit:*{fascicolo.postitMancanzaTipiUdoL}" style="height: 25px;">
+										<td>
+											<textarea readonly="readonly" th:id="${#ids.seq('testoPostit')}" js:widget="widgetType:'dijit.form.Textarea',widgetAttrs:{class:'dijitReset'}"
+												th:text="${postit['testo']}">&nbsp;
+											</textarea>
+										</td>
+										<td th:text="${postit['operatore']} + ' (' + ${postit['ruolo']} + ')'">&nbsp;</td>
+										<td th:text="${postit['data']} + ' - ' + ${postit['ora']}">&nbsp;</td>
+										<td><input
+											th:if="${postit['isDeletable']} and ${theAclService.userCanInsertNoteMancanzaTipiUdo(userBean.ruolo,pageBean.fascicolo.folderStatus)}"
+											title="Rimuovi l'annotazione"
+											js:confirm="event:'onclick',message:'#{crud.confirm}'"
+											js:ajax="formId:'form',event:'onclick',params:{_eventId:'deletePostitMancanzaTipiUdo',index:'${postitStat.index}'}"
+											th:id="${#ids.seq('deletePostitMancanzaTipiUdoButton')}" type="image"
+											src="images/delete_sm.gif" /></td>										
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					</div -->
+					<!-- tabella delle annotazioni mancanza udo -->				
+
+					<!-- tabella degli atti -->
+					<div th:if="*{attiML} and *{fascicolo.folderType}=='atti_titolare'" th:remove="tag"> 
+						<div th:substituteby="attiTitolare :: attiTitolare"></div>
+					</div>
+					<!-- tabella degli atti -->
+
+				<!-- tabella dei documenti -->
+				<div style="margin-left: 0px;" class="lista_holder"
+						th:if="*{documentsL} and *{documentsL.size() > 0}">
+						<div class="form-frames-container">
+							<div class="frame-container">
+								<div class="frame-toolbar-container">
+									<span class="panel-toolbar-zone"> <span
+										class="frame-toolbar-caption">Documenti allegati alla domanda</span>
+									</span>
+								</div>
+							</div>
+						</div>
+						<!-- form-frames-container -->
+
+						<div style="margin-left:5px;margin-top:5px;margin-bottom:2px;">
+						<th:block th:each="type : ${T(it.tredi.auac.DocTypeAltroEnum).values()}" >
+								<input name="docTypeShow" th:value="${type.name()}" js:widget="widgetType:'dijit.form.CheckBox',widgetAttrs:{onChange: 'changeTypeDocsShow(\'docTypeShow\', \'doctit\')' }" 
+									type="checkbox" th:id="${#ids.seq('docTypeShow')}" />&nbsp;<label th:for="${#ids.seq('docTypeShow')}" th:text="#{__${type.value}__}"></label>&nbsp;&nbsp;
+						</th:block>
+						</div>
+	
+						<!-- lista holder -->
+						<div class="fixed_height_scrollable_table">
+							<table class="lista" id="doctit">
+							
+			<script th:inline="javascript" th:if="*{fascicolo ne null}">
+				/*<![CDATA[*/
+				/*[+
+					require(["dojo/ready", "dojo/dom"], function(ready, dom){
+						  ready(function(){
+						    //alert('call changeTypeDocsShow');
+							changeTypeDocsShow('docTypeShow', 'doctit');
+						  });
+					});
+					+]*/
+				/*]]>*/
+			</script>							
+								<tbody>
+									<tr>
+										<td class="listTableHeader">Oggetto</td>
+										<td class="listTableHeader">File</td>
+										<td class="listTableHeader" style="width: 120px"><a class="anchor" js:ajax="formId:'form',event:'onclick',params:{_eventId:'docTitolareOrderOperatoreDoc'}" 
+				  							id="orderOpDocTit" th:href="${flowExecutionUrl} + '&amp;_eventId=docTitolareOrderOperatoreDoc'">Operatore</a> <img
+											title="Ordinamento decrescente"
+											th:if="*{fascicolo.docTitolareOrderTypeEnum==T(it.tredi.auac.DocOrderTypeEnum).OperatoreDecrescente}"
+											border="0" src="images/scrdn.gif" /><img
+											title="Ordinamento crescente"
+											th:if="*{fascicolo.docTitolareOrderTypeEnum==T(it.tredi.auac.DocOrderTypeEnum).OperatoreCrescente}"
+											border="0" src="images/scrup.gif" /></td>
+										<td class="listTableHeader" style="width: 60px"><a class="anchor" js:ajax="formId:'form',event:'onclick',params:{_eventId:'docTitolareOrderDataDoc'}" 
+				  							id="orderDtDocTit" th:href="${flowExecutionUrl} + '&amp;_eventId=docTitolareOrderDataDoc'">Data</a> <img
+											title="Ordinamento decrescente"
+											th:if="*{fascicolo.docTitolareOrderTypeEnum==T(it.tredi.auac.DocOrderTypeEnum).DataDecrescente}"
+											border="0" src="images/scrdn.gif" /><img
+											title="Ordinamento crescente"
+											th:if="*{fascicolo.docTitolareOrderTypeEnum==T(it.tredi.auac.DocOrderTypeEnum).DataCrescente}"
+											border="0" src="images/scrup.gif" /></td>
+										<td class="listTableHeader" style="width: 100px"><a class="anchor" js:ajax="formId:'form',event:'onclick',params:{_eventId:'docTitolareOrderTipoDoc'}" 
+				  							id="orderTipoDocTit" th:href="${flowExecutionUrl} + '&amp;_eventId=docTitolareOrderTipoDoc'">Tipo</a> <img
+											title="Ordinamento decrescente"
+											th:if="*{fascicolo.docTitolareOrderTypeEnum==T(it.tredi.auac.DocOrderTypeEnum).TipoDecrescente}"
+											border="0" src="images/scrdn.gif" /><img
+											title="Ordinamento crescente"
+											th:if="*{fascicolo.docTitolareOrderTypeEnum==T(it.tredi.auac.DocOrderTypeEnum).TipoCrescente}"
+											border="0" src="images/scrup.gif" /></td>
+										<td class="listTableHeader" style="width: 40px">Azioni</td>
+									</tr>
+									<tr th:each="document:*{documentsL}" style="height: 25px;display: none;" th:class="${document['tipo_doc']}">
+										<td>
+											<textarea readonly="readonly" th:id="${#ids.seq('oggettoDocumento')}" js:widget="widgetType:'dijit.form.Textarea',widgetAttrs:{class:'dijitReset'}"
+												th:text="${document['oggetto']}">&nbsp;
+											</textarea>									
+										</td>
+										<td><a class="anchor" th:utext="${document['file_name']}"
+											th:href="@{/download(id=${document['file_id']},title=${document['file_name_enc']},sessionId=${document['session_id']})}">file.pdf</a></td>
+										<td th:if="${document['creazione_admin']} == 'true'" th:text="${document['creazione_login']} + ' (' + ${document['creazione_ruolo']} + ') - Delega Admin'">&nbsp;</td>
+										<td th:if="${document['creazione_admin']} == 'false'" th:text="${document['creazione_login']} + ' (' + ${document['creazione_ruolo']} + ')'">&nbsp;</td>
+										<td th:text="${document['creazione_data_formatted']}">&nbsp;</td>
+										<td th:text="#{__${T(it.tredi.auac.DocTypeAltroEnum).valueOf(document['tipo_doc']).value}__}">&nbsp;</td>
+										<td><input
+											th:if="${document['isDeletable']}"
+											title="Rimuovi il documento"
+											js:confirm="event:'onclick',message:'#{crud.confirm}'"
+											js:ajax="formId:'form',event:'onclick',params:{_eventId:'deleteDocument',idIUnit:'${document['idIUnit']}'}"
+											th:id="${#ids.seq('deleteDocumentButton')}" type="image"
+											src="images/delete_sm.gif" /></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<!-- tabella dei documenti -->
+				</div>					
+
+			</div>
+
+			<!-- fieldset_holder -->
+			
+			<!-- SEZIONE WORKFLOW visibile se l'utente puo' inserire il wf e non e' ancora stato inserito, o se l'utente puo' vedere il workflow ed e' presente -->
+			<div class="lista_holder" id="workflowDiv" th:if="(${userBean.REGIONE} and *{fascicolo.valutabile} and *{!fascicolo.hasWorkflow()}) or (*{fascicolo.hasWorkflow()} and (${userBean.workflowBean != null}))">
+				
+				<!-- header videata -->
+				<div class="form-caption-container">
+					<span class="form-caption-text" th:if="*{!fascicolo.hasWorkflow()}">Procedimento:</span>
+					<span class="form-caption-text" th:if="*{fascicolo.hasWorkflow()}" th:text="'Procedimento: ' + *{workflowProcessInstance}">Procedimento:</span>
+					<input th:if="*{fascicolo.hasWorkflow()}"
+						title="Aggiorna"
+						js:ajax="formId:'form',event:'onclick',params:{_eventId:'aggiornaWorkflow'}"
+						id="imgaggiornaWorkflowButton" type="image" src="images/refresh.gif" />
+						
+				</div>
+				
+				<!-- TABELLA VISUALIZZAZIONE DATI WORKFLOW SE PRESENTE E AGGIUNTA WORKFLOW SE ASSENTE -->
+				<table class="fieldset row" style="width: 850px">
+					<tbody>
+						<!-- AGGIUNTA WORKFLOW SE NON PRESENTE -->
+						<tr th:if="${userBean.REGIONE} and *{fascicolo.valutabile} and *{!fascicolo.hasWorkflow()}">
+							<td>
+								<table class="row">
+									<tbody>
+										<tr>
+											<td>
+												<script th:inline="javascript">
+												/*<![CDATA[*/
+													/*[+
+														 //Script should re-render together with the table
+														$(document).ready(function(){
+															var workflowDefinitionSelectedError = [[${#fields.hasErrors('nuovaAnnotazione')}]];
+															
+														    if(workflowDefinitionSelectedError){
+														   	 	$('#workflowDefinitionSelectedWrapper').tooltipster({
+															        trigger: 'custom',
+															        position: 'top',
+															        	theme: 'tooltipster-borderless',
+															    });
+														    		$('#workflowDefinitionSelectedWrapper').tooltipster('content', 'Selezionare il workflow').tooltipster('show');												    		
+														    }  							    		
+														});
+												  	+]*/	 
+												/*]]>*/
+												</script>
+												<div id = "workflowDefinitionSelectedWrapper" style = "display: inline;"><select th:field="*{workflowDefinitionSelected}" js:widget="widgetType:'dijit.form.Select'" js:errors="true">
+													<option value="">---seleziona workflow---</option>
+												  	<option th:each="wfDef:${theAclService.getWorkflowPossibili(userBean,pageBean)}" th:value="${wfDef.processId}" th:text="${wfDef.name + ' [' + wfDef.version + ']'}">Workflow</option>						  
+												</select></div>
+												<script>
+													//workflowDefinitionSelectedWrapper tooltip
+												    	dojo.addOnLoad(function(){
+												    		//hide tooltips onChange. Can't be an inline script because it wont work after rendering							
+												    		   dojo.connect(dijit.byId("workflowDefinitionSelected"), 'onChange', function(event){ 
+												    		    	   	    console.log('destroying tooltip');
+												    		    	   	    var workflowDefinitionSelectedTooltip = $('#workflowDefinitionSelectedWrapper').tooltipster('instance');
+												    		    	   	    if(workflowDefinitionSelectedTooltip != null){
+												    		    	   	    		var value = this.get("value");
+												    		    	   	    		if(value === ""){
+												    		    	   	    			workflowDefinitionSelectedTooltip.show();
+												    		    	   	    		}
+												    		    	   	    		else
+												    		    	   	    			workflowDefinitionSelectedTooltip.hide();
+												    		    	   	    }
+												    		       });
+												    	});
+												</script>
+												<input js:confirm="event:'onClick',message:'Procedere con l\'operazione?'" 
+													js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Avvia workflow'}" 
+													js:ajax="formId:'form',event:'onClick',params:{_eventId:'aggiungiWorkflow'}" 
+													id="aggiungiWorkflowButton" name="_eventId_aggiungiWorkflowButton" value="Avvia Workflow" type="submit"/>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</td>
+						</tr>
+						<div th:remove="tag" th:if="*{fascicolo.hasWorkflow()}" th:with="wfInfo=*{workflowProcessInstance.workflowProcessInstanceInfo}">
+						
+						
+						
+						<tr>
+							<td>
+								<table class="row">
+									<tbody>
+										<tr>
+											<td style="width: 15%;" class="label">Iniziato da: </td>
+											<td style="width: 85%;"><input style="width: 200px;"
+												id="wfoperatore" js:widget="widgetType:'dijit.form.TextBox'"
+												type="text" th:value="*{fascicolo.workflowXWProcessInstance.Operatore}"
+												readonly="readonly" /><input type="hidden" id="wfProcessInstanceId" th:value="*{fascicolo.workflowXWProcessInstance.processInstanceId}" /></td>
+										</tr>
+									</tbody>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<table class="row">
+									<tbody>
+										<tr>
+											<td style="width: 15%;" class="label">Iniziato il: </td>
+											<td style="width: 85%;"><input style="width: 200px;"
+												id="wfdata" js:widget="widgetType:'dijit.form.TextBox'"
+												type="text" th:value="*{fascicolo.workflowXWProcessInstance.data}"
+												readonly="readonly" /></td>
+										</tr>
+									</tbody>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<table class="row">
+									<tbody>
+										<tr>
+											<td style="width: 15%;" class="label">Stato: </td>
+											<td style="width: 85%;"><input style="width: 200px;"
+												id="wfstato" js:widget="widgetType:'dijit.form.TextBox'"
+												type="text" th:value="*{#messages.msg('wf.state.' + workflowProcessInstance.workflowProcessInstanceInfo.state)}"
+												readonly="readonly" /></td>
+										</tr>
+									</tbody>
+								</table>
+							</td>
+						</tr>
+						<tr th:if="*{workflowProcessInstance.workflowProcessInstanceInfo.state == 'completed'}">
+							<td>
+								<table class="row">
+									<tbody>
+										<tr>
+											<td style="width: 15%;" class="label">Completato il: </td>
+											<td style="width: 85%;"><input style="width: 200px;"
+												id="wfenddate" js:widget="widgetType:'dijit.form.TextBox'"
+												type="text" th:value="*{#dates.format(workflowProcessInstance.workflowProcessInstanceInfo.endDate,'dd/MM/yyyy')}"
+												readonly="readonly" /></td>
+										</tr>
+									</tbody>
+								</table>
+							</td>
+						</tr>
+
+							<tr
+								th:if="*{fascicolo.hasWorkflow()}">
+								<td>
+									<table class="row">
+										<tbody>
+											<tr>
+												<td>
+													<input th:if="*{workflowProcessInstance.workflowProcessInstanceInfo.humanTasksCompleted != null and workflowProcessInstance.workflowProcessInstanceInfo.humanTasksCompleted.size() > 0}"
+														js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Mostra dati workflow'}"
+														js:ajax="formId:'form',event:'onClick',params:{_eventId:'showWorkflow'}"
+														id="showWorkflowButton" name="_eventId_showWorkflowButton"
+														value="Mostra dati workflow" type="submit" />
+													<input th:if="${userBean.REGIONE}"
+														js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Mostra stato workflow',onClick:'openFullscreenPopup(\'${flowExecutionUrl}&amp;_eventId=showWorkflowImageStateOnSeparateWindow&amp;wfprocid=*{workflowProcessInstance.processInstanceId}\')'}"
+														id="showWfImageStateOnSeparateWindow" name="_eventId_showWorkflowImageStateOnSeparateWindow"
+														value="Mostra stato workflow" type="submit" />
+													<input
+														js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Mostra workflow',onClick:'openFullscreenPopup(\'${flowExecutionUrl}&amp;_eventId=showWorkflowImageOnSeparateWindow&amp;wfname=*{workflowProcessInstance.processDefinitionName}&amp;wfversion=*{workflowProcessInstance.processDefinitionVersion}\')'}"
+														id="showWfImageOnSeparateWindow" name="_eventId_showWorkflowImageOnSeparateWindow"
+														value="Mostra workflow" type="submit" />
+													<!-- input
+														js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Mostra stato workflow'}"
+														js:ajax="formId:'form',event:'onClick',params:{_eventId:'showWorkflowImage'}"
+														id="showWorkflowImageButton" name="_eventId_showWorkflowImage"
+														value="Mostra dati workflow" type="submit" / -->													
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</td>
+							</tr>
+
+						</div>
+					</tbody>
+				</table>
+				
+				
+				<!-- VISUALIZZAZIONE TASK WORKFLOW COMPLETATI SE PRESENTI -->
+				<div style="margin-left: 0px;" class="lista_holder" th:if="*{fascicolo.hasWorkflow() and workflowProcessInstance.workflowProcessInstanceInfo.humanTasksCompleted != null and workflowProcessInstance.workflowProcessInstanceInfo.humanTasksCompleted.size() > 0}" th:with="wfInfo=*{workflowProcessInstance.workflowProcessInstanceInfo}">
+					<!-- form-frames-container -->
+					<div class="form-frames-container">
+						<div class="frame-container">
+							<div class="frame-toolbar-container">
+								<span class="panel-toolbar-zone"> <span class="frame-toolbar-caption">Azioni completate</span>
+								</span>
+							</div>
+						</div>
+					</div>
+					<!-- lista holder -->
+					<div class="fixed_height_scrollable_table">
+						<table class="lista">
+							<tbody>
+								<tr>
+									<td class="listTableHeader">Nome</td>
+									<td class="listTableHeader" style="width: 200px;">Eseguito da</td>
+									<td class="listTableHeader" style="width: 150px;">Eseguito il</td>
+									<td class="listTableHeader" style="width: 100px;">Stato</td>
+								</tr>
+								<!-- ${udo.isUdo()}?'y':'n',uoid=${udo.uoClientId} -->
+								<tr th:each="task:${wfInfo.humanTasksCompleted}" style="height: 25px;" th:attr="taskid=${task.archivedActivityInstance.id}">
+									<td th:text="(${#strings.isEmpty(task.archivedActivityInstance.description)} ? ${task.archivedActivityInstance.name} : ${task.archivedActivityInstance.description})">
+									</td>
+									<td th:text="${task.executedBy.firstName + ' ' + task.executedBy.lastName}">
+									</td>
+									<td th:text="${#dates.format(task.archivedActivityInstance.reachedStateDate,'dd/MM/yyyy') + ' alle ' + #dates.format(task.archivedActivityInstance.reachedStateDate,'HH:mm')}">
+									</td>
+									<td th:text="${#messages.msg('wf.state.' + task.archivedActivityInstance.state)}">
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<!-- VISUALIZZAZIONE TASK WORKFLOW COMPLETATI FINE -->
+				
+					<!-- tabella dei documenti titolare aggiunti nel workflow inizio -->
+					<th:block th:with="docsTitolare=*{getWorkflowDocumentsByTipo('titolare')}" th:if="${theAclService.userCanShowWorkflowDocumentsForTipo(userBean,'titolare')}">
+					<div style="margin-left: 0px;" class="lista_holder"
+						th:if="${docsTitolare} and ${docsTitolare.size() > 0}">
+						<div class="form-frames-container">
+							<div class="frame-container">
+								<div class="frame-toolbar-container">
+									<span class="panel-toolbar-zone"> <span
+										class="frame-toolbar-caption">Elenco Documenti inseriti durante il flusso</span>
+									</span>
+								</div>
+							</div>
+						</div>
+						<!-- form-frames-container -->
+	
+						<!-- lista holder -->
+						<div class="fixed_height_scrollable_table">
+							<table class="lista" id="docwftit">
+								<tbody>
+									<tr>
+										<td class="listTableHeader">Oggetto</td>
+										<td class="listTableHeader">File</td>
+										<td class="listTableHeader" style="width: 120px"><a class="anchor" js:ajax="formId:'form',event:'onclick',params:{_eventId:'docWfTitolareOrderOperatoreDoc'}" 
+				  							id="ordWfOpDocTit" th:href="${flowExecutionUrl} + '&amp;_eventId=docWfTitolareOrderOperatoreDoc'">Operatore</a> <img
+											title="Ordinamento decrescente"
+											th:if="*{fascicolo.docWfTitolareOrderTypeEnum==T(it.tredi.auac.DocOrderTypeEnum).OperatoreDecrescente}"
+											border="0" src="images/scrdn.gif" /><img
+											title="Ordinamento crescente"
+											th:if="*{fascicolo.docWfTitolareOrderTypeEnum==T(it.tredi.auac.DocOrderTypeEnum).OperatoreCrescente}"
+											border="0" src="images/scrup.gif" /></td>
+										<td class="listTableHeader" style="width: 60px"><a class="anchor" js:ajax="formId:'form',event:'onclick',params:{_eventId:'docWfTitolareOrderDataDoc'}" 
+				  							id="ordWfDtDocTit" th:href="${flowExecutionUrl} + '&amp;_eventId=docWfTitolareOrderDataDoc'">Data</a> <img
+											title="Ordinamento decrescente"
+											th:if="*{fascicolo.docWfTitolareOrderTypeEnum==T(it.tredi.auac.DocOrderTypeEnum).DataDecrescente}"
+											border="0" src="images/scrdn.gif" /><img
+											title="Ordinamento crescente"
+											th:if="*{fascicolo.docWfTitolareOrderTypeEnum==T(it.tredi.auac.DocOrderTypeEnum).DataCrescente}"
+											border="0" src="images/scrup.gif" /></td>
+									</tr>
+									<tr th:each="document:${docsTitolare}" style="height: 25px;">
+										<td>
+											<textarea readonly="readonly" th:id="${#ids.seq('oggettoDocumento')}" js:widget="widgetType:'dijit.form.Textarea',widgetAttrs:{class:'dijitReset'}"
+												th:text="${document['oggetto']}">&nbsp;
+											</textarea>									
+										</td>
+										<td><a class="anchor" th:utext="${document['file_name']}"
+											th:href="@{/download(id=${document['file_id']},title=${document['file_name_enc']},sessionId=${document['session_id']})}">file.pdf</a></td>
+										<td th:text="${document['creazione_login']} + ' (' + ${document['creazione_ruolo']} + ')'">&nbsp;</td>
+										<td th:text="${document['creazione_data_formatted']}">&nbsp;</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					</th:block>
+					<!-- tabella dei documenti titolare aggiunti nel workflow fine -->
+				
+				
+					<!-- tabella dei documenti regionali aggiunti nel workflow inizio -->
+					<th:block th:with="docsRegionali=*{getWorkflowDocumentsByTipo('regione')}" th:if="${theAclService.userCanShowWorkflowDocumentsForTipo(userBean,'regione')}">
+					<div style="margin-left: 0px;" class="lista_holder"
+						th:if="${docsRegionali} and ${docsRegionali.size() > 0}">
+						<div class="form-frames-container">
+							<div class="frame-container">
+								<div class="frame-toolbar-container">
+									<span class="panel-toolbar-zone"> <span
+										class="frame-toolbar-caption">Elenco Documenti inseriti durante il flusso riservati alla Regione</span>
+									</span>
+								</div>
+							</div>
+						</div>
+						<!-- form-frames-container -->
+	
+						<!-- lista holder -->
+						<div class="fixed_height_scrollable_table">
+							<table class="lista" id="docwfreg">
+								<tbody>
+									<tr>
+										<td class="listTableHeader">Oggetto</td>
+										<td class="listTableHeader">File</td>
+										<td class="listTableHeader" style="width: 120px"><a class="anchor" js:ajax="formId:'form',event:'onclick',params:{_eventId:'docWfRegioneOrderOperatoreDoc'}" 
+				  							id="ordWfOpDocReg" th:href="${flowExecutionUrl} + '&amp;_eventId=docWfRegioneOrderOperatoreDoc'">Operatore</a> <img
+											title="Ordinamento decrescente"
+											th:if="*{fascicolo.docWfRegioneOrderTypeEnum==T(it.tredi.auac.DocOrderTypeEnum).OperatoreDecrescente}"
+											border="0" src="images/scrdn.gif" /><img
+											title="Ordinamento crescente"
+											th:if="*{fascicolo.docWfRegioneOrderTypeEnum==T(it.tredi.auac.DocOrderTypeEnum).OperatoreCrescente}"
+											border="0" src="images/scrup.gif" /></td>
+										<td class="listTableHeader" style="width: 60px"><a class="anchor" js:ajax="formId:'form',event:'onclick',params:{_eventId:'docWfRegioneOrderDataDoc'}" 
+				  							id="ordWfDtDocReg" th:href="${flowExecutionUrl} + '&amp;_eventId=docWfRegioneOrderDataDoc'">Data</a> <img
+											title="Ordinamento decrescente"
+											th:if="*{fascicolo.docWfRegioneOrderTypeEnum==T(it.tredi.auac.DocOrderTypeEnum).DataDecrescente}"
+											border="0" src="images/scrdn.gif" /><img
+											title="Ordinamento crescente"
+											th:if="*{fascicolo.docWfRegioneOrderTypeEnum==T(it.tredi.auac.DocOrderTypeEnum).DataCrescente}"
+											border="0" src="images/scrup.gif" /></td>
+									</tr>
+									<tr th:each="document:${docsRegionali}" style="height: 25px;">
+										<td>
+											<textarea readonly="readonly" th:id="${#ids.seq('oggettoDocumento')}" js:widget="widgetType:'dijit.form.Textarea',widgetAttrs:{class:'dijitReset'}"
+												th:text="${document['oggetto']}">&nbsp;
+											</textarea>									
+										</td>
+										<td><a class="anchor" th:utext="${document['file_name']}"
+											th:href="@{/download(id=${document['file_id']},title=${document['file_name_enc']},sessionId=${document['session_id']})}">file.pdf</a></td>
+										<td th:text="${document['creazione_login']} + ' (' + ${document['creazione_ruolo']} + ')'">&nbsp;</td>
+										<td th:text="${document['creazione_data_formatted']}">&nbsp;</td>
+										<!-- td><img
+											th:title="'Creato il ' + ${document['creazione_data']} + ' dall\'utente \'' + ${document['creazione_login']} + '\' (' + ${document['creazione_ruolo']} + ')'"
+											border="0" src="images/qbef.gif" /> <input
+											th:if="${document['isDeletable']}"
+											title="Rimuovi il documento"
+											js:confirm="event:'onclick',message:'#{crud.confirm}'"
+											js:ajax="formId:'form',event:'onclick',params:{_eventId:'deleteDocument',idIUnit:'${document['idIUnit']}'}"
+											th:id="${#ids.seq('deleteDocumentButton')}" type="image"
+											src="images/delete_sm.gif" /></td -->
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					</th:block>
+					<!-- tabella dei documenti regionali aggiunti nel workflow fine -->
+				
+				
+
+					<!-- Note verifica -->
+					<div style="margin-left: 0px;" class="lista_holder"
+						th:if="*{fascicolo.folderType}=='domanda_titolare' and (*{fascicolo.noteVerifica} or ${theAclService.userCanEditNoteVerifica(userBean,pageBean.fascicolo.folderStatus,pageBean.verificatoreTeamLeader)})">
+						<div class="form-frames-container">
+							<div class="frame-container">
+								<div class="frame-toolbar-container">
+									<span class="panel-toolbar-zone"> <span
+										class="frame-toolbar-caption">Note verifica</span>
+									</span>
+								</div>
+							</div>
+						</div>
+						<!-- form-frames-container -->
+	
+						<!-- lista holder -->
+						<div class="fixed_height_scrollable_table" id="noteVerifica">
+							<div style="width:100%;text-align:left" th:if="not *{fascicolo.noteVerifica} and ${theAclService.userCanEditNoteVerifica(userBean,pageBean.fascicolo.folderStatus,pageBean.verificatoreTeamLeader)}">
+								<input
+									js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Aggiungi le note della verifica'}"
+									js:ajax="formId:'form',event:'onClick',params:{_eventId:'editNoteVerifica'}"
+									id="btnEditNoteVerifica"
+									name="_eventId_editNoteVerifica" value="Aggiungi le note della verifica" type="submit" />
+							</div>
+							<table class="lista" th:if="*{fascicolo.noteVerifica}">
+								<tbody>
+									<tr>
+										<td class="listTableHeader">Testo</td>
+										<td class="listTableHeader" style="width: 100px;">Operatore</td>
+										<td class="listTableHeader" style="width: 120px;">Data</td>
+										<td class="listTableHeader" style="width: 50px;">Azioni</td>
+									</tr>
+									<tr style="height: 25px;">
+										<td>
+											<textarea readonly="readonly" id="testoNoteVerifica" js:widget="widgetType:'dijit.form.Textarea',widgetAttrs:{class:'dijitReset'}"
+												th:text="*{fascicolo.noteVerifica.testo}">&nbsp;
+											</textarea>
+										</td>
+										<td th:if="*{fascicolo.noteVerifica.admin} == true" th:text="*{fascicolo.noteVerifica.operatore} + ' (' + *{fascicolo.noteVerifica.ruolo} + ') - delega admin'">&nbsp;</td>
+										<td th:if="*{fascicolo.noteVerifica.admin} == false" th:text="*{fascicolo.noteVerifica.operatore} + ' (' + *{fascicolo.noteVerifica.ruolo} + ')'">&nbsp;</td>
+										<td th:text="*{fascicolo.noteVerifica.data} + ' - ' + *{fascicolo.noteVerifica.ora}">&nbsp;</td>
+										<td><input
+											th:if="${theAclService.userCanEditNoteVerifica(userBean,pageBean.fascicolo.folderStatus,pageBean.verificatoreTeamLeader)}"
+											title="'Modifica note verifica"
+											js:ajax="formId:'form',event:'onclick',params:{_eventId:'editNoteVerifica'}"
+											id="editNoteVerifica" type="image"
+											src="images/unlk_sm.gif" /></td>										
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<!-- Note verifica -->	
+				
+				
+				<!-- VISUALIZZAZIONE HUMAN TASK NON IN CARICO ALL'UTENTE CORRENTE ASSEGNATI -->
+				<div style="margin-left: 0px;" class="lista_holder" th:if="*{fascicolo.hasWorkflow() and workflowProcessInstance.workflowProcessInstanceInfo.humanTasksToExecuteAssignOtherUser != null and workflowProcessInstance.workflowProcessInstanceInfo.humanTasksToExecuteAssignOtherUser.size() > 0}" th:with="wfInfo=*{workflowProcessInstance.workflowProcessInstanceInfo}">
+					<!-- form-frames-container -->
+					<div class="form-frames-container">
+						<div class="frame-container">
+							<div class="frame-toolbar-container">
+								<span class="panel-toolbar-zone"> <span
+									class="frame-toolbar-caption">Azioni prese in carico da altri utenti</span>
+								</span>
+							</div>
+						</div>
+					</div>
+					<!-- lista holder -->
+					<div class="fixed_height_scrollable_table">
+						<table class="lista">
+							<tbody>
+								<tr>
+									<td class="listTableHeader">Nome</td>
+									<td class="listTableHeader" style="width: 100px;">Stato</td>
+									<td class="listTableHeader" style="width: 150px;">Presa in carico da</td>
+								</tr>
+								<tr th:each="task:${wfInfo.humanTasksToExecuteAssignOtherUser}" style="height: 25px;">
+									<td th:text="(${#strings.isEmpty(task.humanTaskInstance.description)} ? ${task.humanTaskInstance.name} : ${task.humanTaskInstance.description})">
+									</td>
+									<td th:text="${#messages.msg('wf.state.' + task.humanTaskInstance.state)}">
+									</td>
+									<td th:text="${task.assignee != null} ? ${task.assignee.firstName + ' ' + task.assignee.lastName} : ''">
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<!-- VISUALIZZAZIONE HUMAN TASK NON IN CARICO ALL'UTENTE CORRENTE ASSEGNATI FINE -->
+				
+
+				<!-- VISUALIZZAZIONE HUMAN TASK DA ESEGUIRE DA PARTE DELL'UTENTE CORRENTE SE PRESENTI -->
+				<div style="margin-left: 0px;" class="lista_holder" th:if="*{fascicolo.hasWorkflow() and workflowProcessInstance.workflowProcessInstanceInfo.humanTasksToExecute != null and workflowProcessInstance.workflowProcessInstanceInfo.humanTasksToExecute.size() > 0}" th:with="wfInfo=*{workflowProcessInstance.workflowProcessInstanceInfo}">
+					<!-- form-frames-container -->
+					<div class="form-frames-container">
+						<div class="frame-container">
+							<div class="frame-toolbar-container">
+								<span class="panel-toolbar-zone"> <span
+									class="frame-toolbar-caption">Azioni da eseguire</span>
+								</span>
+							</div>
+						</div>
+					</div>
+					<!-- lista holder -->
+					<div class="fixed_height_scrollable_table">
+						<table class="lista">
+							<tbody>
+								<tr>
+									<td class="listTableHeader">Nome</td>
+									<td class="listTableHeader" style="width: 100px;">Stato</td>
+									<td class="listTableHeader" style="width: 150px;">Azioni</td>
+									<td class="listTableHeader" style="width: 18px;" 
+										th:if="*{fascicolo.folderStatus=='VALUTAZIONE RISPONDENZA PROGRAMMAZIONE' or fascicolo.folderStatus=='VALUTAZIONE RISPONDENZA PROGRAMMAZIONE INSERIMENTO ESITI' or fascicolo.folderStatus=='INSERIMENTO ESITO' or fascicolo.folderStatus=='INSERIMENTO ESITO INSERIMENTO ESITI' or motivoBloccoInvioReinvioDomandaEnum!=MotivoBloccoInvioReinvioDomandaEnum.NonApplicabile}"></td>
+								</tr>
+								<tr th:each="task:${wfInfo.humanTasksToExecute}" style="height: 25px;" th:attr="taskid=${task.id}">
+									<td th:text="(${#strings.isEmpty(task.description)} ? ${task.name} : ${task.description})">
+									</td>
+									<td th:text="${#messages.msg('wf.state.' + task.state)}">
+									</td>
+									<td>
+										<input
+											js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Prendi in carico'}"
+											js:ajax="formId:'form',event:'onClick',params:{_eventId:'prendiTask',index:'${taskStat.index}'}"
+											th:id="${#ids.seq('prendiTaskButton')}" name="_eventId_prendiTask"
+											value="Prendi in carico" type="submit" th:if="${task.assigneeId == 0}" />
+										<input
+											js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Rilascia'}"
+											js:ajax="formId:'form',event:'onClick',params:{_eventId:'rilasciaTask',index:'${taskStat.index}'}"
+											th:id="${#ids.seq('rilasciaTaskButton')}" name="_eventId_rilasciaTask"
+											value="Rilascia" type="submit" th:if="${task.assigneeId != 0}" />
+										<input
+											js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Esegui'}"
+											js:ajax="formId:'form',event:'onClick',params:{_eventId:'eseguiTask',index:'${taskStat.index}'}"
+											th:id="${#ids.seq('eseguiTaskButton')}" name="_eventId_eseguiTask"
+											value="Esegui" type="submit" th:if="${theAclService.userCanExecuteTask(task,userBean,pageBean)} and not ${theAclService.userCanAddRemoveUdoUoDomanda(userBean.ruolo,pageBean.fascicolo.folderStatus)}" />
+										<input
+											js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Esegui'}"
+											js:ajax="formId:'form',event:'onClick',params:{_eventId:'alertEseguiTaskTipoUdo22MancantiTipoTitolare',index:'${taskStat.index}'}"
+											th:id="${#ids.seq('eseguiTaskButton')}" name="_eventId_alertEseguiTaskTipoUdo22MancantiTipoTitolare"
+											value="Esegui" type="submit" th:if="${theAclService.userCanExecuteTask(task,userBean,pageBean)} and ${theAclService.userCanAddRemoveUdoUoDomanda(userBean.ruolo,pageBean.fascicolo.folderStatus)}" />
+									</td>
+									<td th:if="*{fascicolo.folderStatus=='VALUTAZIONE RISPONDENZA PROGRAMMAZIONE' or fascicolo.folderStatus=='VALUTAZIONE RISPONDENZA PROGRAMMAZIONE INSERIMENTO ESITI' or fascicolo.folderStatus=='INSERIMENTO ESITO' or fascicolo.folderStatus=='INSERIMENTO ESITO INSERIMENTO ESITI' or motivoBloccoInvioReinvioDomandaEnum!=MotivoBloccoInvioReinvioDomandaEnum.NonApplicabile}">
+										<img th:if="*{fascicolo.folderStatus}=='VALUTAZIONE RISPONDENZA PROGRAMMAZIONE'" 
+											title="Inserire l'esito sulle singole UDO per poter eseguire l'azione del flusso." 
+											border="0" src="images/qbef.gif" style="vertical-align:bottom;"/>
+										<img th:if="*{fascicolo.folderStatus}=='VALUTAZIONE RISPONDENZA PROGRAMMAZIONE INSERIMENTO ESITI'" 
+											title="Inserire l'esito sulle singole UDO." 
+											border="0" src="images/qbef.gif" style="vertical-align:bottom;"/>
+										<img th:if="*{fascicolo.folderStatus}=='INSERIMENTO ESITO'" 
+											title="Inserire l'esito e le date di inizio e fine sulle singole UDO ammesse al procedimento per poter eseguire l'azione del flusso." 
+											border="0" src="images/qbef.gif" style="vertical-align:bottom;"/>
+										<img th:if="*{fascicolo.folderStatus}=='INSERIMENTO ESITO INSERIMENTO ESITI'" 
+											title="Inserire l'esito e le date di inizio e fine sulle singole UDO ammesse al procedimento." 
+											border="0" src="images/qbef.gif" style="vertical-align:bottom;"/>
+										<img th:if="*{motivoBloccoInvioReinvioDomandaEnum!=MotivoBloccoInvioReinvioDomandaEnum.NonApplicabile}" th:title="#{__*{motivoBloccoInvioReinvioDomandaEnum.value}__}" 
+											border="0" src="images/qbef.gif" style="vertical-align:bottom;"/>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<!-- VISUALIZZAZIONE HUMAN TASK DA ESEGUIRE DA PARTE DELL'UTENTE CORRENTE SE PRESENTI FINE -->
+
+			</div>
+			<!-- SEZIONE WORKFLOW FINE -->
+
+			<!-- MODIFICA DELIBERE -->
+			<th:block th:if="${theAclService.userCanModifyDeliberaAttoInst(userBean, pageBean)}">
+				<!-- GESTIONE DELIBERA FLUSSO < 3.0 -->
+				<div th:if="${!theAclService.isGestioneAttoInstInUdoInstActiveForFolder(pageBean)} and *{delibera != null}" class="fieldset_holder">
+
+					<!-- header videata -->
+					<div class="form-caption-container">
+						<span class="form-caption-text">Delibera</span>
+					</div>
+					<!-- form-frames-container -->
+
+					<table class="fieldset row" style="width: 850px">
+						<tbody>
+							<tr th:if="*{delibera.numeroDelibera}">
+								<td>
+									<table class="row">
+										<tbody>
+											<tr>
+												<td style="width: 15%;" class="label">Numero</td>
+												<td style="width: 85%;"><input style="width: 200px;"
+													id="numeroDel"
+													js:widget="widgetType:'dijit.form.TextBox'" type="text"
+													th:value="*{delibera.numeroDelibera}" readonly="readonly" />
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</td>
+							</tr>
+	
+							<tr th:if="*{delibera.tipoAtto}">
+								<td>
+									<table class="row">
+										<tbody>
+											<tr>
+												<td style="width: 15%;" class="label">Tipo atto</td>
+												<td style="width: 85%;"><input style="width: 200px;"
+													id="descrDelibera"
+													js:widget="widgetType:'dijit.form.TextBox'" type="text"
+													th:value="*{delibera.tipoAtto.descr}" readonly="readonly" />
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</td>
+							</tr>
+							<tr th:if="*{delibera.annoDelibera}">
+								<td>
+									<table class="row">
+										<tbody>
+											<tr>
+												<td style="width: 15%;" class="label">Anno</td>
+												<td style="width: 85%;"><input style="width: 200px;"
+													id="annoDel"
+													js:widget="widgetType:'dijit.form.TextBox'" type="text"
+													th:value="*{delibera.annoDelibera}" readonly="readonly" />
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</td>
+							</tr>
+							<tr th:if="*{delibera.dataInizioValidita}">
+								<td>
+									<table class="row">
+										<tbody>
+											<tr>
+												<td style="width: 15%;" class="label">Data Inizio</td>
+												<td style="width: 85%;"><input style="width: 200px;"
+													id="dataInizioDelibera"
+													js:widget="widgetType:'dijit.form.TextBox'" type="text"
+													th:value="*{#dates.format(delibera.dataInizioValidita,'dd/MM/yyyy')}" readonly="readonly" />
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</td>
+							</tr>
+							<tr th:if="*{delibera.dataFineValidita}">
+								<td>
+									<table class="row">
+										<tbody>
+											<tr>
+												<td style="width: 15%;" class="label">Data Fine</td>
+												<td style="width: 85%;"><input style="width: 200px;"
+													id="dataFineDelibera" js:widget="widgetType:'dijit.form.TextBox'"
+													type="text" th:value="*{#dates.format(delibera.dataFineValidita,'dd/MM/yyyy')}"
+													readonly="readonly" /></td>
+											</tr>
+										</tbody>
+									</table>
+								</td>
+							</tr>
+							<tr th:if="*{delibera.deliberaFileBean}">
+								<td>
+									<table class="row">
+										<tbody>
+											<tr>
+												<td style="width: 15%;" class="label">Oggetto delibera</td>
+												<td style="width: 85%;"><input style="width: 200px;"
+													id="oggettoDelibera" js:widget="widgetType:'dijit.form.TextBox'"
+													type="text" th:value="*{delibera.deliberaFileBean.fileOggetto}"
+													readonly="readonly" /></td>
+											</tr>
+										</tbody>
+									</table>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<table class = "row">
+										<tboby>
+											<tr>
+												<td style="width: 180px;" class="label">File</td>
+												<td style="width: 85%;"><a class="anchor" th:utext="*{delibera.deliberaFileBean.fileName}"
+													th:href="@{/download(id=*{delibera.deliberaFileBean.nomeBase64}, title=*{delibera.deliberaFileBean.nomeBase64}, sessionId=*{sessionId}, processId = *{fascicolo.workflowXWProcessInstance.processInstanceId}, isBonita = 'true')}">Delibera</a></td>
+											</tr>
+										</tboby>
+									</table>
+								</td>
+							</tr>									
+						</tbody>
+					</table>
+					<div style="width:100%;text-align:left">
+						<br/>
+						<input
+							js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Modifica dati delibera'}"
+							js:ajax="formId:'form',event:'onClick',params:{_eventId:'editDelibera'}"
+							id="editDelibera"
+							name="_eventId_editDelibera" value="Modifica delibera" type="submit" />
+						<input
+							js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Modifica file delibera'}"
+							js:ajax="formId:'form',event:'onClick',params:{_eventId:'editFileDelibera'}"
+							id="editFileDelibera"
+							name="_eventId_editFileDelibera" value="Modifica file delibera" type="submit" />
+					</div>
+				</div>
+
+				
+				<!-- GESTIONE DELIBERA FLUSSO >= 3.0 -->
+				<div th:if="${theAclService.isGestioneAttoInstInUdoInstActiveForFolder(pageBean)} and *{attoInstDomandaL != null} and *{attoInstDomandaL.size() > 0}" class="fieldset_holder" id="attiDelibere">
+					<!-- header videata -->
+					<div class="form-caption-container">
+						<span class="form-caption-text">Delibere</span>
+					</div>
+					<!-- delibere -->
+					<th:block th:each="attoInst: *{attoInstDomandaL}">
+						<table class="fieldset row" style="width: 850px">
+							<tbody>
+								<tr th:if="${attoInst.anno}">
+									<td>
+										<table class="row">
+											<tbody>
+												<tr>
+													<td style="width: 15%;" class="label">Anno</td>
+													<td style="width: 85%;"><input style="width: 200px;"
+														th:id="${#ids.seq('annoAtto')}"
+														js:widget="widgetType:'dijit.form.TextBox'" type="text"
+														th:value="${attoInst.anno}" readonly="readonly" />
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</td>
+								</tr>
+								<tr th:if="${attoInst.numero}">
+									<td>
+										<table class="row">
+											<tbody>
+												<tr>
+													<td style="width: 15%;" class="label">Numero</td>
+													<td style="width: 85%;"><input style="width: 200px;"
+														th:id="${#ids.seq('numeroAtto')}"
+														js:widget="widgetType:'dijit.form.TextBox'" type="text"
+														th:value="${attoInst.numero}" readonly="readonly" />
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</td>
+								</tr>
+		
+								<tr th:if="${attoInst.tipoAtto}">
+									<td>
+										<table class="row">
+											<tbody>
+												<tr>
+													<td style="width: 15%;" class="label">Tipo atto</td>
+													<td style="width: 85%;"><input style="width: 200px;"
+														th:id="${#ids.seq('descrAtto')}"
+														js:widget="widgetType:'dijit.form.TextBox'" type="text"
+														th:value="${attoInst.tipoAtto.descr}" readonly="readonly" />
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</td>
+								</tr>
+								<tr th:if="${attoInst.inizioValidita}">
+									<td>
+										<table class="row">
+											<tbody>
+												<tr>
+													<td style="width: 15%;" class="label">Data Inizio</td>
+													<td style="width: 85%;"><input style="width: 200px;"
+														th:id="${#ids.seq('dataInizioAtto')}"
+														js:widget="widgetType:'dijit.form.TextBox'" type="text"
+														th:value="${#dates.format(attoInst.inizioValidita,'dd/MM/yyyy')}" readonly="readonly" />
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</td>
+								</tr>
+								<tr th:if="${attoInst.fineValidita}">
+									<td>
+										<table class="row">
+											<tbody>
+												<tr>
+													<td style="width: 15%;" class="label">Data Fine</td>
+													<td style="width: 85%;"><input style="width: 200px;"
+														th:id="${#ids.seq('dataFineAtto')}"
+														js:widget="widgetType:'dijit.form.TextBox'"
+														type="text" th:value="${#dates.format(attoInst.fineValidita,'dd/MM/yyyy')}"
+														readonly="readonly" /></td>
+												</tr>
+											</tbody>
+										</table>
+									</td>
+								</tr>
+								<tr th:if="${attoInst.binaryAttachmentsAppl}">
+									<td>
+										<table class="row">
+											<tbody>
+												<tr>
+													<td style="width: 15%;" class="label">Oggetto delibera</td>
+													<td style="width: 85%;"><input style="width: 200px;"
+														th:id="${#ids.seq('oggettoAtto')}"
+														js:widget="widgetType:'dijit.form.TextBox'"
+														type="text" th:value="${attoInst.binaryAttachmentsAppl.descr}"
+														readonly="readonly" /></td>
+												</tr>
+											</tbody>
+										</table>
+									</td>
+								</tr>
+								<tr th:if="${attoInst.binaryAttachmentsAppl}">
+									<td>
+										<table class = "row">
+											<tboby>
+												<tr>
+													<td style="width: 180px;" class="label">File</td>
+													<td style="width: 85%;"><a class="anchor" th:utext="${attoInst.binaryAttachmentsAppl.nome}"
+														th:href="@{/download(id=${attoInst.binaryAttachmentsAppl.clientidBase64}, title=${attoInst.binaryAttachmentsAppl.nomeBase64}, sessionId=*{sessionId}, isBinaryAttachmentsAppl='true')}">Delibera</a></td>
+												</tr>
+											</tboby>
+										</table>
+									</td>
+								</tr>									
+							</tbody>
+						</table>
+						<div style="width:100%;text-align:left" th:if="${theAclService.isEditAttoInstActiveForFolder(userBean, pageBean)}">
+							<br/>
+							<input
+								js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Modifica dati delibera'}"
+								js:ajax="formId:'form',event:'onClick',params:{_eventId:'editAttoInst',attoInstClientId:'${attoInst.clientid}'}"
+								th:id="${#ids.seq('editAtto')}"
+								name="_eventId_editAttoInst" value="Modifica delibera" type="submit" />
+							<input
+								js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Modifica file delibera'}"
+								js:ajax="formId:'form',event:'onClick',params:{_eventId:'editFileAttoInst',binaryAttachmentsApplClientId:'${attoInst.binaryAttachmentsAppl.clientid}'}"
+								th:id="${#ids.seq('editFileAtto')}"
+								name="_eventId_editFileAttoInst" value="Modifica file delibera" type="submit" />
+						</div>
+
+					
+					</th:block>
+				</div>
+			</th:block>
+			
+			
+
+			<div class="lista_holder" th:if="*{fascicolo.udoUoInstForL} and *{!#lists.isEmpty(fascicolo.udoUoInstForL)}">
+				<!-- header videata -->
+				<div class="form-caption-container">
+					<span class="form-caption-text">Unità di offerta</span>
+				</div>
+				<div class="form-frames-container">
+					<div class="frame-container">
+						<div class="frame-toolbar-container">
+							<span class="panel-toolbar-zone" id="checkedUdoListAnchor"> <span class="frame-toolbar-caption">Elenco UDO
+							
+								<span th:text="'[Sono state selezionate:'"></span>
+				  					<a th:if="*{!#maps.isEmpty(checkM)}" class="anchor" js:ajax="formId:'form',event:'onclick',params:{_eventId:'showCheckedUdoUoList'}" 
+				  							id="selectedUdoLink" th:href="${flowExecutionUrl} + '&amp;_eventId=showCheckedUdoUoList'"
+				  							th:text="*{(requisitiGeneraliSelected)?'i requisiti Generali Aziendali, ':''} + 
+				  							*{numberUoSelected} + ' Unità Operative ' + *{numberUdoSelected} + ' Unità di Offerta]'">n Unità Operative n Unità di Offerta</a>
+
+								<span th:if="*{#maps.isEmpty(checkM)}">0 Unità operative e 0 Unità di Offerta]</span>
+							
+							 
+							</span>
+							</span>
+							
+						</div>
+					</div>
+				</div>
+				<!-- form-frames-container -->
+
+				<!-- Form ricerca udo -->
+				<br />
+				<table class="row">
+					<tbody>
+						<tr>
+							<td style="width: 15%;" class="label">Codice Ulss</td>
+							<td style="width: 20%;">
+								<input th:field="*{udoInstSearchOrderBean.subStringCodiceUlssDaCercare}" id="idCodiceUlssDaCercare" js:widget="widgetType:'dijit.form.TextBox'" type="text" />
+							</td>
+							<td style="width: 10%; padding-left: 5px; padding-right: 5px;" class="label">Codice Ex Ulss</td>
+							<td style="width: 20%;">
+								<input th:field="*{udoInstSearchOrderBean.subStringCodiceExUlssDaCercare}" id="idCodiceExUlssDaCercare" js:widget="widgetType:'dijit.form.TextBox'" type="text" />
+							</td>
+							<td style="width: 1%;"></td>
+							<td style="width: 44%"></td>
+						</tr>						<tr>
+							<td style="width: 15%;" class="label">Denominazione</td>
+							<td style="width: 50%;" colspan="3"><input
+								th:field="*{udoInstSearchOrderBean.subStringDenominazioneDaCercare}" style="width: 100%;"
+								id="idDenominazioneDaCercare"
+								js:widget="widgetType:'dijit.form.TextBox'" type="text" /></td>
+							<td style="width: 1%;"></td>
+							<td style="width: 44%"></td>
+						</tr>
+						<tr>
+							<td style="width: 15%;" class="label">Tipo Udo</td>
+							<td style="width: 50%;" colspan="3"><input
+								th:field="*{udoInstSearchOrderBean.subStringTipoUdoDaCercare}" style="width: 100%;"
+								id="idTipoUdoDaCercare"
+								js:widget="widgetType:'dijit.form.TextBox'" type="text" /></td>
+							<td style="width: 1%;"></td>
+							<td style="width: 44%"></td>
+						</tr>
+						<tr>
+							<td style="width: 15%;" class="label">Disciplina</td>
+							<td style="width: 20%;">
+								<input th:field="*{udoInstSearchOrderBean.subStringDisciplinaDaCercare}" id="idDisciplinaDaCercare" js:widget="widgetType:'dijit.form.TextBox'" type="text" />
+							</td>
+							<td style="width: 10%; padding-left: 5px; padding-right: 5px;" class="label">Branca</td>
+							<td style="width: 20%;">
+								<input th:field="*{udoInstSearchOrderBean.subStringBrancaDaCercare}" id="idBrancaDaCercare" js:widget="widgetType:'dijit.form.TextBox'" type="text" />
+							</td>
+							<td style="width: 1%;"></td>
+							<td style="width: 44%"></td>
+						</tr>
+						<tr>
+							<td style="width: 15%;" class="label">Area Discipline</td>
+							<td style="width: 50%;" colspan="3"><select th:field="*{udoInstSearchOrderBean.areaDisciplineDaCercare}" js:widget="widgetType:'dijit.form.Select'" style="width:163px;">
+									  <option value="">--------------</option>
+									  <option th:each="area:*{areeDiscipline}" th:value="${area.clientid}" th:text="${area.denominazione}"></option>
+									</select>
+							</td>
+							<td style="width: 1%;"></td>
+							<td style="width: 44%"></td>
+						</tr>
+						<tr>
+							<td style="width: 15%;" class="label">Classificazione UDO</td>
+							<td style="width: 50%;" colspan="3"><select th:field="*{udoInstSearchOrderBean.classificazioneUdoTemplDaCercare}" js:widget="widgetType:'dijit.form.Select'" style="width:163px;">
+									  <option value="">--------------</option>
+									  <option th:each="classificazione:*{classificazioniUdoTempl}" th:value="${classificazione.clientid}" th:text="${classificazione.nome}"></option>
+									</select>
+							</td>
+							<td style="width: 1%;"></td>
+							<td style="width: 44%"></td>
+						</tr>
+						<tr>
+							<td style="width: 15%;" class="label">Sede Operativa</td>
+							<td style="width: 20%;">
+								<input th:field="*{udoInstSearchOrderBean.subStringSedeOperativaDaCercare}" id="idSedeOperativaDaCercare" js:widget="widgetType:'dijit.form.TextBox'" type="text" />
+							</td>
+							<td style="width: 10%; padding-left: 5px; padding-right: 5px; white-space: nowrap;" class="label">Unità Operativa</td>
+							<td style="width: 20%;">
+								<input th:field="*{udoInstSearchOrderBean.subStringUODaCercare}" id="idUODaCercare" js:widget="widgetType:'dijit.form.TextBox'" type="text" />
+							</td>
+							<td style="width: 1%;"></td>
+							<td style="width: 44%"></td>
+						</tr>
+						<tr>
+							<td style="width: 15%;" class="label">Edificio</td>
+							<td style="width: 20%;">
+								<input th:field="*{udoInstSearchOrderBean.subStringStabilimento}" id="idStabilimento" js:widget="widgetType:'dijit.form.TextBox'" type="text" />
+							</td>
+							<td style="width: 10%; padding-left: 5px; padding-right: 5px;" class="label">Blocco</td>
+							<td style="width: 20%;">
+								<input th:field="*{udoInstSearchOrderBean.subStringBlocco}" id="idBlocco" js:widget="widgetType:'dijit.form.TextBox'" type="text" />
+							</td>
+							<td style="width: 1%;"></td>
+							<td style="width: 44%"></td>
+						</tr>
+						<tr>
+							<td style="width: 15%;" class="label">Piano</td>
+							<td style="width: 20%;">
+								<input th:field="*{udoInstSearchOrderBean.subStringPiano}" id="idPiano" js:widget="widgetType:'dijit.form.TextBox'" type="text" />
+							</td>
+							<td style="width: 10%; padding-left: 5px; padding-right: 5px;" class="label">Progressivo</td>
+							<td style="width: 20%;">
+								<input th:field="*{udoInstSearchOrderBean.subStringProgressivo}" id="idProgressivo" js:widget="widgetType:'dijit.form.TextBox'" type="text" />
+							</td>
+							<td style="width: 1%;"></td>
+							<td style="width: 44%"></td>
+						</tr>
+						<tr>
+							<td style="width: 15%;" class="label">Direttore</td>
+							<td style="width: 50%;" colspan="3"><input th:field="*{udoInstSearchOrderBean.subStringDirettoreDaCercare}" style="width: 100%;" id="idDirettoreDaCercare"
+								js:widget="widgetType:'dijit.form.TextBox'" type="text" /></td>
+							<td style="width: 1%;"></td>
+							<td style="width: 44%"></td>
+						</tr>
+						<tr>
+							<td style="width: 15%;" class="label">Codice Univoco</td>
+							<td style="width: 50%;" colspan="3"><input
+								th:field="*{udoInstSearchOrderBean.subStringCodiceUnivocoDaCercare}" style="width: 100%;"
+								id="idCodiceUnivocoDaCercare"
+								js:widget="widgetType:'dijit.form.TextBox'" type="text" /></td>
+							<td style="width: 1%;"></td>
+							<td style="width: 44%"></td>
+						</tr>
+
+						<tr>
+							<td style="width: 15%;" class="label">Scadenza da</td>
+							<td style="width: 50%;" colspan="3"><input
+							id="dataScadenzaDa"
+							js:widget="widgetType:'dijit.form.DateTextBox',widgetAttrs:{datePattern:'dd/MM/yyyy',required:false}"
+							type="text"
+							th:field="*{udoInstSearchOrderBean.dataScadenzaStringDa}"
+							value=""
+							js:errors="true" /> &nbsp;&nbsp;&nbsp; a &nbsp;&nbsp;&nbsp; <input
+							id="dataScadenzaA"
+							js:widget="widgetType:'dijit.form.DateTextBox',widgetAttrs:{datePattern:'dd/MM/yyyy',required:false}"
+							type="text"
+							th:field="*{udoInstSearchOrderBean.dataScadenzaStringA}"
+							value=""
+							js:errors="true" /></td>
+							<td style="width: 1%;"></td>
+							<td style="width: 44%"></td>
+						</tr>
+
+						<tr>
+							<td style="width: 15%;" class="label">Mostra solo con RS</td>
+							<td style="width: 50%;" colspan="3"><input type="checkbox" 
+								th:field="*{udoInstSearchOrderBean.showOnlyUdoConRequisiti}" 
+								id="idshowOnlyUdoConRequisiti"
+								js:widget="widgetType:'dijit.form.CheckBox',widgetAttrs:{}" />
+							</td>
+							<td style="width: 1%;"></td>
+							<td style="width: 44%"></td>
+						</tr>
+
+						<tr th:if="${theAclService.userCanFilterForUdoAssegnate(userBean,pageBean)}">
+							<td style="width: 15%;" class="label">Mostra solo assegnate</td>
+							<td style="width: 50%;" colspan="3"><input type="checkbox" 
+								th:field="*{udoInstSearchOrderBean.showOnlyUdoAssigned}" 
+								id="idShowOnlyUdoAssigned"
+								js:widget="widgetType:'dijit.form.CheckBox',widgetAttrs:{}" /></td>
+							<td style="width: 1%;"></td>
+							<td style="width: 44%"></td>
+						</tr>
+						
+						<tr th:if="${theAclService.userCanFilterForUdoSenzaEsito(userBean,pageBean)}">
+							<td style="width: 15%;" class="label">Mostra UdO in congruenza programmazione senza esito inserito</td>
+							<td style="width: 50%;" colspan="3"><input type="checkbox" 
+								th:field="*{udoInstSearchOrderBean.showOnlyCongruenzaSenzaEsito}" 
+								id="idshowOnlyCongruenzaSenzaEsito"
+								js:widget="widgetType:'dijit.form.CheckBox',widgetAttrs:{}" /></td>
+							<td style="width: 1%;"></td>
+							<td style="width: 44%"></td>
+						</tr>
+
+						<tr th:if="${theAclService.userCanFilterByUdoUoRgaConRequisitiAssegnatiInVerifica(pageBean.fascicolo.folderStatus,userBean)}">
+							<td style="width: 15%;" class="label">Mostra solo da verificare</td>
+							<td style="width: 50%;" colspan="3"><input type="checkbox" 
+								th:field="*{udoInstSearchOrderBean.showOnlyUdoAssignedVerifica}" 
+								id="idShowOnlyUdoAssignedVerifica"
+								js:widget="widgetType:'dijit.form.CheckBox',widgetAttrs:{}" /></td>
+							<td style="width: 1%;"></td>
+							<td style="width: 44%"></td>
+						</tr>
+
+						<tr>
+							<td colspan="6"><input
+								js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Applica filtri'}"
+								js:ajax="formId:'form',event:'onClick',params:{_eventId:'filtraUoUdoDomanda'}"
+								id="filtraSulleUoUdoDellaDomanda"
+								name="_eventId_filtraUoUdoDomanda" value="Applica filtri"
+								type="submit" /><input
+								js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Pulisci'}"
+								js:ajax="formId:'form',event:'onClick',params:{_eventId:'mostraTutti'}"
+								id="mostraTutti"
+								name="_eventId_mostraTutti" value="Pulisci"
+								type="submit" />&nbsp;&nbsp;&nbsp;
+								</td>
+						</tr>
+						
+						<tr>
+							<td style="width: 15%;" class="label">Ordinamento</td>
+							<td style="width: 50%;" colspan="3"><select th:field="*{udoInstSearchOrderBean.udoUoInstForListOrderType}" js:widget="widgetType:'dijit.form.Select',widgetAttrs:{forceWidth:true,onChange:function(b){Spring.remoting.submitForm('','form',{_eventId:'ordinaUoUdoDomanda'});}}" js:errors="true" style="width:163px;">
+									  <option th:each="type : ${T(it.tredi.auac.UdoUoInstForListOrderTypeEnum).values()}" th:value="${type}" th:text="#{__${type.value}__}"></option>
+									</select>
+							</td>
+							<td style="width: 1%;"></td>
+							<td style="width: 44%"></td>
+						</tr>
+						<!-- Sezione per gli specchietti dei posti letto -->
+						<tr th:if="${theAclService.userCanCheckSpecchiettiPL(userBean)}">
+							<td colspan="6">
+							<br/>
+								<select
+								th:field="*{tipoSpecchiettoSelected}"
+								js:widget="widgetType:'dijit.form.Select'" js:errors="true">
+									<option value="0">---scegli lo specchietto---</option>
+									<option value="1">PL P/A/R/F</option>
+									<option value="2">PL discipline titolare</option>
+									<option value="3">PL branche titolare</option>
+								</select>
+								&nbsp;&nbsp;
+								<input js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Visualizza specchietto'}"
+									js:ajax="formId:'form',event:'onClick',params:{_eventId:'viewSpecchietto'}"
+									id="viewSpecchietto" name="_eventId_viewSpecchietto" value="Visualizza specchietto"/>
+								&nbsp;&nbsp;
+								<input js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Esporta in pdf'}"
+									js:ajax="formId:'form',event:'onClick',params:{_eventId:'esportaSpecchiettoPdf'}"
+									id="exportSpecchiettoPdf" name="_eventId_exportSpecchiettoPdf" value="Esporta in pdf"
+									th:if="*{tipoSpecchiettoSelected != 0}"/>
+								&nbsp;&nbsp;
+								<input js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Esporta in csv'}"
+									js:ajax="formId:'form',event:'onClick',params:{_eventId:'esportaSpecchiettoCsv'}"
+									id="exportSpecchiettoCsv" name="_eventId_exportSpecchiettoCsv" value="Esporta in csv"
+									th:if="*{tipoSpecchiettoSelected != 0}"/>
+								&nbsp;&nbsp;
+								<input js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Torna alla lista UDO'}"
+									js:ajax="formId:'form',event:'onClick',params:{_eventId:'tornaAllaListaUdo'}"
+									id="tornaAllaListaUdo" name="_eventId_tornaAllaListaUdo" value="Torna alla lista UDO"
+									th:if="*{tipoSpecchiettoSelected != 0}"/>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<br />
+				
+				<!-- tabella della lista requisiti domanda e delle UO, UDO -->
+				<!-- lista holder -->
+				
+							
+				<div class="fixed_header_scrollable_table" id="listaUdoDiv" th:if="*{filteredUdoUoInstForL} and *{!#lists.isEmpty(filteredUdoUoInstForL)} and *{tipoSpecchiettoSelected == 0}">
+					<div class="header-background"> </div>
+					<div class="fixed_header_table_inner">
+						<table class="lista_fixed" id="listaUdoTable">
+							<tbody>
+								<tr>
+									<td class="listTableHeader">
+										<div class="fixed_header">
+											<input js:ajax="formId:'form',event:'onChange',params:{_eventId:'checkAllUoUdo'}" js:widget="widgetType:'dijit.form.CheckBox',widgetAttrs:{}" type="checkbox" th:field="*{allChecked}"/>
+										</div>
+									</td>
+									<td class="listTableHeader"><div class="fixed_header">Codice Univoco</div></td>
+									<td class="listTableHeader"><div class="fixed_header">Denominazione</div></td>
+									<td class="listTableHeader"><div class="fixed_header">Tipologia UDO</div></td>
+									<td class="listTableHeader"><div class="fixed_header">Discipline/Ambiti</div></td>
+									<td class="listTableHeader"><div class="fixed_header" style="line-height: normal;">Branche<br/>Attività (cod &ldquo;spe&rdquo;)</div></td>
+									<td class="listTableHeader"><div class="fixed_header">Requisiti</div></td>
+									<td class="listTableHeader"><div class="fixed_header">Esito</div></td>
+									<td class="listTableHeader"><div class="fixed_header">Azioni</div></td>
+								</tr>
+								<tr th:if="*{filteredUdoUoInstForL} and *{!#lists.isEmpty(filteredUdoUoInstForL)}" th:each="udo:*{filteredUdoUoInstForL}"
+									th:class="*{activeRowIndex}==${udoStat.index}?'active'" style="height: 43px;"
+									th:onclick="'setRowsClass(this);if(event.target.tagName==\'INPUT\')return true;Spring.remoting.submitForm(\'\',\'form\',{_eventId:\'setActiveRowIndex\',index:\'' + ${udoStat.index} + '\',changeCheck:false,checked:false});'"
+									th:attr="isudo=${udo.isUdo()}?'y':'n',uoid=${udo.uoClientId}">
+									<td style="min-width:20px;">
+										<input js:widget="widgetType:'dijit.form.CheckBox',widgetAttrs:{onChange: 'updateUdoUoInstCheckbox(this, ${udo.isUo()}, \'${udo.uoClientId}\', ${udoStat.index})' }" 
+												type="checkbox" th:id="${#ids.seq('udoCheck')}" th:checked="*{checked(__${udoStat.index}__)}" />
+									</td>
+									<!-- Codice Univoco udo (se udo) / Denominazione (se non udo9 -->
+									<td th:style="${udo.isUdo()}?'background-color:#36943E;min-width:85px;':'font-weight:bold;min-width:450px;'" th:colspan="${udo.isUdo()}? '1' : '5'" th:text="${udo.isUdo()}?${udo.codUnivocoUdo}:${udo.descr}">&nbsp;</td>
+									<!-- Denominazione udo -->
+									<td th:if="${udo.isUdo()}" th:text="${udo.descr}" style="min-width:85px;"></td>
+									<!-- Tipologia udo -->
+									<td th:if="${udo.isUdo()}" th:text="${udo.tipoUdoTemplDescr}" style="min-width:80px;"></td>
+									<!-- Discipline -->
+									<td th:if="${udo.isUdo()}" style="min-width:80px;">
+										<span th:each="disciplina:${udo.disciplineUdoInstsInfo}" th:remove="tag">
+		 									<span th:remove="tag" th:if="${disciplinaStat.index} lt 5"><span th:remove="tag" th:text="${disciplina.codiceDescr}"></span><span th:remove="tag" th:text="${disciplinaStat.count ne 5 and disciplinaStat.count lt disciplinaStat.size}?', ':''"></span></span>
+		 									<span th:remove="tag" th:if="${disciplinaStat.index} eq 5">...</span>
+										</span>
+									</td>
+									
+									<!-- Branche -->
+									<td th:if="${udo.isUdo()}" style="min-width:120px;">
+		 								<span th:each="branca:${udo.brancheUdoInstsInfo}" th:remove="tag">
+		 									<span th:remove="tag" th:if="${brancaStat.index} lt 5"><span th:remove="tag" th:text="${branca.codice} + ' - ' + ${branca.descr}"></span><span th:remove="tag" th:text="${brancaStat.count ne 5 and brancaStat.count lt brancaStat.size}?', ':''"></span></span>
+		 									<span th:remove="tag" th:if="${brancaStat.index} eq 5">...</span>
+										</span>
+									</td>
+									
+									<!-- Requisiti -->
+									<td style="min-width:210px;text-align:center;">
+										<input
+											js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Autovalutazione'}"
+											js:ajax="formId:'form',event:'onClick',params:{_eventId:'autovalutazione',index:'${udoStat.index}'}"
+											th:id="${#ids.seq('autovalutazioneButton')}" name="_eventId_autovalutazione"
+											value="Autovalutazione" type="submit" />
+											
+											<!-- icone x evidenza di TUTTI requisiti risposti/assegnati -->
+											<img th:if="${udo.requisitiRisposti}" style="vertical-align:middle;" border="0" src="resources/images/questionario_si.png" title="L'autovalutazione dei requisiti è completa"/>
+											<img th:if="${!udo.requisitiRisposti}" style="vertical-align:middle;" border="0" src="resources/images/questionario_no.png" title="L'autovalutazione dei requisiti deve essere completata" />		
+											
+											<div th:remove="tag" th:if="${!userBean.COLLABORATORE_VALUTAZIONE}">
+												<img th:if="${udo.requisitiAssegnati}" style="vertical-align:middle;" border="0" src="resources/images/user_si.png" title="Tutti i requisiti sono assegnati per l'autovalutazione" />
+												<img th:if="${!udo.requisitiAssegnati}" style="vertical-align:middle;" border="0" src="resources/images/user_no.png" title="Sono presenti requisiti non assegnati per l'autovalutazione" />		
+											</div>								
+											
+											<!-- icone x evidenza di TUTTI requisiti assegnati in verifica -->
+											<div th:remove="tag" th:if="${theAclService.userCanShowStatoVerifica(pageBean.fascicolo.folderStatus, userBean)}">
+												<img th:if="${pageBean.isTuttiRequisitiVerificati(udo)}" style="vertical-align:middle;" border="0" src="resources/images/questionario_ver_si.png" title="La verifica dei requisiti è completa"/>
+												<img th:if="${!pageBean.isTuttiRequisitiVerificati(udo)}" style="vertical-align:middle;" border="0" src="resources/images/questionario_ver_no.png" title="La verifica dei requisiti deve essere completata" />		
+
+												<img th:if="${pageBean.isTuttiVerificatoriAssegnati(udo)}" style="vertical-align:middle;" border="0" src="resources/images/user_ver_si.png" title="Tutti i requisiti sono assegnati per la verifica" />
+												<img th:if="${!pageBean.isTuttiVerificatoriAssegnati(udo)}" style="vertical-align:middle;" border="0" src="resources/images/user_ver_no.png" title="Sono presenti requisiti non assegnati per la verifica" />		
+											</div>								
+								   </td>
+									<!-- Esito -->
+									<td th:if="${!udo.isRequisitiGeneraliAziendali() and udo.esito != null and udo.esito != ''}"
+										th:style="${udo.isUdo() and udo.esitoStato != null and udo.esitoStato == T(it.tredi.auac.StatoEsitoEnum).CONTROLLARE}?'min-width:50px;white-space: nowrap;background-color: #F58383':'min-width:50px;white-space: nowrap'">
+																												
+										<span th:text="${udo.esito}">esito</span>									
+										<img th:if="(
+														${theAclService.userCanShowEsitoDataInizioScadenza(userBean.ruolo,pageBean,udo)} 
+														and
+														(${udo.esitoDataInizio} ne null or ${udo.esitoScadenza} ne null)
+													) 
+													or 
+													(${udo.esitoNote} ne null and ${udo.esitoNote} != '')" 
+											th:title="(${theAclService.userCanShowEsitoDataInizioScadenza(userBean.ruolo,pageBean,udo)} ?
+														(${udo.esitoDataInizio} ? 'Data inizio: ' + ${#dates.format(udo.esitoDataInizio,'dd/MM/yyyy')} + ' ' : ''  ) + (${udo.esitoScadenza} ? ' Scadenza: ' + ${#dates.format(udo.esitoScadenza,'dd/MM/yyyy')} + ' ' : '')
+														:
+														''
+													) 
+															+ (${udo.esitoNote} ne null ? 'Note: ' + ${udo.esitoNote} : '')" 
+											border="0" src="images/qbef.gif" style="vertical-align:bottom;"/>
+									</td>
+									<!-- Esito -->
+									<td th:if="not (${udo.isUdo() and udo.esito != null and udo.esito != ''})"
+										style="min-width:50px;background-color: #E3EF7A"></td>
+									<!-- Azioni -->
+									<td style="min-width:50px;">
+										<input
+										th:if="${udo.isUdo()} and ${theAclService.userCanEditUdoModel(udo,userBean,pageBean)}"
+										title="Modifica UDO"
+										js:confirm="event:'onclick',message:'#{crud.confirm}'"
+										js:ajax="formId:'form',event:'onclick',params:{_eventId:'modificaUdoModel',index:'${udoStat.index}'}"
+										th:id="${#ids.seq('removeUdoUoButton')}" type="image"
+										src="images/unlk_sm.gif" />
+									
+									
+										<input
+										th:if="${!udo.isRequisitiGeneraliAziendali() and !udo.isStruttura() and !udo.isEdificio()} and ${theAclService.userCanAddRemoveUdoUoDomanda(userBean.ruolo,pageBean.fascicolo.folderStatus)}"
+										title="Rimuovi UDO/UO dalla domanda"
+										js:confirm="event:'onclick',message:'#{crud.confirm}'"
+										js:ajax="formId:'form',event:'onclick',params:{_eventId:'removeUdoUo',index:'${udoStat.index}'}"
+										th:id="${#ids.seq('removeUdoUoButton')}" type="image"
+										src="images/delete_sm.gif" />
+										<input
+										th:if="${theAclService.userCanEditDomanda(userBean.ruolo,pageBean.fascicolo.folderStatus)}"
+										title="Copia Autovalutazione della UDO/UO/ST/ED"
+										js:ajax="formId:'form',event:'onclick',params:{_eventId:'copyAutovalutazioneUdoUo',index:'${udoStat.index}'}"
+										th:id="${#ids.seq('copyAutovalutazioneUdoUoButton')}" type="image"
+										src="images/copy.gif" />
+
+										<th:block th:with="udoUoInfo=${theAclService.getAssegnatariUdo(udo,userBean,pageBean)}" th:if="(${udo.isUdo()} or ${udo.isUo()}) and (*{fascicolo.folderStatus}=='VALUTAZIONE RISPONDENZA PROGRAMMAZIONE' or *{fascicolo.folderStatus}=='VALUTAZIONE RISPONDENZA PROGRAMMAZIONE INSERIMENTO ESITI')">
+										<img th:if="${#strings.length(udoUoInfo)>0}" 
+											th:title="${udoUoInfo}" 
+											border="0" src="images/qbef.gif" style="vertical-align:bottom;"/>
+										</th:block>
+										<img th:if="${theAclService.isUdoInstAmbulatoriale(udo,userBean,pageBean)}" 
+											th:title="Ambulatoriale" 
+											border="0" src="images/uamb.gif" style="vertical-align:bottom;"/>
+										
+										</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>					
+				</div>
+
+				<br />
+				
+				<div style="overflow-x:auto;">
+						<table th:if="*{tipoSpecchiettoSelected != 0}" th:switch="*{tipoSpecchiettoSelected}" 
+						id="specchiettoTable" class="lista">
+							<tbody th:case="1">
+								<tr>
+									<td class="listTableHeader center-text" colspan="2"></td>
+									<td class="listTableHeader center-text" colspan="5">Programmato</td>
+									<td class="listTableHeader center-text" colspan="5">Attuato</td>
+									<td class="listTableHeader center-text" colspan="5">Richiesto PL</td>
+									<td class="listTableHeader center-text" colspan="3">PL Flussi Ministeriali</td>
+								</tr>
+								<tr>
+									<td class="listTableHeader" colspan="2"></td>
+									<td class="listTableHeader center-text">cod</td>
+									<td class="listTableHeader center-text">descr</td>
+									<td class="listTableHeader center-text">au</td>
+									<td class="listTableHeader center-text">ac</td>
+									<td class="listTableHeader center-text">ex</td>
+									<td class="listTableHeader center-text">cod</td>
+									<td class="listTableHeader center-text">descr</td>
+									<td class="listTableHeader center-text">au</td>
+									<td class="listTableHeader center-text">ac</td>
+									<td class="listTableHeader center-text">ex</td>
+									<td class="listTableHeader center-text">cod</td>
+									<td class="listTableHeader center-text">descr</td>
+									<td class="listTableHeader center-text">au</td>
+									<td class="listTableHeader center-text">ac</td>
+									<td class="listTableHeader center-text">ex</td>
+									<td class="listTableHeader center-text">cod</td>
+									<td class="listTableHeader center-text">descr</td>
+									<td class="listTableHeader center-text">Totale PL</td>
+								</tr>
+								<th:block th:each="areaMap: *{specchietto1Map}">
+									<tr th:each="discMap,iterStat1: ${areaMap.value}">
+										<td th:rowspan="${#maps.size(areaMap.value)}" class="center-text" 
+											th:text="${#strings.arraySplit(areaMap.key,'_')[1]}"
+											th:if="${iterStat1.first}" colspan="2">
+										</td>
+										<th:block th:each="info,iterStat2: ${discMap.value}">
+											<td class="center-text" th:text="${info.codice}"></td>
+											<td class="center-text" th:text="${info.descr}"></td>
+											<td class="center-text" th:text="${info.postiLetto != 0 ? info.postiLetto : ''}"></td>
+											<td class="center-text" th:if="${iterStat2.index != 3}" 
+												th:text="${info.postiLettoAcc != 0 ? info.postiLettoAcc : ''}"></td>
+											<td class="center-text" th:if="${iterStat2.index != 3}" 
+												th:text="${info.postiLettoExtra != 0 ? info.postiLettoExtra : ''}"></td>
+										</th:block>
+									</tr>
+									<tr th:style="${totmap.get(key)[10] == 0} ? 'color:red'" 
+										th:with="totmap=*{totMap}, key=${areaMap.key}">
+										<td class="center-text" colspan="2">Tot ME</td>
+										<td></td>
+										<td></td>
+										<td class="center-text" th:text="${totmap.get(key)[0]}"></td>
+										<td class="center-text" th:text="${totmap.get(key)[1]}"></td>
+										<td class="center-text" th:text="${totmap.get(key)[2]}"></td>
+										<td></td>
+										<td></td>
+										<td class="center-text" th:text="${totmap.get(key)[3]}"></td>
+										<td class="center-text" th:text="${totmap.get(key)[4]}"></td>
+										<td class="center-text" th:text="${totmap.get(key)[5]}"></td>
+										<td></td>
+										<td></td>
+										<td class="center-text" th:text="${totmap.get(key)[6]}"></td>
+										<td class="center-text" th:text="${totmap.get(key)[7]}"></td>
+										<td class="center-text" th:text="${totmap.get(key)[8]}"></td>
+										<td></td>
+										<td></td>
+										<td class="center-text" th:text="${totmap.get(key)[9]}"></td>
+									</tr>
+								</th:block>
+							</tbody>
+							<tbody th:case="2">
+								<tr>
+									<td class="listTableHeader"></td>
+									<td class="listTableHeader"></td>
+									<td class="listTableHeader"></td>
+									<td class="listTableHeader center-text" th:colspan="*{#lists.size(sedi) * 2}">
+										Sede Operativa con UdO ospedaliere
+									</td>
+								</tr>
+								<tr>
+									<td class="listTableHeader center-text" colspan="2">Discipline</td>
+									<td class="listTableHeader center-text">Erog</td>
+									<td th:each="sede: *{sedi}" th:text="${sede}" th:colspan="2" class="listTableHeader center-text"></td>
+								</tr>
+								<tr>
+									<td></td>
+									<td></td>
+									<td></td>
+									<th:block th:each="sede: *{sedi}">
+										<td class="listTableHeader center-text" th:text="P"></td>
+										<td class="center-text" th:text="A"></td>
+									</th:block>
+								</tr>
+								<th:block>
+									<tr th:each="map: *{specchietto2Map}">
+										<td th:text="${#strings.arraySplit(map.key,'_')[0]}"></td>
+										<td th:text="${#strings.arraySplit(map.key,'_')[1]}"></td>
+										<td></td>
+										<th:block th:each="info,iterStat: ${map.value}">
+											<td class="listTableHeader center-text" th:text="${info.postiLettoAcc}"></td>
+											<td 
+												th:style="${info.postiLettoAcc != info.postiLetto} ? 'background-color:red'" 
+												class="center-text" 
+												th:text="${info.postiLetto}">
+											</td>
+										</th:block>
+									</tr>
+								</th:block>
+							</tbody>
+							 <tbody th:case="3">
+								<tr>
+									<td class="listTableHeader"></td>
+									<td class="listTableHeader"></td>
+									<td class="listTableHeader center-text" th:colspan="*{#lists.size(sedi) * 2}">
+										Sede Operativa con UdO ospedaliere
+									</td>
+								</tr>
+								<tr>
+									<td class="listTableHeader center-text" colspan="2">Branche</td>
+									<td th:each="sede: *{sedi}" th:text="${sede}" th:colspan="2" class="listTableHeader center-text"></td>
+								</tr>
+								<tr>
+									<td></td>
+									<td></td>
+									<th:block th:each="sede: *{sedi}">
+										<td class="listTableHeader center-text" th:text="P"></td>
+										<td class="center-text" th:text="A"></td>
+									</th:block>
+								</tr>
+								<th:block>
+									<tr th:each="map: *{specchietto3Map}">
+										<td th:text="${#strings.arraySplit(map.key,'_')[0]}"></td>
+										<td th:text="${#strings.arraySplit(map.key,'_')[1]}"></td>
+										<th:block th:each="info,iterStat: ${map.value}">
+											<td 
+												th:style="${iterStat.odd and ((map.value[iterStat.index-1].id == null and 
+												map.value[iterStat.index].id != null) or (map.value[iterStat.index-1].id != null and 
+												map.value[iterStat.index].id == null))} ? 'background-color:red'" 
+												class="center-text" th:text="${info.id != null} ? 'X' : ''"
+												th:class="${iterStat.even} ? 'listTableHeader center-text' : 'center-text'">
+											</td>
+										</th:block>
+									</tr>
+								</th:block>
+							</tbody>
+						</table>
+					</div>
+
+				<br />
+				
+				<div id="modificaEsitoDiv">
+					<th:block th:with="esitoMulti=${theAclService.showInsertEsitoMultiplo(userBean,pageBean)}">
+				
+					<div th:if="${esitoMulti} or ${theAclService.userCanEditEsito(userBean,pageBean)}">
+						<table class="fieldset row"	style="width: 800px; background-color: #F6D8CE">
+							<tbody>
+								<tr>
+									<td>
+										<table class="row">
+											<tbody>
+												<tr th:if="${esitoMulti}">
+													<td style="font-weight:bold;height: 20px;" colspan="4">Inserimento Esiti Multipli</td>
+												</tr>
+												<tr th:if="${theAclService.isEditAttoInstInUdoInstActiveForFolder(pageBean)}">
+													<td style="width: 100px;" class="label">Delibera</td>
+													<td style="width: 300px;"><select th:if="!${esitoMulti}"
+														id="attoInstClientid" style="width: 200px;"
+														th:field="*{filteredUdoUoInstForL[__*{activeRowIndex}__].AttoInstClientid}"
+														js:widget="widgetType:'dijit.form.Select'">
+															<option value="">------------------------------</option>
+															<option th:each="attoInst:*{attoInstDomandaL}"
+																th:value="${attoInst.clientid}" th:text="${attoInst.descrizione}">Delibera</option>
+													</select><select th:if="${esitoMulti}"
+														id="attoInstClientid" style="width: 200px;"
+														js:widget="widgetType:'dijit.form.Select'">
+															<option value="">------------------------------</option>
+															<option th:each="attoInst:*{attoInstDomandaL}"
+																th:value="${attoInst.clientid}" th:text="${attoInst.descrizione}">delibera</option>
+													</select></td>
+													<td style="width: 100px;"></td>
+													<td></td>
+												</tr>
+												<tr>
+													<td style="width: 100px;" class="label">Esito</td>
+													<td style="width: 300px;"><select th:if="!${esitoMulti}"
+														id="esito" style="width: 200px;"
+														th:field="*{filteredUdoUoInstForL[__*{activeRowIndex}__].esito}"
+														js:widget="widgetType:'dijit.form.Select'">
+															<option th:each="esitoP:${theAclService.getEsitiPossibili(userBean, pageBean, esitoMulti)}"
+																th:value="${esitoP.key}" th:text="${esitoP.value}">Procedimento</option>
+													</select><select th:if="${esitoMulti}"
+														id="esito" style="width: 200px;"
+														js:widget="widgetType:'dijit.form.Select'">
+															<option th:each="esitoP:${theAclService.getEsitiPossibili(userBean, pageBean, esitoMulti)}"
+																th:value="${esitoP.key}" th:text="${esitoP.value}">Procedimento</option>
+													</select></td>
+													<td style="width: 100px;"></td>
+													<td></td>
+												</tr>
+												<tr>
+													<td class="label">Note esito</td>
+													<td colspan="3"><input style="width: 550px;"
+														id="notaEsito" js:widget="widgetType:'dijit.form.TextBox'"
+														type="text"
+														th:value="(${esitoMulti}) ? '' : *{filteredUdoUoInstForL[__*{activeRowIndex}__].esitoNote}" /></td>
+													
+												</tr>
+												<tr th:if="${pageBean.fascicolo.folderStatus!='VALUTAZIONE RISPONDENZA PROGRAMMAZIONE' and pageBean.fascicolo.folderStatus!='VALUTAZIONE RISPONDENZA PROGRAMMAZIONE INSERIMENTO ESITI'}" id="trDate">
+													<td class="label">Data inizio</td>
+													<td> 
+														<input style="width: 120px;"
+															id = "esitoDataInizio" 
+															js:widget="widgetType:'dijit.form.DateTextBox',widgetAttrs:{datePattern:'dd/MM/yyyy',required:false}"
+															type="text"
+															th:name="filteredUdoUoInstForL[__*{activeRowIndex}__].esitoDataInizio"
+															th:value="${!esitoMulti} and *{filteredUdoUoInstForL[__*{activeRowIndex}__].esitoDataInizio} ne null ? *{#calendars.format(filteredUdoUoInstForL[__*{activeRowIndex}__].esitoDataInizio,'dd/MM/yyyy')}"
+															js:errors="true"/>
+													</td>
+													<td class="label">Scadenza</td>
+													<td>
+														<input style="width: 120px;"
+															id = "esitoScadenza"
+															js:widget="widgetType:'dijit.form.DateTextBox',widgetAttrs:{datePattern:'dd/MM/yyyy',required:false}"
+															type="text"
+															th:name="filteredUdoUoInstForL[__*{activeRowIndex}__].esitoScadenza"
+															th:value="${!esitoMulti} and *{filteredUdoUoInstForL[__*{activeRowIndex}__].esitoScadenza} ne null ? *{#calendars.format(filteredUdoUoInstForL[__*{activeRowIndex}__].esitoScadenza,'dd/MM/yyyy')}"
+															js:errors="true"/>
+													</td>
+												</tr>
+												<tr>
+													<td colspan="4">
+														<button id="modificaEsitoButton" type="button"></button>
+														<script th:inline="javascript">
+															/*<![CDATA[*/
+															/*[+
+																require(["dijit/form/Button", "dojo/dom", "dojo/domReady!"], function(Button, dom){
+																	// Create a button programmatically:
+																	attachedWidget = dijit.byId("modificaEsitoButton");
+																	if (attachedWidget ) {			
+																	    attachedWidget.destroy();
+																	    attachedWidget = null;
+																	}
+																																
+																	var myButton = new Button({
+																		label: "Inserisci esito",
+																		onClick: function(){
+																			// Do something:
+																			var isValRispProg = [[${pageBean.fascicolo.folderStatus=='VALUTAZIONE RISPONDENZA PROGRAMMAZIONE' or pageBean.fascicolo.folderStatus=='VALUTAZIONE RISPONDENZA PROGRAMMAZIONE INSERIMENTO ESITI'}]];
+																			var isEditAtti = [[${theAclService.isEditAttoInstInUdoInstActiveForFolder(pageBean)}]];
+																			var esitoElement = dijit.byId("esito");
+																			var attoInstElement = dijit.byId("attoInstClientid");
+																			if(isValRispProg) {
+																				Spring.remoting.submitForm('','form',{_eventId:'modificaEsitoValRispProg', esitoMulti: [[${esitoMulti}]], valoreEsito: esitoElement.value,  notaEsito: dom.byId("notaEsito").value});
+																			} else {
+																				if(isEditAtti) {
+																					Spring.remoting.submitForm('','form',{_eventId:'modificaEsito', esitoMulti: [[${esitoMulti}]], valoreEsito: esitoElement.value, notaEsito: dom.byId("notaEsito").value, dataInizio: dom.byId("esitoDataInizio").value, scadenza: dom.byId("esitoScadenza").value, attoInstClientid: attoInstElement.value});
+																				} else {
+																					Spring.remoting.submitForm('','form',{_eventId:'modificaEsito', esitoMulti: [[${esitoMulti}]], valoreEsito: esitoElement.value, notaEsito: dom.byId("notaEsito").value, dataInizio: dom.byId("esitoDataInizio").value, scadenza: dom.byId("esitoScadenza").value, attoInstClientid: ''});
+																				}
+																			}
+																		}
+																	}, "modificaEsitoButton").startup();
+																});
+															
+																require(["dojo/ready", "dojo/dom"], function(ready, dom){
+																	  ready(function(){
+																	    //alert('func - typeof(dijit.byId("esito")): ' + typeof(dijit.byId("esito")));
+																	    dojo.connect(dijit.byId("esito"), "onChange", function(){esitoChange(dijit.byId("esito"), dom);});
+																	    //Setto lo stato iniziale
+																	    esitoChange(dijit.byId("esito"), dom);
+																	  });
+																});
+															
+																+]*/
+															/*]]>*/
+														</script>											
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<br /> <br />
+					</div>
+
+					<div th:if="!${esitoMulti} and ${theAclService.userCanShowEsito(userBean,pageBean)}">
+						<table class="fieldset row"	style="width: 800px; background-color: #F6D8CE">
+							<tbody>
+								<tr>
+									<td>
+										<table class="row">
+											<tbody>
+												<tr>
+													<td style="width: 100px;" class="label">Esito</td>
+													<td style="width: 300px;"><input style="width: 200px;"
+														id="esito" js:widget="widgetType:'dijit.form.TextBox'"
+														type="text"
+														th:value="*{filteredUdoUoInstForL[__*{activeRowIndex}__].esito}"
+														readonly="readonly" /></td>
+													<td style="width: 100px;"></td>
+													<td></td>
+												</tr>
+												<tr>
+													<td class="label">Note esito</td>
+													<td colspan="3"><input style="width: 550px;"
+														id="notaEsito" js:widget="widgetType:'dijit.form.TextBox'"
+														type="text"
+														th:value="*{filteredUdoUoInstForL[__*{activeRowIndex}__].esitoNote}"
+														 readonly="readonly" /></td>
+												</tr>
+												<tr th:if="${theAclService.userCanShowEsitoDataInizioScadenza(userBean.ruolo,pageBean)}">
+													<td class="label">Data inizio</td>
+													<td>
+														<input style="width: 120px;"
+															id="esitoDataInizio"
+															js:widget="widgetType:'dijit.form.TextBox'" type="text"
+															th:name="filteredUdoUoInstForL[__*{activeRowIndex}__].esitoDataInizio"
+															th:value="*{filteredUdoUoInstForL[__*{activeRowIndex}__].esitoDataInizio} ne null ? *{#calendars.format(filteredUdoUoInstForL[__*{activeRowIndex}__].esitoDataInizio,'dd/MM/yyyy')}"
+															readonly="readonly" /> 
+													</td>
+													<td class="label">Scadenza</td>
+													<td><input style="width: 120px;"
+															id="esitoScadenza"
+															js:widget="widgetType:'dijit.form.TextBox'" type="text"
+															th:name="filteredUdoUoInstForL[__*{activeRowIndex}__].esitoScadenza"
+															th:value="*{filteredUdoUoInstForL[__*{activeRowIndex}__].esitoScadenza} ne null ? *{#calendars.format(filteredUdoUoInstForL[__*{activeRowIndex}__].esitoScadenza,'dd/MM/yyyy')}"
+															readonly="readonly" /> 
+													</td>
+													
+	
+												</tr>
+											</tbody>
+										</table>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<br /> <br />
+					</div>
+					</th:block>
+				</div>
+
+				<!-- Dettaglio della UDO -->
+				<div id="dettaglioUDOPanelDiv">
+				<table class="fieldset row" style="width: 800px" th:if="*{filteredUdoUoInstForL} and *{!#lists.isEmpty(filteredUdoUoInstForL)} and *{filteredUdoUoInstForL[__*{activeRowIndex}__].isUdo()}">
+					<tbody>
+						<tr>
+							<td>
+								<table class="row">
+									<tbody>
+										<tr>
+											<td style="width: 20%;" class="label">Cod. ULSS</td>
+											<td style="width: 25%;"><input style="width: 100%;"
+												id="codULSS" js:widget="widgetType:'dijit.form.TextBox'"
+												type="text"
+												th:value="*{filteredUdoUoInstForL[__*{activeRowIndex}__].udoInst.codiceUlssTerritoriale}"
+												readonly="readonly" /></td>
+											<td style="width: 30%;" class="label secondo">Ex. Cod. ULSS</td>
+											<td style="width: 25%;"><input style="width: 100%;"
+												id="exCodULSS" js:widget="widgetType:'dijit.form.TextBox'"
+												type="text"
+												th:value="*{filteredUdoUoInstForL[__*{activeRowIndex}__].udoInst.codiceUlssPrecedente}"
+												readonly="readonly" /></td>
+										</tr>
+									</tbody>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<table class="row">
+									<tbody>
+										<tr>
+											<td style="width: 20%;" class="label">Codice struttura/Denominazione</td>
+											<td style="width: 80%;"><input style="width: 100%;"
+												id="codiceStruttura"
+												js:widget="widgetType:'dijit.form.TextBox'" type="text"
+												th:value="*{filteredUdoUoInstForL[__*{activeRowIndex}__].udoInst.codiceStruttDenomin}"
+												readonly="readonly" /></td>
+										</tr>
+									</tbody>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<table class="row">
+									<tbody>
+										<tr>
+											<td style="width: 20%;" class="label">Struttura Fisica </td>
+											<td style="width: 80%;"><input style="width: 100%;"
+												id="strutturaFisica"
+												js:widget="widgetType:'dijit.form.TextBox'" type="text"
+												th:value="*{filteredUdoUoInstForL[__*{activeRowIndex}__].udoInst.denomStruttFisicaSede}"
+												readonly="readonly" /></td>
+										</tr>
+									</tbody>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<table class="row">
+									<tbody>
+										<tr>
+											<td style="width: 20%;" class="label">Unità Operativa</td>
+											<td style="width: 80%;"><input style="width: 100%;"
+												id="unitaOrganizzativa"
+												js:widget="widgetType:'dijit.form.TextBox'" type="text"
+												th:value="*{filteredUdoUoInstForL[__*{activeRowIndex}__].udoInst.denominazioneUoConId}"
+												readonly="readonly" /></td>
+										</tr>
+
+									</tbody>
+								</table>
+							</td>
+						</tr>
+
+						<tr>
+							<td>
+								<table class="row">
+									<tbody>
+										<tr>
+											<td style="width: 20%;" class="label">Sede Operativa</td>
+											<td style="width: 80%;"><input style="width: 100%;"
+												id="sedeOperativa"
+												js:widget="widgetType:'dijit.form.TextBox'" type="text"
+												th:value="*{filteredUdoUoInstForL[__*{activeRowIndex}__].udoInst.denominazioneSede}"
+												readonly="readonly" /></td>
+										</tr>
+									</tbody>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<table class="row">
+									<tbody>
+										<tr>
+											<td style="width: 20%;" class="label">Indirizzo</td>
+											<td style="width: 80%;"><input style="width: 100%;"
+												id="via" js:widget="widgetType:'dijit.form.TextBox'"
+												type="text"
+												th:value="*{filteredUdoUoInstForL[__*{activeRowIndex}__].udoInst.indirizzoSede}"
+												readonly="readonly" /></td>
+										</tr>
+									</tbody>
+								</table>
+							</td>
+						</tr>						
+						<tr>
+							<td>
+								<table class="row">
+									<tbody>																		
+										<tr>
+											<td style="width:20%;" class="label">Punto Fisico</td>
+											<td style="width:80%;">
+												<input style="width:100%;" id="puntoFisico" js:widget="widgetType:'dijit.form.TextBox'" type="text" 
+												th:value="*{filteredUdoUoInstForL[__*{activeRowIndex}__].udoInst.tipoPuntoFisicoSede}" 
+												readonly="readonly"/>
+											</td>
+										</tr>										
+									</tbody>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<table class="row">
+									<tbody>
+										<tr>
+											<td style="width:20%;" class="label">Edificio</td>
+											<td style="width:20%;">
+												<input style="width:100%;" id="stabilimento" js:widget="widgetType:'dijit.form.TextBox'" type="text" 
+												th:value="*{filteredUdoUoInstForL[__*{activeRowIndex}__].udoInst.stabilimento}"
+												readonly="readonly"/>
+											</td>
+											<td style="width:15%;" class="label secondo">Blocco</td>
+											<td style="width:45%;">
+												<input style="width:100%;" id="blocco" js:widget="widgetType:'dijit.form.TextBox'" type="text" 
+												th:value="*{filteredUdoUoInstForL[__*{activeRowIndex}__].udoInst.blocco}" 
+												readonly="readonly"/>
+											</td>											
+										</tr>											
+									</tbody>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<table class="row">
+									<tbody>
+										<tr>
+											<td style="width:20%;" class="label">Piano</td>
+											<td style="width:20%;">
+												<input style="width:100%;" id="piano" js:widget="widgetType:'dijit.form.TextBox'" type="text" 
+												th:value="*{filteredUdoUoInstForL[__*{activeRowIndex}__].udoInst.piano}"
+												 readonly="readonly"/>
+											</td>
+											<td style="width:15%;" class="label secondo">Progressivo</td>
+											<td style="width:45%;">
+												<input style="width:100%;" id="progressivo" js:widget="widgetType:'dijit.form.TextBox'" type="text"
+												 th:value="*{filteredUdoUoInstForL[__*{activeRowIndex}__].udoInst.progressivo}"
+												  readonly="readonly"/>
+											</td>											
+										</tr>											
+									</tbody>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<table class="row">
+									<tbody>
+										<tr>
+											<td style="width:20%;" class="label">Direttore Sanitario</td>
+											<td style="width:25%;">
+												<input style="width:100%;" id="dirSanitarioCogn" js:widget="widgetType:'dijit.form.TextBox'" type="text"
+												 th:value="*{filteredUdoUoInstForL[__*{activeRowIndex}__].udoInst.dirSanitarioCogn}"
+												 readonly="readonly"/>
+											</td>
+											<td style="width:25%;">
+												<input style="width:100%;" id="dirSanitarioNome" js:widget="widgetType:'dijit.form.TextBox'" type="text" 
+												th:value="*{filteredUdoUoInstForL[__*{activeRowIndex}__].udoInst.dirSanitarioNome}" 
+												readonly="readonly"/>
+											</td>
+											<td style="width:30%;">
+												<input style="width:100%;" id="dirSanitarioCfisc" js:widget="widgetType:'dijit.form.TextBox'" type="text" 
+												th:value="*{filteredUdoUoInstForL[__*{activeRowIndex}__].udoInst.dirSanitarioCfisc}"
+												 readonly="readonly"/>
+											</td>																															
+										</tr>											
+									</tbody>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<table class="row">
+									<tbody>																		
+										<tr>
+											<td style="width:20%;" class="label">Stato UDO</td>
+											<td style="width:20%;">
+												<input style="width:100%;" id="statoUdo" js:widget="widgetType:'dijit.form.TextBox'" type="text" 
+												th:value="*{filteredUdoUoInstForL[__*{activeRowIndex}__].udoInst.stato}" 
+												readonly="readonly"/>
+											</td>
+											<td style="width:15%;" class="label secondo">Scadenza</td>
+											<td style="width:45%;">
+												<input style="width:100%;" id="scadenza" js:widget="widgetType:'dijit.form.TextBox'" type="text" 
+												 th:if="*{filteredUdoUoInstForL[__*{activeRowIndex}__].udoInst.scadenza ne null}"
+												th:value="*{#dates.format(filteredUdoUoInstForL[__*{activeRowIndex}__].udoInst.scadenza,'dd/MM/yyyy')}" 
+												readonly="readonly"/>
+											</td>	
+										</tr>										
+									</tbody>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<table class="row">
+									<tbody>
+										<tr>
+											<td style="width:20%;" class="label">Modulo</td>
+											<td style="width:80%;">
+												<input style="width:100%;" id="moduloUdo" js:widget="widgetType:'dijit.form.TextBox'" type="text" th:value="*{filteredUdoUoInstForL[__*{activeRowIndex}__].udoInst.flagModulo}=='Y'?'Si':'No'" readonly="readonly"/>
+											</td>
+										</tr>		
+										
+									</tbody>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<table class="row">
+									<tbody>
+										<tr>
+											<td style="width:20%;" class="label">Week</td>
+											<td style="width:80%;">
+												<input style="width:100%;" id="weekUdo" js:widget="widgetType:'dijit.form.TextBox'" type="text" th:value="*{filteredUdoUoInstForL[__*{activeRowIndex}__].udoInst.week}=='Y'?'Si':'No'" readonly="readonly"/>
+											</td>
+										</tr>		
+										
+									</tbody>
+								</table>
+							</td>
+						</tr>
+						
+						<tr>
+							<td>
+								<table class="row">
+									<tbody th:if="*{filteredUdoUoInstForL[__*{activeRowIndex}__].udoInst.fattProdUdoInstsInfo} and *{filteredUdoUoInstForL[__*{activeRowIndex}__].udoInst.fattProdUdoInstsInfo.size() > 0}">
+										<tr th:each="fattProd:*{filteredUdoUoInstForL[__*{activeRowIndex}__].udoInst.fattProdUdoInstsInfo}">
+											<td style="width:20%;" class="label"><span th:if="${fattProdStat.index} eq 0">Fattori produttivi</span></td>
+											<td style="width:80%;">
+												<input style="width:100%;" th:id="'fpfd' + ${fattProdStat.count}" js:widget="widgetType:'dijit.form.TextBox'" type="text" th:value="${fattProd.fullDescr}" readonly="readonly"/>
+											</td>
+										</tr>		
+										
+									</tbody>
+									<tbody th:if="*{filteredUdoUoInstForL[__*{activeRowIndex}__].udoInst.fattProdUdoInstsInfo == null} or *{filteredUdoUoInstForL[__*{activeRowIndex}__].udoInst.fattProdUdoInstsInfo.size() == 0}">
+										<tr>
+											<td style="width:20%;" class="label">Fattori produttivi</td>
+											<td style="width:80%;">
+												<input style="width:100%;" id="fattPr" js:widget="widgetType:'dijit.form.TextBox'" type="text" readonly="readonly"/>
+											</td>
+										</tr>		
+										
+									</tbody>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<table class="row">
+									<tbody th:if="*{filteredUdoUoInstForL[__*{activeRowIndex}__].udoInst.disciplineUdoInstsInfo} and *{filteredUdoUoInstForL[__*{activeRowIndex}__].udoInst.disciplineUdoInstsInfo.size() > 0}">
+										<tr th:each="disciplina:*{filteredUdoUoInstForL[__*{activeRowIndex}__].udoInst.disciplineUdoInstsInfo}">
+											<td style="width:20%;" class="label"><span th:if="${disciplinaStat.index} eq 0">Discipline/Ambiti</span></td>
+											<td style="width:80%;">
+												<input style="width:100%;" th:id="'disc' + ${disciplinaStat.count}" js:widget="widgetType:'dijit.form.TextBox'" type="text" th:value="${disciplina.fullDescr}" readonly="readonly"/>
+											</td>
+										</tr>		
+										
+									</tbody>
+									<tbody th:if="*{filteredUdoUoInstForL[__*{activeRowIndex}__].udoInst.disciplineUdoInstsInfo == null} or *{filteredUdoUoInstForL[__*{activeRowIndex}__].udoInst.disciplineUdoInstsInfo.size() == 0}">
+										<tr>
+											<td style="width:20%;" class="label">Discipline/Ambiti</td>
+											<td style="width:80%;">
+												<input style="width:100%;" id="discip" js:widget="widgetType:'dijit.form.TextBox'" type="text" readonly="readonly"/>
+											</td>
+										</tr>		
+										
+									</tbody>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<table class="row">
+									<tbody>
+										<tr>
+											<td style="width:20%;" class="label">Note</td>
+											<td style="width:80%;">
+												<input style="width:100%;" id="annotazioniUdo" js:widget="widgetType:'dijit.form.TextBox'" type="text" 
+												th:value="*{filteredUdoUoInstForL[__*{activeRowIndex}__].udoInst.annotations}"
+												readonly="readonly"/>
+											</td>
+										</tr>		
+										
+									</tbody>
+								</table>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+
+				</div>
+			</div>
+			<!-- lista_holder -->
+
+			<script th:inline="javascript" th:if="*{fascicolo ne null}">
+				/*<![CDATA[*/
+				/*[+
+				   	attachedWidget = dijit.byId("uploader");
+					if (attachedWidget ) {			
+						attachedWidget.destroy();
+						attachedWidget = null;
+					}
+					
+					dojo.require("dojox.form.Uploader");
+					dojo.require("dojox.embed.Flash");
+					if (dojox.embed.Flash.available) {
+						dojo.require("dojox.form.uploader.plugins.Flash");
+					} else {
+						dojo.require("dojox.form.uploader.plugins.IFrame");
+					}
+					
+					dojo.ready(function() {
+						var u = new dojox.form.Uploader({
+							label : "Carica Allegato",
+							multiple : false,
+							uploadOnSelect : true,
+							onBegin : function(arr){
+								displayOpenwaitmsg();
+								u.set({url:"upload?idUnit=" + [[*{fascicolo.idUnit}]] + "&oggetto=" + encodeURIComponent(document.getElementById("oggettoAllegato").value) + "&tipodoc=" + encodeURIComponent(dijit.byId('docTypeAllegato').attr('value')) });
+							},
+						
+							onChange : function(arr) {
+								if (document.getElementById("oggettoAllegato").value.length == 0) {
+										u.reset();
+								}
+								if (dijit.byId('docTypeAllegato').attr('value').length == 0) {
+									u.reset();
+								}
+							},
+							
+							onComplete : function(arr) {
+								if (document.getElementById("oggettoAllegato").value.length == 0) {
+									Spring.remoting.submitForm('','form',{_eventId:'raiseError',errorMessage:'Valorizzare l\'oggetto del documento da allegare',field:'oggettoAllegato'});									
+								}
+								else if (dijit.byId('docTypeAllegato').attr('value').length == 0) {
+									Spring.remoting.submitForm('','form',{_eventId:'raiseError',errorMessage:'Valorizzare la tipologia del documento da allegare',field:'docTypeAllegato'});									
+								}
+								else {
+									x=document.getElementById("resUploader")  //Find the element
+									if (arr.hasOwnProperty('error') ) {
+											x.innerHTML="Errore, file non caricato";    
+										}
+									else{
+										//x.innerHTML="File caricato correttamente";
+										Spring.remoting.submitForm('','form',{_eventId:'refresh'});
+									}									
+								}
+							},					
+						}, "uploader");
+						u.startup();
+						changeTypeDocsShow('docTypeShow', 'doctit');
+					});			
+					+]*/
+				/*]]>*/
+			</script>
+
+	</div>
+
+	<div layout:fragment="footer" th:remove="tag">
+		<div th:substituteby="common :: defaultFooter"></div>
+	</div>
+
+</body>
+
+</html>
+
+
+

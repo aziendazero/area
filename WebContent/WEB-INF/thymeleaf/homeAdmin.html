@@ -1,0 +1,138 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:js="http://www.3di.it/thymeleaf/springJsDecorator" 
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+	<div th:fragment="homeAdmin" class="fieldset_holder">
+	
+		<!-- header videata -->
+		<div class="form-caption-container" >
+			<span class="form-caption-text" >Amministratore</span>
+		</div>
+		<div class="form-frames-container" >							
+			<div class="frame-container">
+				<div class="frame-toolbar-container" >
+					<span class="panel-toolbar-zone">
+						<span class="frame-toolbar-caption" >Strumenti di amministrazione</span>
+					</span>
+				</div>
+			</div>								
+		</div> <!-- form-frames-container -->	
+	
+		<table class="fieldset">
+			<tbody>
+				<tr>
+					<td>
+						<table class="row" id="adminToolsTable">
+							<tbody>
+								<tr>
+									<td colspan="2">
+										<div id="progressBar"></div>
+									</td>
+								</tr>							
+								<tr>
+									<td colspan="2">
+										<input js:confirm="event:'onClick',message:'Procedere con l\'operazione?'" 
+										js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Creazione Fascicoli Titolare'}" 
+										js:ajax="formId:'home_form',event:'onClick',params:{_eventId:'creaFascTit',fromProgressBar:'false'}" id="creaFascTitButton" 
+										name="_eventId_creaFascTit" value="Creazione Fascicoli Titolare" type="submit"/>
+										<script th:inline="javascript" th:if="*{jobBean ne null and jobBean.type eq 'creaFascTit'}">
+										/*<![CDATA[*/
+											/*[+										
+											require(["dijit/ProgressBar", "dojo/_base/window", "dojo/domReady!"], function(ProgressBar, win){
+											    var myProgressBar = new ProgressBar({
+											        style: "width: 300px"
+											    }).placeAt('progressBar');
+											    myProgressBar.set("maximum", [[*{jobBean.total}]]);
+											    myProgressBar.set("value", [[*{jobBean.current}]]);
+											    Spring.remoting.submitForm('','home_form',{_eventId:'creaFascTit',fromProgressBar:'true'});
+											});
+										  	+]*/	 
+										/*]]>*/
+										</script>											
+									</td>
+								</tr>
+								<tr>
+									<td colspan="2">
+										<input js:confirm="event:'onClick',message:'Procedere con l\'operazione?'" 
+										js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Creazione Sottofascicoli Evidenze'}" 
+										js:ajax="formId:'home_form',event:'onClick',params:{_eventId:'creaSottofascEvidenze',fromProgressBar:'false'}" id="creaSottofascEvidenzeButton" 
+										name="_eventId_creaFascTit" value="Creazione Sottofascicoli Evidenze" type="submit"/>
+										<script th:inline="javascript" th:if="*{jobBean ne null and jobBean.type eq 'creaSottofascEvidenze'}">
+										/*<![CDATA[*/
+											/*[+										
+											require(["dijit/ProgressBar", "dojo/_base/window", "dojo/domReady!"], function(ProgressBar, win){
+											    var myProgressBar = new ProgressBar({
+											        style: "width: 300px"
+											    }).placeAt('progressBar');
+											    myProgressBar.set("maximum", [[*{jobBean.total}]]);
+											    myProgressBar.set("value", [[*{jobBean.current}]]);
+											    Spring.remoting.submitForm('','home_form',{_eventId:'creaSottofascEvidenze',fromProgressBar:'true'});
+											});
+										  	+]*/	 
+										/*]]>*/
+										</script>											
+									</td>
+								</tr>								
+								<tr>
+									<td colspan="2">
+										<input js:confirm="event:'onClick',message:'Procedere con l\'operazione?'" 
+										js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Aggiorna campo ALLEGATI_FILENAME della tabella REQUISITO_INST'}" 
+										js:ajax="formId:'home_form',event:'onClick',params:{_eventId:'aggiornaCampoAllegatiFileName',fromProgressBar:'false'}" id="aggiornaCampoAllegatiFileNameButton" 
+										name="_eventId_aggiornaCampoAllegatiFileName" value="Aggiorna campo ALLEGATI_FILENAME della tabella REQUISITO_INST" type="submit"/>
+										<script th:inline="javascript" th:if="*{jobBean ne null and jobBean.type eq 'aggiornaCampoAllegatiFileName'}">
+										/*<![CDATA[*/
+											/*[+										
+											require(["dijit/ProgressBar", "dojo/_base/window", "dojo/domReady!"], function(ProgressBar, win){
+											    var myProgressBar = new ProgressBar({
+											        style: "width: 300px"
+											    }).placeAt('progressBar');
+											    myProgressBar.set("maximum", [[*{jobBean.total}]]);
+											    myProgressBar.set("value", [[*{jobBean.current}]]);
+											    Spring.remoting.submitForm('','home_form',{_eventId:'aggiornaCampoAllegatiFileName',fromProgressBar:'true'});
+											});
+										  	+]*/	 
+										/*]]>*/
+										</script>											
+									</td>
+								</tr>
+								<tr>
+									<td colspan="2">
+										<input js:confirm="event:'onClick',message:'Procedere con l\'operazione?'" 
+										js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Aggiorna ragione sociale su fascicolo'}" 
+										js:ajax="formId:'home_form',event:'onClick',params:{_eventId:'aggiornaFascicolo',fromProgressBar:'false'}" id="aggiornaFascicolo" 
+										name="_eventId_aggiornaFascicolo" value="Aggiorna ragione sociale su fascicolo" type="submit"/>
+										<script th:inline="javascript" th:if="*{jobBean ne null and jobBean.type eq 'aggiornaFascicolo'}">
+										/*<![CDATA[*/
+											/*[+										
+											require(["dijit/ProgressBar", "dojo/_base/window", "dojo/domReady!"], function(ProgressBar, win){
+											    var myProgressBar = new ProgressBar({
+											        style: "width: 300px"
+											    }).placeAt('progressBar');
+											    myProgressBar.set("maximum", [[*{jobBean.total}]]);
+											    myProgressBar.set("value", [[*{jobBean.current}]]);
+											    Spring.remoting.submitForm('','home_form',{_eventId:'aggiornaFascicolo',fromProgressBar:'true'});
+											});
+										  	+]*/	 
+										/*]]>*/
+										</script>
+									</td>								
+								</tr>								
+								<tr>
+									<td colspan="2">
+										<font style="margin-bottom:20px;" face="Trebuchet MS" size="2" th:if="${#fields.hasErrors('messages')}" th:errors="*{messages}">Messaggi</font>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		
+	
+		
+	</div>	<!-- fieldset_holder -->	
+	
+</html>
+
+

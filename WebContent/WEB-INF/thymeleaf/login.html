@@ -1,0 +1,185 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:js="http://www.3di.it/thymeleaf/springJsDecorator">
+
+	<head>
+		<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+		<title>AuAc - Login</title>
+		
+		<link th:substituteby="common :: dojo" />
+		<link th:substituteby="common :: spring-js" />
+		<link th:substituteby="common :: spring-js-decorator" />
+		
+		<script th:if="${theCommonService.abilitaPerformanceMonitor()}">window['adrum-start-time'] = new Date().getTime();</script>
+		<script type="text/javascript" th:if="${theCommonService.abilitaPerformanceMonitor()}" th:src="@{/resources/js/adrum.js}"></script>		
+	   	<!-- Page custom JS -->
+		<script type="text/javascript" th:src="@{/resources/js/custom.js}"></script>		
+		
+		<!-- Page custom CSS -->
+		<link rel="stylesheet" type="text/css" th:href="@{/resources/css/custom.css}"/>   
+		
+		<style>
+			div.errors {
+				font-size: 12px;
+				color: #A01414;
+			}
+		</style>
+	</head>
+	
+	<body class="claro" onload="document.getElementById('login').focus();" style="background-color: #dee7f6;">
+	
+		<!-- inclusione di template di errore per errori scatenati da action non ajax -->
+		<div th:substituteby="exception :: errorDialog"></div>
+	
+		<table border="0" cellpadding="0" cellspacing="0"
+			style="margin-top: 50px; border-collapse: collapse; background-color: transparent; padding:10px;"
+			bordercolor="#111111" width="100%" height="100%">
+			<tr>
+				<td colspan="3" style="background-color: #dee7f6">&nbsp;</td>
+			</tr>
+			<tr>
+				<td style="background-color: #dee7f6;">&nbsp;</td>
+				<td width="700" height="450" valign="top"
+					style="background-color: #dee7f6;">
+					<table cellspacing="0" cellpadding="0"
+						style="background-color: transparent">
+						<tr>
+							<td
+								style="width: 8px; height: 8px; background-image: url('images/wtl.gif');"></td>
+							<td style="height: 8px; background-image: url('images/wtop.gif');"></td>
+							<td
+								style="width: 8px; height: 8px; background-image: url(images/wtr.gif);"></td>
+						</tr>
+						<tr>
+							<td style="width: 8px; background-image: url(images/wleft.gif);"></td>
+							<td
+								style="height: 434px; width: 684px; background-color: white; background-repeat: no-repeat; background-position: bottom left;">
+								<div
+									style="position: relative; top: -30px; left: 665px; width: 30px"></div>
+								<center>
+									<img border="0" src="images/logo.gif" height="200" />
+								</center>
+	
+								<form method="POST" id="form" th:object="${loginPageBean}" th:action="${flowExecutionUrl}">
+									<table border="0" cellpadding="0" cellspacing="0"
+										style="border-collapse: collapse" bordercolor="#111111"
+										width="100%" height="20">
+										<tr>
+											<td style="padding-top:15px; text-align:center; color:#36943E;" colspan="3">
+												<font size="4" face="Trebuchet MS"><b>Sanità Regione Veneto - autorizzazione e accreditamento</b>
+												<br/>
+												</font>
+											</td>
+										</tr>
+										<tr>
+											<td style="width: 30%">&nbsp;</td>
+											<td>
+												<div id="loginErrors" class="errors">
+													<br/>
+													<font style="margin-bottom:20px;" face="Trebuchet MS" size="2"
+														 th:if="${#fields.hasErrors('login')}" th:errors="*{login}">Utente non valido</font>
+												</div>
+
+												<th:block th:if="*{admin}">
+													<!-- Utente amministarotre -->
+													<div id="adminDiv" th:if="*{!adminAccessTypeAltroOperatore} and *{!adminAccessTypeSelezionatoAltroOperatore}">
+														<a class="anchor" id="adminToolsLink" href="" onclick="displayOpenwaitmsg();" 
+															th:href="${flowExecutionUrl} + '&amp;_eventId=doLogin&amp;titolareClientId=ADMIN_TOOLS'">Accedi agli strumenti di amministrazione</a>
+														<br/>
+														<a class="anchor" th:id="adminTitolariLink" href="javascript:void(0);"
+															onclick="document.getElementById('titolariDiv').style.display='block';document.getElementById('adminDiv').style.display='none';">Accedi come operatore di un titolare</a>
+														<br/>
+														<a class="anchor" th:id="adminAltroLink" href="javascript:void(0);"
+															onclick="document.getElementById('altroDiv').style.display='block';document.getElementById('adminDiv').style.display='none';">Accedi come altro operatore</a>
+													</div>
+													
+													<table id="titolariDiv" th:if="*{!#lists.isEmpty(titolariL)}" style="display:none">
+														<tr th:each="titolare:*{titolariL}">
+															<td>
+				     											<a class="anchor" th:id="${#ids.seq('titolareLink')}" href="" th:text="${titolare['descr']}" 
+				     													onclick="displayOpenwaitmsg();" th:href="${flowExecutionUrl} + '&amp;_eventId=doLogin&amp;titolareClientId=' + ${titolare['titolareClientId']}">descr</a>															
+															</td>
+														</tr>
+													</table>
+												
+													<table id="altroDiv" th:style="*{!adminAccessTypeAltroOperatore}?'display:none':''">
+														<tr>
+															<td style="width: 20%;"><font face="Trebuchet MS" size="2">Username CAS:</font></td>
+															<td><input th:field="*{altroOperatoreUserName}" tabindex="1" size="20" 
+																style="border: 1px solid #BCBC77; color: #004d89; font-family: Trebuchet MS; width: 150px; height: 20px" /></td>
+														</tr>
+														<tr>
+															<td>&#160;</td>
+															<td><input js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Filtra'}"
+																js:ajax="formId:'form',event:'onClick',params:{_eventId:'doAltroLogin'}"
+																id="doAltroLogin" name="_eventId_doAltroLogin" value="Filtra" type="submit" /></td>
+														</tr>
+													</table>
+	
+													<div id="utentiDiv">												
+														<table th:if="*{!#lists.isEmpty(utentiModel)}">
+															<tr th:each="utente:*{utentiModel}">
+																<td>
+																	<a class="anchor" th:id="${#ids.seq('utenteLink')}" href="" th:text="${utente.anagraficaUtenteModel.nome + ' ' + utente.anagraficaUtenteModel.cognome + ' (' + utente.usernameCas + ')'}" 
+					     													onclick="displayOpenwaitmsg();" th:href="${flowExecutionUrl} + '&amp;_eventId=doSelAltroLogin&amp;utenteClientId=' + ${utente.clientid}">descr</a>														</td>
+															</tr>
+														</table>
+													</div>
+
+												</th:block>												
+
+												<div id="verificatoreDiv" th:if="*{verificatore}">
+													<a class="anchor" id="verificatoreToolsLink" href="" onclick="displayOpenwaitmsg();" 
+														th:href="${flowExecutionUrl} + '&amp;_eventId=doLogin&amp;operatoreModelClientId=VERIFICATORE'">Accedi come verificatore</a>
+													<br/>
+													<a class="anchor" th:id="adminTitolariLink" href="javascript:void(0);"
+														onclick="document.getElementById('operatoriModelDiv').style.display='block';document.getElementById('verificatoreDiv').style.display='none';">Accedi come operatore di un titolare</a>
+												</div>
+												<table id="operatoriModelDiv" th:if="*{!#lists.isEmpty(operatoriModel)}" th:style="*{verificatore}?'display:none':''">
+													<tr th:each="operatoreModel:*{operatoriModel}">
+														<td>
+			     											<a class="anchor" th:id="${#ids.seq('operatoreModelLink')}" href="" th:text="${operatoreModel.descrizione}" 
+			     													onclick="displayOpenwaitmsg();" th:href="${flowExecutionUrl} + '&amp;_eventId=doLogin&amp;operatoreModelClientId=' + ${operatoreModel.clientid}">descr</a>															
+														</td>
+													</tr>
+												</table>												
+
+												
+											</td>
+										</tr>
+	
+										<tr>
+											<td colspan="3" style="text-align: center; padding-top: 15px;">
+												<font face="Trebuchet MS" size="2" th:text="*{#lists.isEmpty(titolariL)} and *{#lists.isEmpty(operatoriModel)}?'':'Seleziona l\'Operatore per accedere al sistema.'"></font>
+											</td>
+										</tr>
+									</table>
+	
+								</form>
+	
+							</td>
+							<td style="width: 8px; background-image: url(images/wright.gif);"></td>
+						</tr>
+						<tr>
+							<td
+								style="width: 8px; height: 8px; background-image: url(images/wbl.gif);"></td>
+							<td
+								style="height: 8px; background-image: url(images/wbottom.gif);"></td>
+							<td
+								style="width: 8px; height: 8px; background-image: url(images/wbr.gif);"></td>
+						</tr>
+					</table>
+	
+				</td>
+				<td style="background-color: #dee7f6">&nbsp;</td>
+			</tr>
+			<tr>
+				<td style="background-color: #dee7f6" colspan="3">&nbsp;</td>
+			</tr>
+		</table>
+		
+		<!-- gif animata per evidenza di caricamento ajax e blocco dell'interattività sulla pagina -->
+		<div th:substituteby="common :: waitmsg"></div>		
+		
+	</body>
+</html>

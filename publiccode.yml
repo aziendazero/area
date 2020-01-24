@@ -1,0 +1,57 @@
+# This repository adheres to the publiccode.yml standard by including this
+# metadata file that makes public software easily discoverable.
+# More info at https://github.com/italia/publiccode.yml
+
+publiccodeYmlVersion: '0.2'
+name: Sistema di Autorizzazione e Accreditamento delle Strutture Sanitarie, Socio-Sanitarie e Sociali
+url: 'https://github.com'
+logo: logo.png
+releaseDate: '2020-01-23'
+developmentStatus: stable
+softwareVersion: 4.0.0
+softwareType: standalone/backend
+platforms:
+  - web
+categories:
+  - document-management
+  - data-visualization
+dependsOn:
+  proprietary:
+    - name: Bonita BPM 6.x
+    - name: eXtraWay
+    - name: eXtraWay Platform (3diws)
+    - name: Oracle RDBMS
+  open:
+maintenance:
+  type: contract
+  contractors:
+    - name: 3D Informatica srl
+      website: 'https://www.3di.it'
+      until: '2021-01-01'
+legal:
+  license: AGPL-3.0-or-later
+  mainCopyrightOwner: Regione del Veneto
+  repoOwner: 3D Informatica srl
+  authorsFile: 3D Informatica srl
+localisation:
+  localisationReady: true
+  availableLanguages:
+    - it
+it:
+  conforme:
+    misureMinimeSicurezza: true
+    gdpr: true
+  piattaforme:
+    cas: true
+description:
+  it:
+    genericName: A.re.A.
+    documentation: 'https://github.com'
+    shortDescription: Applicativo per la gestione dei procedimenti di autorizzazione e accreditamento delle strutture sanitarie, socio-sanitarie e sociali della Regione del Veneto (A.re.A.)
+    longDescription: >
+      A.re.A è il sistema che ha completamente informatizzato i procedimenti di Autorizzazione e di Accreditamento delle Strutture Sanitarie, Socio-Sanitarie e Sociali che operano a livello regionale.
+      Il software permette di monitorare costantemente il livello qualitativo offerto dalle strutture pubbliche e private che erogano servizi al Cittadino.
+      Tramite una procedura online, i Titolari possono presentare le domande di Autorizzazione/Accreditamento delle proprie strutture: il sistema ha una struttura modulare che permette di gestire l'intero procedimento.
+    features:
+      - Gestione documnetale
+      - Gestione avanzata delle entità del Sistema Sanitario

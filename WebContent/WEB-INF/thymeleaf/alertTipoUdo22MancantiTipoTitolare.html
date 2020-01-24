@@ -1,0 +1,106 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:js="http://www.3di.it/thymeleaf/springJsDecorator">
+
+	<head>
+		<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+	    <title>Controllo completezza Udo per tipo titolare</title>
+	   
+	   	<link th:substituteby="common :: dojo"/>
+	   	<link th:substituteby="common :: spring-js"/>
+	   	<link th:substituteby="common :: spring-js-decorator"/>
+
+		<!-- Page custom CSS -->
+		<link type="text/css" rel="stylesheet" th:href="@{/resources/css/index.css}"/>
+		
+		<script type="text/javascript">
+			function alertInviaDomanda() {
+				//alert('funzione inviaDomanda');
+				var closeDialog=function() {dijit.byId(topDialogId).hide();}
+				dojo.ready(closeDialog);
+				Spring.remoting.submitForm('','form',{_eventId:'invioDomanda'});
+			}
+			
+			function alertAnnulla() {
+				var closeDialog=function() {dijit.byId(topDialogId).hide();}
+				dojo.ready(closeDialog);
+			}
+		</script>
+
+		<script th:inline="javascript">
+			/*<![CDATA[*/
+			/*[+	
+				function alertEseguiTask() {
+					//alert('funzione alertEseguiTask: ' + [[${taskIndex}]]);
+					var closeDialog=function() {dijit.byId(topDialogId).hide();}
+					dojo.ready(closeDialog);
+					Spring.remoting.submitForm('','form',{_eventId:'eseguiTask',index:[[${taskIndex}]]});
+				}			   
+				+]*/
+			/*]]>*/
+		</script>	
+		<script type="text/javascript">
+			//dojo.style(dijit.byId(topDialogId).closeButtonNode,"display","none"); //serve per disabilitare il pulsante di chiusura del dialog
+			//dijit.byId(topDialogId).set("title", "ASSEGNAZIONE MASSIVA AUTOVALUTAZIONE");
+			
+		</script>
+		
+	</head>
+	
+  	<body class="claro">
+  
+	  	<div style="width:700px;">			  	
+
+			<form method="POST" id="alert_tipo_udo22_mancanti_form" th:object="${pageBean}" th:action="${flowExecutionUrl}">
+		
+				<!-- header videata -->
+				<div class="form-caption-container">
+					<span class="form-caption-text">Controllo completezza Udo per tipo titolare</span>
+				</div>
+					
+				<!-- tabella elenco udo -->
+				<div style="margin-left: 0px;" class="lista_holder">
+					<div class="form-frames-container">
+						<div class="frame-container">
+							<div class="frame-toolbar-container">
+								<span class="panel-toolbar-zone"> 
+									<span class="frame-toolbar-caption" th:text="'Attenzione, non risultano inserite le seguenti (' + *{tipoUdo22TemplRichiestiMancanti.size()} + ') Unità di Offerta'"></span>
+								</span>
+							</div>
+						</div>
+					</div>
+					<!-- form-frames-container -->
+
+					<!-- lista holder -->
+					<div class="fixed_height_scrollable_table">
+						<table class="lista" style="width:100%">
+							<tbody>
+								<tr th:each="tipoUdo22:*{tipoUdo22TemplRichiestiMancanti}">
+									<td th:text="${tipoUdo22.descr}"></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+				<div style="width:100%;text-align:center;margin-top:10px;">
+				
+					<input th:if="*{fascicolo.prontoPerInvio}"
+						js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Procedere con l\'invio della domanda',onClick:alertInviaDomanda}"
+						id="alertInvioDomanda" name="_eventId_alertInvioDomanda"
+						value="Procedere con l'invio della domanda" type="submit" />
+					<input th:if="not *{fascicolo.prontoPerInvio}"
+						js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Procedere con l\'esecuzione dell\'azione',onClick:alertEseguiTask}"
+						id="alertEseguiTask" name="_eventId_alertEseguiTask"
+						value="Procedere con l'esecuzione dell'azione" type="submit" />
+					<input
+						js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Annulla',onClick:alertAnnulla}"
+						id="alertAnnulla" name="_eventId_alertAnnulla"
+						value="Annulla" type="submit" />
+				</div>					
+					
+			</form>
+			
+	  	</div>
+  
+	</body>
+</html>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.springframework.org/schema/webflow http://www.springframework.org/schema/webflow/spring-webflow-2.0.xsd"
+        parent="common">
+
+	<input name="redirectUrl"/>
+	<input name="token"/>
+	<input name="clientid"/>
+	
+	<on-start>
+		<set name="flowScope.defaultRedirectUrl" value="'main.flow'"/>
+		<set name="conversationScope.theCommonService" value="commonService"/>
+		<set name="conversationScope.theDownloadService" value="downloadService"/>
+		<!-- set name="flashScope.idUnit" value="requestParameters.idUnit"/ -->
+		<evaluate expression="downloadService.checkCas(messageContext, externalContext, redirectUrl, clientid, defaultRedirectUrl)" result="flowScope.loginPageBean"/>
+	</on-start>
+	
+	<!-- state='start' e' lo stato di default -->
+	<action-state id="start">
+		<!-- 
+		public final static String lOGINRESULT_NOUSERONDB = "NOUSERONDB";
+		public final static String lOGINRESULT_LOGGED = "LOGGED";
+		public final static String lOGINRESULT_MULTIROLE = "MULTIROLE";		
+		 -->
+		<!-- evaluate expression="loginService.checkNextStep()"/ -->
+		<!-- evaluate expression="loginService.checkCas(messageContext, externalContext, redirectUrl, defaultRedirectUrl)" result="viewScope.loginPageBean"/ -->
+		<evaluate expression="loginPageBean.LoginResult"/>
+		<transition on="NOUSERONDB" to="login"></transition>
+		<transition on="LOGGED" to="esportaConfrontoUdoCsv"></transition>
+	</action-state>
+	
+    <view-state id="login" view="login" model="loginPageBean">
+		
+		<!-- gestione errore tramite popup senza action ajax -->
+        <transition on-exception="java.lang.Exception" to="login">
+        	<evaluate expression="commonService.printExceptionMessage(flowExecutionException)" result="flashScope.exceptionMessage"/>
+        	<evaluate expression="commonService.printExceptionStackTrace(flowExecutionException)" result="flashScope.exceptionStackTrace"/>
+        </transition>
+    </view-state>
+    
+    <view-state id="esportaConfrontoUdoCsv" view="esportaUdoCompareToCsvViewResolver" model="pageBean">
+		<on-entry>
+			<evaluate expression="downloadService.getUdoModelCompare(clientid)" result="viewScope.csvData"/>
+		</on-entry> 	
+	    <!-- transition on="success" to="showFolder"/ -->
+	</view-state>
+    
+
+	<end-state id="downloaded">
+	</end-state>
+
+</flow>

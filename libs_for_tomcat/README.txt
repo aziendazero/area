@@ -1,0 +1,1 @@
+Aggiungere la libreria spring-instrument-tomcat-3.2.2.RELEASE.jar alla folder lib di tomcat

@@ -1,0 +1,164 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:js="http://www.3di.it/thymeleaf/springJsDecorator" 
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+		layout:decorator="templateFHMBWithForm">
+			
+	<head>
+	    <title>Titolari </title>
+		<!-- CSS per layout con menu -->
+		<link th:substituteby="common :: menuCSS" />
+    </head>
+
+  	<body class="claro">
+
+		<div layout:fragment="header" th:remove="tag">
+			<div th:substituteby="common :: defaultHeader"></div>
+		</div>
+	
+		<div layout:fragment="menu" th:remove="tag">
+			<div th:substituteby="common :: defaultMenu"></div>
+		</div>
+
+	<div layout:fragment="body" th:remove="tag">
+		<div>			
+			<div class="lista_holder" th:if="*{titolari}">
+				
+				<div id="listaTitolariPanel">
+				
+					<!-- header videata -->
+					<div class="form-caption-container" >
+						<span class="form-caption-text">Titolare</span>
+					</div>
+					<div class="form-frames-container" >							
+						<div class="frame-container">
+							<div class="frame-toolbar-container" >
+								<span class="panel-toolbar-zone">
+									<span style="float:right;margin-right:20px;" class="frame-toolbar-caption" >
+										<input style="border:0px solid white;vertical-align:middle;margin-bottom:2px;" th:src="'images/pagination/first_' + *{canFirst} + '.gif'" js:ajax="formId:'form',event:'onclick',params:{_eventId:'titolFirstPage'}" id="titolFirstPage" type="image"/>
+										<input style="border:0px solid white;vertical-align:middle;margin-bottom:2px;" th:src="'images/pagination/prev_' + *{canPrev} + '.gif'" js:ajax="formId:'form',event:'onclick',params:{_eventId:'titolPrevPage'}" id="titolPrevPage" type="image"/>
+										<span style="margin:0px 5px 0px 5px;" th:text="'Pag ' + *{currentPage} + ' di ' + *{totalPage}">Pag 0 di 0</span>
+										<input style="border:0px solid white;vertical-align:middle;margin-bottom:2px;" th:src="'images/pagination/next_' + *{canNext} + '.gif'" js:ajax="formId:'form',event:'onclick',params:{_eventId:'titolNextPage'}" id="titolNextPage" type="image"/>
+										<input style="border:0px solid white;vertical-align:middle;margin-bottom:2px;" th:src="'images/pagination/last_' + *{canLast} + '.gif'" js:ajax="formId:'form',event:'onclick',params:{_eventId:'titolLastPage'}" id="titolLastPage" type="image"/>							
+									</span>
+									<span class="frame-toolbar-caption" >Elenco Titolari</span>
+								</span>
+							</div>
+						</div>								
+					</div> <!-- form-frames-container -->		
+							
+					<br />
+					<table class="row">
+						<tbody>
+							<tr>
+								<td style="width: 100px;" class="label">Ragione sociale</td>
+								<td><input
+									th:field="*{subStringtitolareDaCercare}" style="width: 450px;"
+									id="idTitolareDaCercare"
+									js:widget="widgetType:'dijit.form.TextBox'" type="text" /></td>
+							</tr>
+							<tr>
+								<td style="width: 100px;" class="label">Direzione/Area</td>
+								<td><select th:field="*{direzioneTemplClientidSel}" js:widget="widgetType:'dijit.form.Select'" js:errors="true">
+										<option value="">---seleziona direzione/area---</option>
+									  	<option th:each="dir:*{direzioniTempl}" th:value="${dir.clientid}" th:text="${dir.nome}">Direzione</option>						  
+									</select></td>
+							</tr>
+							<tr>
+								<td style="width: 100px;" class="label">Partita IVA</td>
+								<td><input
+									th:field="*{subStringPartitaIva}" style="width: 450px;"
+									id="idPartitaIva"
+									js:widget="widgetType:'dijit.form.TextBox'" type="text" /></td>
+							</tr>
+							<tr>
+								<td colspan="2"><input
+									js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Pulisci'}"
+									js:ajax="formId:'form',event:'onClick',params:{_eventId:'svuotaCampiRicercaTitolare'}"
+									id="svuotaCampiRicercaTitolare"
+									name="_eventId_svuotaCampiRicercaTitolare" value="Pulisci"
+									type="submit" />&nbsp;&nbsp;&nbsp;<input
+									js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Applica filtri'}"
+									js:ajax="formId:'form',event:'onClick',params:{_eventId:'filtraTitolari'}"
+									id="filtraTitolari"
+									name="_eventId_filtraTitolari" value="Applica filtri"
+									type="submit" /></td>
+							</tr>
+						</tbody>
+					</table>
+					<br />
+							
+					<!-- lista holder -->
+					<table class="lista" id="listaTitolariTable">
+						<thead>
+							<tr>
+								<td style="width:10px;" class="listTableHeader">Tipo</td>
+								<td class="listTableHeader">
+								
+								<a class="anchor" js:ajax="formId:'form',event:'onclick',params:{_eventId:'orderTitolari',tipoOrder:'*{T(it.tredi.auac.TitolareFieldToOrderEnum).RagioneSociale}'}" 
+										id="ordRagSoc" 
+										th:href="${flowExecutionUrl} + '&amp;_eventId=orderTitolari&amp;tipoOrder=' + *{T(it.tredi.auac.TitolareFieldToOrderEnum).RagioneSociale}">Ragione sociale</a>
+										<img
+										title="Ordinamento decrescente"
+										th:if="*{titolareOrderTypeEnum != null and titolareOrderTypeEnum==T(it.tredi.auac.TitolareOrderTypeEnum).RagioneSocialeDecrescente}"
+										border="0" src="images/scrdn.gif" />
+										<img
+										title="Ordinamento crescente"
+										th:if="*{titolareOrderTypeEnum != null and titolareOrderTypeEnum==T(it.tredi.auac.TitolareOrderTypeEnum).RagioneSocialeCrescente}"
+										border="0" src="images/scrup.gif" />
+								</td>
+								<td class="listTableHeader">
+									<a class="anchor" js:ajax="formId:'form',event:'onclick',params:{_eventId:'orderTitolari',tipoOrder:'*{T(it.tredi.auac.TitolareFieldToOrderEnum).Direzione}'}" 
+										id="ordDir" 
+										th:href="${flowExecutionUrl} + '&amp;_eventId=orderTitolari&amp;tipoOrder=' + *{T(it.tredi.auac.TitolareFieldToOrderEnum).Direzione}">Direzione</a>
+										<img
+										title="Ordinamento decrescente"
+										th:if="*{titolareOrderTypeEnum != null and titolareOrderTypeEnum==T(it.tredi.auac.TitolareOrderTypeEnum).DirezioneDecrescente}"
+										border="0" src="images/scrdn.gif" />
+										<img
+										title="Ordinamento crescente"
+										th:if="*{titolareOrderTypeEnum != null and titolareOrderTypeEnum==T(it.tredi.auac.TitolareOrderTypeEnum).DirezioneCrescente}"
+										border="0" src="images/scrup.gif" />
+								</td>
+								<td class="listTableHeader">
+									<a class="anchor" js:ajax="formId:'form',event:'onclick',params:{_eventId:'orderTitolari',tipoOrder:'*{T(it.tredi.auac.TitolareFieldToOrderEnum).PartitaIva}'}" 
+										id="ordPiva" 
+										th:href="${flowExecutionUrl} + '&amp;_eventId=orderTitolari&amp;tipoOrder=' + *{T(it.tredi.auac.TitolareFieldToOrderEnum).PartitaIva}">Partita IVA</a>
+										<img
+										title="Ordinamento decrescente"
+										th:if="*{titolareOrderTypeEnum != null and titolareOrderTypeEnum==T(it.tredi.auac.TitolareOrderTypeEnum).PartitaIvaDecrescente}"
+										border="0" src="images/scrdn.gif" />
+										<img
+										title="Ordinamento crescente"
+										th:if="*{titolareOrderTypeEnum != null and titolareOrderTypeEnum==T(it.tredi.auac.TitolareOrderTypeEnum).PartitaIvaCrescente}"
+										border="0" src="images/scrup.gif" />
+								
+								</td>
+							</tr>
+						</thead>
+						<tbody>
+							<tr class="fascicoli_table_row" th:each="titol:*{TitolariForCurrentPage}" th:onclick="'Spring.remoting.submitForm(\'\',\'form\',{_eventId:\'showFolderAtti\',clientid:\'' + ${titol['clientid']} + '\',index:' + ${titolStat.index} + '});'">
+								<td style="width:10px;">
+									<img title="Fascicolo degli Atti" border="0" src="resources/images/folder24_atti_sub.png" />
+								</td>
+								<td th:text="${titol.ragSoc}"></td>
+								<td style="width:100px;" th:text="${titol?.direzioneTempl?.nome}"></td>
+								<td style="width:100px;" th:text="${titol.piva}"></td>
+							</tr>
+						</tbody>
+					</table>
+				
+				</div>
+			</div>
+				
+		
+		</div> 		
+			
+	</div>
+
+	<div layout:fragment="footer" th:remove="tag">
+		<div th:substituteby="common :: defaultFooter"></div>
+	</div>
+	</body>
+</html>
+
+

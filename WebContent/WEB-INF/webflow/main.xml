@@ -1,0 +1,1531 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.springframework.org/schema/webflow http://www.springframework.org/schema/webflow/spring-webflow-2.0.xsd"
+        parent="common">
+ 
+ 	<input name="action"/>
+ 
+	<!-- questo stato serve per decidere se occorre posizionarsi in un particolare stato all'avvio del flusso (senza l'utilizzo dei subflow). Ad esempio accesso da email di notifica  -->
+	<action-state id="start">
+		<evaluate expression="externalContext.sessionMap.userBean" result="conversationScope.userBean"/>
+		<evaluate expression="externalContext.sessionMap.xw" result="conversationScope.xwService"/>
+		<evaluate expression="externalContext.sessionMap._xw" result="conversationScope._xwService"/>
+		<evaluate expression="externalContext.sessionMap.binaryAttachmentsApplDao" result="conversationScope.binaryAttachmentsApplDao"/>
+		<evaluate expression="externalContext.sessionMap.connectionT" result="conversationScope.connectionT"/>
+		<set name="conversationScope.properties" value="externalContext.sessionMap.properties"/>
+		<set name="conversationScope.theAclService" value="aclService"/>
+		<set name="conversationScope.theCommonService" value="commonService"/>
+		<set name="conversationScope.theUtilService" value="utilService"/>
+		<evaluate expression="mainService.chechkStartAction(action)"/>
+		<transition on="home" to="home"></transition>
+	</action-state>
+
+	<view-state id="home" view="home" model="homePageBean">
+		<on-entry>
+			<set name="viewScope.skipOnRender" value="false"/>
+			<evaluate expression="mainService.createHomePageBean(userBean, requestParameters.avtask=='1')" result="viewScope.homePageBean"/>
+			<evaluate expression="mainService.loadTipoProcTempl(userBean, homePageBean, tipoProcTemplDao)"/>
+			<evaluate expression="mainService.loadDirezioniTempl(userBean, homePageBean)"/>
+			<evaluate expression="mainService.loadProcedimenti(messageContext, userBean, homePageBean, xwService)"/>	
+		</on-entry>
+		<transition on="filtraDomandeRegione">
+			<evaluate expression="mainService.loadProcedimenti(messageContext, userBean, homePageBean, xwService)"/>	
+			<render fragments="[//div[@id='listaProcedimentiPanel']]"></render>
+		</transition>	
+		<transition on="svuotaCampiRicercaRegione">
+			<evaluate expression="mainService.svuotaCampiRicercaRegione(homePageBean)"/>	
+			<render fragments="[//div[@id='listaProcedimentiPanel']]"></render>
+		</transition>	
+		<transition on="creaFascTit">
+			<set name="flashScope.skipOnRender" value="true"/>
+			<evaluate expression="mainService.creaFascicoliTitolare(messageContext, homePageBean, xwService, requestParameters.fromProgressBar)"/>
+			<render fragments="[//table[@id='adminToolsTable']]"></render>
+		</transition>
+		<transition on="aggiornaFascicolo">
+			<set name="flashScope.skipOnRender" value="true"/>
+			<evaluate expression="mainService.aggiornaFascicolo(messageContext, xwService, homePageBean, requestParameters.fromProgressBar)"/>
+			<render fragments="[//table[@id='adminToolsTable']]"></render>
+		</transition>
+		<transition on="creaSottofascEvidenze">
+			<set name="flashScope.skipOnRender" value="true"/>
+			<evaluate expression="mainService.creaSottoFascicoliEvidenze(messageContext, homePageBean, xwService, requestParameters.fromProgressBar)"/>
+			<render fragments="[//table[@id='adminToolsTable']]"></render>
+		</transition>		
+		<transition on="aggiornaCampoAllegatiFileName">
+			<set name="flashScope.skipOnRender" value="true"/>
+			<evaluate expression="autovalutazioneService.aggiornaCampoAllegatiFileName(messageContext, homePageBean, xwService, requestParameters.fromProgressBar, externalContext)"/>
+			<render fragments="[//table[@id='adminToolsTable']]"></render>
+		</transition>		
+		<transition on="procFirstPage">
+			<set name="flashScope.skipOnRender" value="true"/>
+			<evaluate expression="mainService.firstPageTitolareProcedimenti(userBean, homePageBean, xwService)"/>
+			<render fragments="[//div[@id='listaProcedimentiPanel']]"></render>
+		</transition>
+		<transition on="procPrevPage">
+			<set name="flashScope.skipOnRender" value="true"/>
+			<evaluate expression="mainService.prevPageTitolareProcedimenti(userBean, homePageBean, xwService)"/>
+			<render fragments="[//div[@id='listaProcedimentiPanel']]"></render>
+		</transition>		
+		<transition on="procNextPage">
+			<set name="flashScope.skipOnRender" value="true"/>
+			<evaluate expression="mainService.nextPageTitolareProcedimenti(userBean, homePageBean, xwService)"/>
+			<render fragments="[//div[@id='listaProcedimentiPanel']]"></render>
+		</transition>
+		<transition on="procLastPage">
+			<set name="flashScope.skipOnRender" value="true"/>
+			<evaluate expression="mainService.lastPageTitolareProcedimenti(userBean, homePageBean, xwService)"/>
+			<render fragments="[//div[@id='listaProcedimentiPanel']]"></render>
+		</transition>		
+		<transition on="showFolder" to="showFolder">
+		</transition>	
+		<transition on="autovalutazione" to="autovalutazioneForCollaboratoreValutazione">
+			<set name="flashScope.idUnit" value="requestParameters.idUnit"/>
+			<!-- set name="flashScope.currentPage" value="pageBean.fascicolo.idUnit"/ -->
+			<set name="flashScope.domandaClientId" value="requestParameters.domandaClientId"/>
+		</transition>			
+		<transition on="orderDomande">
+			<set name="flashScope.skipOnRender" value="false"/>
+			<evaluate expression="mainService.orderDomande(messageContext, userBean, homePageBean, xwService, requestParameters.tipoOrder)"/>
+			<set name="flashScope.skipOnRender" value="true"/>
+			<render fragments="[//div[@id='listaProcedimentiPanel']]"></render>
+			<!-- render fragments="[//form[@id='form']]"></render -->
+			<!-- render fragments="[//table[@id='postit']]"></render -->
+		</transition>
+		<!-- gestione errore tramite popup senza action ajax 
+        <transition on-exception="java.lang.Exception" to="home">
+        	<evaluate expression="commonService.printExceptionMessage(flowExecutionException)" result="flashScope.exceptionMessage"/>
+        	<evaluate expression="commonService.printExceptionStackTrace(flowExecutionException)" result="flashScope.exceptionStackTrace"/>
+        </transition>		-->
+        <transition on="esportaDomandeRegioneToCsv" to="esportaDomandeRegioneToCsv">
+			<set name="flashScope.homePageBean" value="homePageBean"/>
+			<set name="flashScope.csvData" value="mainService.getAllTitolareProcedimenti(userBean, homePageBean, xwService)"/>
+		</transition>
+		
+	</view-state>
+	
+	<view-state id="esportaDomandeRegioneToCsv" view="esportaDomandeRegioneToCsvViewResolver" model="pageBean">
+		<on-entry>
+			<set name="viewScope.pageBean" value="homePageBean"/>
+			<set name="viewScope.csvData" value="csvData"/>
+		</on-entry> 	
+	    <transition on="success" to="home"/>
+	</view-state>
+	
+	<view-state id="showFolder" view="showFolder" model="pageBean">
+		<on-entry>
+			<!--<set name="viewScope.skipOnRender" value="false"/>-->
+			<!-- se si proviene da richiesta è valorizzato idUnit, se si proviene da transition è valorizzato flashScope -->
+			<set name="viewScope.idUnit" value="''"/> <!-- serve per non generare errore nel caso in cui il flashScope non contenga il parametro -->
+			<evaluate expression="showFolderService.getIdUnit(requestParameters.idUnit, idUnit)" result="viewScope.idUnit"></evaluate>
+			<set name="viewScope.udoInstSearchOrderBean" value="null"/>
+			<set name="viewScope.showFolderPageBean" value="null"/>
+			<evaluate expression="showFolderService.createShowFolderPageBean(externalContext, messageContext, userBean, idUnit, xwService, _xwService, showFolderPageBean, udoInstSearchOrderBean)" result="viewScope.pageBean"/>
+		</on-entry> 
+		<transition on="modificaEsito">
+			<!-- render fragments="[//form[@id='form']]"></render -->
+			<evaluate expression="showFolderService.modificaEsito(userBean, pageBean, requestParameters.esitoMulti, requestParameters.valoreEsito, requestParameters.notaEsito, requestParameters.dataInizio, requestParameters.scadenza, requestParameters.attoInstClientid)"/>
+			<render fragments="[//table[@id='listaUdoTable']],[//div[@id='workflowDiv']]"></render>
+		</transition>		
+		<transition on="modificaEsitoValRispProg">
+			<!-- render fragments="[//form[@id='form']]"></render -->
+			<evaluate expression="showFolderService.modificaEsitoValRispProg(userBean, pageBean, requestParameters.esitoMulti, requestParameters.valoreEsito, requestParameters.notaEsito)"/>
+			<render fragments="[//table[@id='listaUdoTable']],[//div[@id='workflowDiv']]"></render>
+		</transition>		
+		<transition on="invioDomanda" bind="false">
+			<evaluate expression="showFolderService.inviaDomanda(pageBean, xwService, externalContext, messageContext, userBean, _xwService)"/>
+			<render fragments="[//form[@id='form']]"></render>
+		</transition>
+
+		<transition on="aggiornaOggetto" bind="true">
+			<evaluate expression="showFolderService.aggiornaOggetto(pageBean, xwService, externalContext, messageContext, userBean, _xwService)"/>
+			<render fragments="[//form[@id='form']]"></render>
+			<!-- render fragments="[//table[@id='tabOggDom']],[//div[@id='listaUdoDiv']]"></render -->
+		</transition>
+
+		<transition on="eliminaDomanda" to="home" bind="false">
+			<evaluate expression="showFolderService.eliminaDomanda(pageBean, xwService)"/>
+			<!-- <render fragments="[//form[@id='form']]"></render> -->
+		</transition>
+		<transition on="setActiveRowIndex" bind="false">
+			<!-- <set name="flashScope.skipOnRender" value="true"/>  -->
+			<evaluate expression="showFolderService.setActiveRowIndex(pageBean, requestParameters.index, requestParameters.changeCheck, requestParameters.checked)"/>
+			<render fragments="[//div[@id='dettaglioUDOPanelDiv']],[//span[@id='checkedUdoListAnchor']],[//div[@id='copyPasteAutovalutazioneDiv']],[//div[@id='modificaEsitoDiv']]"></render>
+		</transition>		
+		<transition on="checkAllUoUdo">
+			<set name="flashScope.skipOnRender" value="true"/>
+			<evaluate expression="showFolderService.checkAllUoUdo(pageBean)"/>
+			<render fragments="[//form[@id='form']]"></render>
+		</transition>		
+		<transition on="procFirst" bind="false">
+			<evaluate expression="showFolderService.firstFascicolo(externalContext, messageContext, userBean, pageBean, xwService, _xwService)"/>
+			<render fragments="[//form[@id='form']]"></render>
+		</transition>		
+		<transition on="procPrev" bind="false">
+			<evaluate expression="showFolderService.prevFascicolo(externalContext, messageContext, userBean, pageBean, xwService, _xwService)"/>
+			<render fragments="[//form[@id='form']]"></render>
+		</transition>		
+		<transition on="procNext" bind="false">
+			<evaluate expression="showFolderService.nextFascicolo(externalContext, messageContext, userBean, pageBean, xwService, _xwService)"/>
+			<render fragments="[//form[@id='form']]"></render>
+		</transition>
+		<transition on="procLast" bind="false">
+			<evaluate expression="showFolderService.lastFascicolo(externalContext, messageContext, userBean, pageBean, xwService, _xwService)"/>
+			<render fragments="[//form[@id='form']]"></render>
+		</transition>
+		<transition on="refresh" bind="false">
+			<evaluate expression="showFolderService.updateFascicoloDocumentsL(externalContext, userBean, pageBean, _xwService)"/>
+			<render fragments="[//form[@id='form']]"></render>
+		</transition>
+		<transition on="deleteDocument" bind="false">
+			<evaluate expression="showFolderService.deleteDocument(requestParameters.idIUnit, xwService, pageBean)"/>
+			<evaluate expression="showFolderService.updateFascicoloDocumentsL(externalContext, userBean, pageBean, _xwService)"/>
+			<render fragments="[//form[@id='form']]"></render>
+		</transition>
+		<transition on="deletePostitGen" bind="false">
+			<evaluate expression="showFolderService.deletePostitGen(requestParameters.tipo, requestParameters.index, xwService, pageBean)"/>
+			<render fragments="[//form[@id='form']]"></render>
+		</transition>		
+
+		<transition on="checkPostitGen" bind="false">
+			<evaluate expression="showFolderService.checkPostitGen(requestParameters.tipo, requestParameters.index, xwService, pageBean)"/>
+			<render fragments="[//table[@id='postit']]"></render>
+		</transition>		
+
+		<transition on="deletePostit" bind="false">
+			<evaluate expression="showFolderService.deletePostit(requestParameters.index, xwService, pageBean)"/>
+			<render fragments="[//form[@id='form']]"></render>
+		</transition>		
+		<transition on="deletePostitMancanzaTipiUdo" bind="false">
+			<evaluate expression="showFolderService.deletePostitMancanzaTipiUdo(requestParameters.index, xwService, pageBean)"/>
+			<render fragments="[//div[@id='noteMancazaTipiUdo']]"></render>
+		</transition>		
+		<transition on="addPostit">
+			<render fragments="[//form[@id='form']]"></render>
+			<evaluate expression="showFolderService.validateFormAddPostit(messageContext, pageBean)"/>
+			<evaluate expression="showFolderService.addPostit(pageBean, userBean, messageContext, xwService)"/>
+		</transition>	
+		<transition on="raiseError" bind="false">
+			<render fragments="[//form[@id='form']]"></render>
+			<evaluate expression="showFolderService.raiseError(messageContext, requestParameters.errorMessage, requestParameters.field)"/>
+		</transition>	
+		<transition on="autovalutazione" to="autovalutazioneFromUdoUoInst">
+			<set name="flashScope.idUnit" value="pageBean.fascicolo.idUnit"/>
+			<set name="flashScope.udoUoInst" value="pageBean.filteredUdoUoInstForL[requestParameters.index]"/>
+			<set name="flashScope.showFolderPageBean" value="pageBean"/>
+		</transition>			
+		<transition on="filtraRequisiti" to="autovalutazioneFromFiltraRequisiti">
+			<set name="flashScope.idUnit" value="pageBean.fascicolo.idUnit"/>
+			<set name="flashScope.showFolderPageBean" value="pageBean"/>
+			<!-- set name="flashScope.domandaClienId" value="pageBean.fascicolo.domandaClienId"/>
+			<set name="flashScope.requisitoSearchBean" value="pageBean.requisitoSearchBean"/ -->
+		</transition>
+		<transition on="updatePersonaL">
+			<evaluate expression="showFolderService.updatePersonaL(pageBean)"/>
+			<render fragments="[//form[@id='form']]"></render>
+		</transition>		
+		<transition on="assegnaRequisitoAll" to="showFolder">
+			<set name="flashScope.idUnit" value="pageBean.fascicolo.idUnit"/>
+			<evaluate expression="showFolderService.assegnaRequisitoAll(userBean, pageBean)"/>
+		</transition>
+		<transition on="assegnaRequisitiMassivi" to="showFolder">
+			<set name="flashScope.idUnit" value="pageBean.fascicolo.idUnit"/>
+			<evaluate expression="showFolderService.assegnazioneMassivaRequisiti(userBean, pageBean)"/>
+		</transition>
+		<transition on="assegnaVerificaRequisitoAll" to="showFolder">
+			<set name="flashScope.idUnit" value="pageBean.fascicolo.idUnit"/>
+			<evaluate expression="showFolderService.assegnaVerificaRequisitoAll(userBean, pageBean)"/>
+		</transition>
+		
+		<transition on="filtraUoUdoDomanda">
+			<set name="flashScope.skipOnRender" value="false"/>
+			<evaluate expression="showFolderService.filtraUoUdoDomanda(userBean, pageBean, skipOnRender)"/>
+			<set name="flashScope.skipOnRender" value="true"/>
+			<render fragments="[//form[@id='form']]"></render>
+			<!-- render fragments="[//div[@id='listaUdoDiv']],[//div[@id='dettaglioUDOPanelDiv']]"></render -->
+		</transition>
+		<transition on="mostraTutti">
+			<set name="flashScope.skipOnRender" value="false"/>
+			<evaluate expression="showFolderService.mostraTutti(userBean, pageBean, skipOnRender)"/>
+			<set name="flashScope.skipOnRender" value="true"/>
+			<render fragments="[//form[@id='form']]"></render>
+			<!-- render fragments="[//div[@id='listaUdoDiv']],[//div[@id='dettaglioUDOPanelDiv']]"></render -->
+		</transition>
+
+		<transition on="ordinaUoUdoDomanda">
+			<set name="flashScope.skipOnRender" value="false"/>
+			<evaluate expression="showFolderService.ordinaUoUdoDomanda(userBean, pageBean, skipOnRender)"/>
+			<set name="flashScope.skipOnRender" value="true"/>
+			<render fragments="[//form[@id='form']]"></render>
+			<!-- render fragments="[//div[@id='listaUdoDiv']],[//div[@id='dettaglioUDOPanelDiv']]"></render -->
+		</transition>
+
+		<transition on="orderOperatorePostIt">
+			<set name="flashScope.skipOnRender" value="false"/>
+			<evaluate expression="showFolderService.orderOperatorePostIt(pageBean, skipOnRender)"/>
+			<set name="flashScope.skipOnRender" value="true"/>
+			<!-- render fragments="[//form[@id='form']]"></render -->
+			<render fragments="[//table[@id='postit']]"></render>
+		</transition>
+
+		<transition on="orderDataPostIt">
+			<set name="flashScope.skipOnRender" value="false"/>
+			<evaluate expression="showFolderService.orderDataPostIt(pageBean, skipOnRender)"/>
+			<set name="flashScope.skipOnRender" value="true"/>
+			<!-- render fragments="[//form[@id='form']]"></render -->
+			<render fragments="[//table[@id='postit']]"></render>
+		</transition>
+
+
+
+
+		<transition on="docTitolareOrderOperatoreDoc">
+			<set name="flashScope.skipOnRender" value="false"/>
+			<evaluate expression="showFolderService.docTitolareOrderOperatoreDoc(pageBean, skipOnRender)"/>
+			<set name="flashScope.skipOnRender" value="true"/>
+			<render fragments="[//table[@id='doctit']]"></render>
+		</transition>
+
+		<transition on="docTitolareOrderDataDoc">
+			<set name="flashScope.skipOnRender" value="false"/>
+			<evaluate expression="showFolderService.docTitolareOrderDataDoc(pageBean, skipOnRender)"/>
+			<set name="flashScope.skipOnRender" value="true"/>
+			<render fragments="[//table[@id='doctit']]"></render>
+		</transition>
+
+		<transition on="docTitolareOrderTipoDoc">
+			<set name="flashScope.skipOnRender" value="false"/>
+			<evaluate expression="showFolderService.docTitolareOrderTipoDoc(pageBean, skipOnRender)"/>
+			<set name="flashScope.skipOnRender" value="true"/>
+			<render fragments="[//table[@id='doctit']]"></render>
+		</transition>
+
+		<transition on="docWfTitolareOrderOperatoreDoc">
+			<set name="flashScope.skipOnRender" value="false"/>
+			<evaluate expression="showFolderService.docWfTitolareOrderOperatoreDoc(pageBean, skipOnRender)"/>
+			<set name="flashScope.skipOnRender" value="true"/>
+			<render fragments="[//table[@id='docwftit']]"></render>
+		</transition>
+
+		<transition on="docWfTitolareOrderDataDoc">
+			<set name="flashScope.skipOnRender" value="false"/>
+			<evaluate expression="showFolderService.docWfTitolareOrderDataDoc(pageBean, skipOnRender)"/>
+			<set name="flashScope.skipOnRender" value="true"/>
+			<render fragments="[//table[@id='docwftit']]"></render>
+		</transition>
+
+		<transition on="docWfRegioneOrderOperatoreDoc">
+			<set name="flashScope.skipOnRender" value="false"/>
+			<evaluate expression="showFolderService.docWfRegioneOrderOperatoreDoc(pageBean, skipOnRender)"/>
+			<set name="flashScope.skipOnRender" value="true"/>
+			<render fragments="[//table[@id='docwfreg']]"></render>
+		</transition>
+
+		<transition on="docWfRegioneOrderDataDoc">
+			<set name="flashScope.skipOnRender" value="false"/>
+			<evaluate expression="showFolderService.docWfRegioneOrderDataDoc(pageBean, skipOnRender)"/>
+			<set name="flashScope.skipOnRender" value="true"/>
+			<render fragments="[//table[@id='docwfreg']]"></render>
+		</transition>
+
+
+
+		<transition on="showCheckedUdoUoList">
+			<set name="flashScope.skipOnRender" value="false"/>
+			<evaluate expression="showFolderService.showCheckedUdoUoList(userBean, pageBean, skipOnRender)"/>
+			<set name="flashScope.skipOnRender" value="true"/>
+			<render fragments="[//form[@id='form']]"></render>
+			<!-- render fragments="[//div[@id='listaUdoDiv']],[//div[@id='dettaglioUDOPanelDiv']]"></render -->
+		</transition>
+		<transition on="removeUdoUo" to="showFolder">
+			<set name="flashScope.idUnit" value="pageBean.fascicolo.idUnit"/>
+			<evaluate expression="showFolderService.removeUdoUo(externalContext, messageContext, userBean, pageBean, pageBean.filteredUdoUoInstForL[requestParameters.index])"/>
+		</transition>		
+        <transition on="modifyFolder" to="editFolder">
+			<set name="flashScope.idUnit" value="pageBean.fascicolo.idUnit"/>
+			<set name="flashScope.showFolderPageBean" value="pageBean"/> 
+        </transition>        		
+		<transition on="notificaRequisitoAll">
+			<evaluate expression="showFolderService.notificaRequisitoAll(userBean, pageBean, xwService, messageContext)"/>
+			<render fragments="[//form[@id='form']]"></render>
+		</transition>        
+		<transition on="notificaVerificaRequisitoAll">
+			<evaluate expression="showFolderService.notificaVerificaRequisitoAll(userBean, pageBean, xwService, messageContext)"/>
+			<render fragments="[//form[@id='form']]"></render>
+		</transition>        
+		<transition on="copyAutovalutazioneUdoUo">
+			<evaluate expression="showFolderService.copyAutovalutazioneUdoUo(pageBean, requestParameters.index)"/>
+			<render fragments="[//div[@id='copyPasteAutovalutazioneDiv']]"></render>
+		</transition>
+		<transition on="pasteAutovalutazione" to="assegnazioneMassivaAutovalutazione">
+			<set name="flashScope.idUnit" value="pageBean.fascicolo.idUnit"/>
+			<set name="flashScope.showFolderPageBean" value="pageBean"/>
+		</transition>
+		<transition on="esportaDomandaToPdf" to="esportaDomandaToPdf">
+			<set name="flashScope.showFolderPageBean" value="pageBean"/>
+		</transition>
+		<transition on="esportaSelezionatiToPdf" to="esportaSelezionatiToPdf">
+			<set name="flashScope.showFolderPageBean" value="pageBean"/>
+		</transition>
+
+		<transition on="eliminaUdoUoSelezionate" to="showFolder">
+			<set name="flashScope.idUnit" value="pageBean.fascicolo.idUnit"/>
+			<evaluate expression="showFolderService.removeUdoUoSelected(externalContext, messageContext, userBean, pageBean)"/>
+			<!-- evaluate expression="showFolderService.getPdfPageBean(showFolderPageBean, false)" result="flashScope.pdfPageBean"/ -->
+		</transition>		
+
+		<transition on="esportaVerificaDomandaToPdf" to="esportaVerificaDomandaToPdf">
+			<set name="flashScope.showFolderPageBean" value="pageBean"/>
+		</transition>
+		<transition on="esportaVerificaSelezionatiToPdf" to="esportaVerificaSelezionatiToPdf">
+			<set name="flashScope.showFolderPageBean" value="pageBean"/>
+		</transition>
+
+		<transition on="esportaRapportoDiVerifica" to="esportaRapportoDiVerifica">
+			<set name="flashScope.showFolderPageBean" value="pageBean"/>
+		</transition>
+
+		<transition on="aggiungiWorkflow">
+			<evaluate expression="showFolderService.validateFormAddWorkflow(messageContext, pageBean)"/>
+			<evaluate expression="showFolderService.addWorkflowProcess(pageBean, userBean, externalContext, messageContext, xwService)"/>
+			<!-- render fragments="[//div[@id='workflowDiv']]"></render -->
+			<render fragments="[//form[@id='form']]"></render>
+			<!-- render fragments="[//div[@id='workflowDiv']],[//div[@id='altroDiv']]"></render -->
+		</transition>	
+		<transition on="prendiTask">
+			<evaluate expression="showFolderService.checkPrendiTask(requestParameters.index, pageBean, userBean, externalContext, messageContext)"/>
+			<evaluate expression="showFolderService.prendiTask(requestParameters.index, pageBean, userBean, externalContext, messageContext)"/>
+			<render fragments="[//div[@id='workflowDiv']]"></render>
+		</transition>			
+		<transition on="rilasciaTask">
+			<evaluate expression="showFolderService.rilasciaTask(requestParameters.index, pageBean, userBean, externalContext, messageContext)"/>
+			<render fragments="[//div[@id='workflowDiv']]"></render>
+		</transition>			
+
+		<!--  transition on="editEvidenze" to="editEvidenze">
+			<set name="flashScope.idUnit" value="idUnit"/>
+			<set name="flashScope.autovalutazionePageBean" value="pageBean"/>
+			<set name="flashScope.readonly" value="requestParameters.readonly"/>
+		</transition -->		
+		<transition on="eseguiTask" to="eseguiTask">
+			<set name="flashScope.idUnit" value="idUnit"/>
+			<set name="flashScope.showFolderPageBean" value="pageBean"/>
+		</transition>
+
+		<transition on="alertEseguiTaskTipoUdo22MancantiTipoTitolare" to="alertEseguiTaskTipoUdo22MancantiTipoTitolare">
+			<set name="flashScope.idUnit" value="idUnit"/>
+			<set name="flashScope.showFolderPageBean" value="pageBean"/>
+		</transition>
+
+		<transition on="showWorkflow" to="showWorkflow">
+			<set name="flashScope.idUnit" value="idUnit"/>
+			<set name="flashScope.showFolderPageBean" value="pageBean"/>
+		</transition>
+
+		<transition on="showWorkflowImage" to="showWorkflowImage">
+			<set name="flashScope.idUnit" value="idUnit"/>
+			<set name="flashScope.showFolderPageBean" value="pageBean"/>
+		</transition>
+		
+		<transition on="aggiornaWorkflow" bind="false">
+			<evaluate expression="showFolderService.aggiornaWorkflow(pageBean, userBean, externalContext, messageContext, _xwService)"/>
+			<render fragments="[//form[@id='form']]"></render>
+			<!-- render fragments="[//div[@id='workflowDiv']]"></render -->
+		</transition>
+		
+		<transition on="modificaUdoModel" to="modificaUdoModel">
+			<set name="flashScope.idUnit" value="idUnit"/>
+			<set name="flashScope.showFolderPageBean" value="pageBean"/>
+		</transition>			
+
+		<transition on="checkTipoUdo22Domanda" to="checkTipoUdo22Domanda">
+			<set name="flashScope.showFolderPageBean" value="pageBean"/>
+		</transition>
+		
+		<transition on="checkPostiLettoDomanda" to="checkPostiLettoDomanda">
+			<set name="flashScope.showFolderPageBean" value="pageBean"/>
+		</transition>
+		<transition on="esportreportValutazioneRG" to="esportreportValutazioneRG">
+			<set name="flashScope.showFolderPageBean" value="pageBean"/>
+		</transition>
+		<transition on="esportaReportVerificaRG" to="esportaReportVerificaRG">
+			<set name="flashScope.showFolderPageBean" value="pageBean"/>
+		</transition>
+		<transition on="esportreportValutazioneArea" to="esportreportValutazioneArea">
+			<set name="flashScope.showFolderPageBean" value="pageBean"/>
+		</transition>
+		<transition on="esportreportVerificaArea" to="esportreportVerificaArea">
+			<set name="flashScope.showFolderPageBean" value="pageBean"/>
+		</transition>
+		<transition on="esportaReportValutazioneUdo" to="esportaReportValutazioneUdo">
+			<set name="flashScope.showFolderPageBean" value="pageBean"/>
+		</transition>
+		<transition on="esportaReportVerificaUdo" to="esportaReportVerificaUdo">
+			<set name="flashScope.showFolderPageBean" value="pageBean"/>
+		</transition>
+		<transition on="esportreportValutazioneComplessiva" to="esportreportValutazioneComplessiva">
+			<set name="flashScope.showFolderPageBean" value="pageBean"/>
+		</transition>
+		<transition on="esportreportVerificaComplessiva" to="esportreportVerificaComplessiva">
+			<set name="flashScope.showFolderPageBean" value="pageBean"/>
+		</transition>
+		
+
+<!-- report requisiti generali inizio -->
+		<transition on="reportValutazioneRG" to="reportValutazioneRG">
+			<set name="flashScope.showFolderPageBean" value="pageBean"/>
+		</transition>
+		<transition on="reportVerificaRG" to="reportVerificaRG">
+			<set name="flashScope.showFolderPageBean" value="pageBean"/>
+		</transition>
+		<transition on="reportValutazioneRGArea" to="reportValutazioneRGArea">
+			<set name="flashScope.showFolderPageBean" value="pageBean"/>
+		</transition>
+		<transition on="reportVerificaRGArea" to="reportVerificaRGArea">
+			<set name="flashScope.showFolderPageBean" value="pageBean"/>
+		</transition>
+		<transition on="reportValutazioneUdo" to="reportValutazioneUdo">
+			<set name="flashScope.showFolderPageBean" value="pageBean"/>
+		</transition>
+		<transition on="reportVerificaUdo" to="reportVerificaUdo">
+			<set name="flashScope.showFolderPageBean" value="pageBean"/>
+		</transition>
+		<transition on="reportValutazioneComplessiva" to="reportValutazioneComplessiva">
+			<set name="flashScope.showFolderPageBean" value="pageBean"/>
+		</transition>
+		<transition on="reportVerificaComplessiva" to="reportVerificaComplessiva">
+			<set name="flashScope.showFolderPageBean" value="pageBean"/>
+		</transition>
+<!-- report requisiti generali fine -->
+		
+		<transition on="esportPostiLettoDomanda" to="esportPostiLettoDomanda">
+			<set name="flashScope.showFolderPageBean" value="pageBean"/>
+		</transition>
+
+		<transition on="checkTipoUdo22DomandaToCsv" to="checkTipoUdo22DomandaToCsv">
+			<set name="flashScope.showFolderPageBean" value="pageBean"/>
+		</transition>
+
+		<transition on="alertTipoUdo22MancantiTipoTitolare" to="alertTipoUdo22MancantiTipoTitolare">
+			<set name="flashScope.showFolderPageBean" value="pageBean"/>
+		</transition>
+
+		<transition on="esportaUdoCsv" to="esportaUdoCsv">
+			<set name="flashScope.showFolderPageBean" value="pageBean"/>
+		</transition>
+
+		<transition on="esportaConfrontoUdoCsv" to="esportaConfrontoUdoCsv">
+			<set name="flashScope.showFolderPageBean" value="pageBean"/>
+		</transition>
+
+		<transition on="esportaCsvReportIstruttoriaUdo" to="esportaCsvReportIstruttoriaUdo">
+			<set name="flashScope.showFolderPageBean" value="pageBean"/>
+		</transition>
+
+		<transition on="esportaRelazioneConclusiva" to="esportaRelazioneConclusiva">
+			<set name="flashScope.showFolderPageBean" value="pageBean"/>
+		</transition>
+
+
+		<transition on="editNoteMancanzaTipiUdo" to="editNoteMancanzaTipiUdo">
+			<set name="flashScope.idUnit" value="idUnit"/>
+			<set name="flashScope.showFolderPageBean" value="pageBean"/>
+		</transition>		
+
+		<transition on="editNoteVerifica" to="editNoteVerifica">
+			<set name="flashScope.idUnit" value="idUnit"/>
+			<set name="flashScope.showFolderPageBean" value="pageBean"/>
+		</transition>
+		
+		<transition on="editDelibera" to="editDelibera">
+			<set name="flashScope.showFolderPageBean" value="pageBean"/>
+		</transition>		
+		<transition on="editFileDelibera" to="editFileDelibera">
+			<set name="flashScope.showFolderPageBean" value="pageBean"/>
+		</transition>		
+
+		<transition on="editAttoInst" to="editAttoInst">
+			<set name="flashScope.showFolderPageBean" value="pageBean"/>
+			<set name="flashScope.attoInstClientId" value="requestParameters.attoInstClientId"/>
+		</transition>		
+		<transition on="editFileAttoInst" to="editFileAttoInst">
+			<set name="flashScope.showFolderPageBean" value="pageBean"/>
+			<set name="flashScope.binaryAttachmentsApplClientId" value="requestParameters.binaryAttachmentsApplClientId"/>
+		</transition>		
+
+		<transition on="viewSpecchietto">
+			<evaluate expression="showFolderService.loadRecordsForSpecchiettoTable(pageBean, _xwService)"/> 
+		</transition>
+		
+		<transition on="esportaSpecchiettoPdf" to="esportaSpecchiettoToPdfView">
+			<set name="flashScope.showFolderPageBean" value="pageBean"/>
+		</transition>
+		
+		 <transition on="esportaSpecchiettoCsv" to="esportaSpecchiettoCsv">
+			<set name="flashScope.showFolderPageBean" value="pageBean"/>
+		</transition>
+		
+		 <transition on="tornaAllaListaUdo">
+			<evaluate expression="showFolderService.tornaAllaListaUdo(pageBean)"/> 
+		</transition>
+		<!-- gestione errore tramite popup senza action ajax -->
+        <!--  transition on-exception="java.lang.Exception" to="showFolder">
+        	<set name="flashScope.idUnit" value="pageBean.fascicolo.idUnit"/>
+        	<evaluate expression="commonService.printExceptionMessage(flowExecutionException)" result="flashScope.exceptionMessage"/>
+        	<evaluate expression="commonService.printExceptionStackTrace(flowExecutionException)" result="flashScope.exceptionStackTrace"/>
+        </transition -->
+    </view-state>
+    
+	<view-state id="assegnazioneMassivaAutovalutazione" view="assegnazioneMassivaAutovalutazione" model="pageBean" popup="true">
+		<on-entry>
+			<set name="viewScope.idUnit" value="idUnit"/>
+			<set name="viewScope.pageBean" value="showFolderPageBean"/>
+			<evaluate expression="showFolderService.startAssegnazioneMassivaAutovalutazione(userBean, pageBean, _xwService, externalContext)"/>
+		</on-entry> 	
+		<on-render>
+			<set name="viewScope.pageBean" value="externalContext.sessionMap.pageBean"/>	<!-- refresh serialized pageBean -->	
+		</on-render>
+		<transition on="close" to="showFolder">
+			<set name="flashScope.idUnit" value="idUnit"/>
+		</transition>
+		<transition on="refresh">
+			<render fragments="[//form[@id='amForm']]"></render>
+		</transition>
+	</view-state>    
+
+    <action-state id="esportaDomandaToPdf">
+			<evaluate expression="showFolderService.getPdfPageBean(showFolderPageBean, true)" result="flashScope.pdfPageBean"/>
+			<transition on="success" to="esportaDomandaToPdfView"/>
+	</action-state>
+
+    <action-state id="esportaSelezionatiToPdf">
+			<evaluate expression="showFolderService.getPdfPageBean(showFolderPageBean, false)" result="flashScope.pdfPageBean"/>
+			<transition on="success" to="esportaDomandaToPdfView"/>
+	</action-state>
+
+    <action-state id="esportaVerificaDomandaToPdf">
+			<evaluate expression="showFolderService.getVerificaPdfPageBean(showFolderPageBean, true)" result="flashScope.pdfPageBean"/>
+			<transition on="success" to="esportaVerificaDomandaToPdfView"/>
+	</action-state>
+
+    <action-state id="esportaVerificaSelezionatiToPdf">
+			<evaluate expression="showFolderService.getVerificaPdfPageBean(showFolderPageBean, false)" result="flashScope.pdfPageBean"/>
+			<transition on="success" to="esportaVerificaDomandaToPdfView"/>
+	</action-state>
+
+<view-state id="esportaDomandaToPdfView" view="esportaDomandaToPdfViewResolver" model="pageBean">
+	<on-entry>
+		<set name="viewScope.pageBean" value="showFolderPageBean"/>
+	</on-entry> 	
+    <transition on="success" to="showFolder"/>
+</view-state>
+
+<view-state id="esportaVerificaDomandaToPdfView" view="esportaVerificaDomandaToPdfViewResolver" model="pageBean">
+	<on-entry>
+		<set name="viewScope.pageBean" value="showFolderPageBean"/>
+	</on-entry> 	
+    <transition on="success" to="showFolder"/>
+</view-state>
+	
+<view-state id="esportaRapportoDiVerifica" view="esportaRapportoDiVerificaViewResolver" model="pageBean">
+	<on-entry>
+		<evaluate expression="showFolderService.getVerbaleVerificaPdfPageBean(showFolderPageBean, true)" result="flashScope.pdfPageBean"/>
+		<set name="viewScope.pageBean" value="showFolderPageBean"/>
+	</on-entry> 	
+    <transition on="success" to="showFolder"/>
+</view-state>
+
+    <action-state id="autovalutazioneFromUdoUoInst">
+			<evaluate expression="autovalutazioneService.createAutovalutazionePageBean(userBean, udoUoInst, showFolderPageBean)" result="flashScope.autovalutazionePageBean"/>
+			<transition on="success" to="autovalutazione"/>
+	</action-state>
+
+    <action-state id="autovalutazioneFromFiltraRequisiti">
+			<!-- evaluate expression="autovalutazioneService.createAutovalutazionePageBean(userBean, requisitoSearchBean, domandaClienId)" result="flashScope.autovalutazionePageBean"/ -->
+			<evaluate expression="autovalutazioneService.createAutovalutazionePageBean(userBean, showFolderPageBean)" result="flashScope.autovalutazionePageBean"/>
+			<transition on="success" to="autovalutazione"/>
+	</action-state>
+
+    <action-state id="autovalutazioneForCollaboratoreValutazione">
+			<evaluate expression="autovalutazioneService.createAutovalutazionePageBean(userBean, domandaClientId)" result="flashScope.autovalutazionePageBean"/>
+			<transition on="success" to="autovalutazione"/>
+	</action-state>
+
+	<view-state id="autovalutazione" view="autovalutazione" model="pageBean">
+		<on-entry>
+			<set name="viewScope.idUnit" value="idUnit"/>
+			<set name="viewScope.pageBean" value="autovalutazionePageBean"/>
+		</on-entry> 	
+		<transition on="showFolder" to="showFolder">
+			<set name="flashScope.idUnit" value="idUnit"/>
+			<set name="flashScope.udoInstSearchOrderBean" value="pageBean.udoInstSearchOrderBean"/>
+		</transition>		
+		<transition on="home" to="home">
+			<set name="flashScope.idUnit" value="idUnit"/>
+		</transition>		
+		<transition on="editNote" to="editNote">
+			<set name="flashScope.idUnit" value="idUnit"/>
+			<set name="flashScope.autovalutazionePageBean" value="pageBean"/>
+			<set name="flashScope.readonly" value="requestParameters.readonly"/>
+			<set name="flashScope.editNoteVerifica" value="requestParameters.editNoteVerifica"/>
+		</transition>
+		<transition on="editEvidenze" to="editEvidenze">
+			<set name="flashScope.idUnit" value="idUnit"/>
+			<set name="flashScope.autovalutazionePageBean" value="pageBean"/>
+			<set name="flashScope.readonly" value="requestParameters.readonly"/>
+		</transition>		
+		<transition on="save">
+			<evaluate expression="autovalutazioneService.saveAutovalutazione(userBean, pageBean)"/>
+			<render fragments="[//form[@id='form']]"></render>
+		</transition>
+		<transition on="saveTorna" to="showFolder">
+			<set name="flashScope.idUnit" value="idUnit"/>
+			<set name="flashScope.udoInstSearchOrderBean" value="pageBean.udoInstSearchOrderBean"/>
+			<evaluate expression="autovalutazioneService.saveAutovalutazione(userBean, pageBean)"/>
+		</transition>		
+
+		<transition on="saveVerificatore">
+			<evaluate expression="autovalutazioneService.saveVerificatore(userBean, pageBean)"/>
+			<render fragments="[//form[@id='form']]"></render>
+		</transition>
+		<transition on="saveVerificatoreTorna" to="showFolder">
+			<set name="flashScope.idUnit" value="idUnit"/>
+			<set name="flashScope.udoInstSearchOrderBean" value="pageBean.udoInstSearchOrderBean"/>
+			<evaluate expression="autovalutazioneService.saveVerificatore(userBean, pageBean)"/>
+		</transition>		
+
+		<transition on="saveVerifica">
+			<evaluate expression="autovalutazioneService.saveVerifica(userBean, pageBean)"/>
+			<render fragments="[//form[@id='form']]"></render>
+		</transition>
+		<transition on="saveVerificaTorna" to="showFolder">
+			<set name="flashScope.idUnit" value="idUnit"/>
+			<set name="flashScope.udoInstSearchOrderBean" value="pageBean.udoInstSearchOrderBean"/>
+			<evaluate expression="autovalutazioneService.saveVerifica(userBean, pageBean)"/>
+		</transition>		
+
+		<transition on="saveVerificatoreVerifica">
+			<evaluate expression="autovalutazioneService.saveVerificatoreVerifica(userBean, pageBean)"/>
+			<render fragments="[//form[@id='form']]"></render>
+		</transition>
+		<transition on="saveVerificatoreVerificaTorna" to="showFolder">
+			<set name="flashScope.idUnit" value="idUnit"/>
+			<set name="flashScope.udoInstSearchOrderBean" value="pageBean.udoInstSearchOrderBean"/>
+			<evaluate expression="autovalutazioneService.saveVerificatoreVerifica(userBean, pageBean)"/>
+		</transition>		
+
+		<transition on="saveTornaHome" to="home">
+			<set name="flashScope.idUnit" value="idUnit"/>
+			<evaluate expression="autovalutazioneService.saveAutovalutazione(userBean, pageBean)"/>
+		</transition>		
+		<transition on="checkAllRequisito">
+			<evaluate expression="autovalutazioneService.checkAllRequisito(pageBean)"/>
+			<render fragments="[//form[@id='form']]"></render>
+		</transition>		
+		<transition on="checkRequisito">
+			<evaluate expression="autovalutazioneService.checkRequisito(pageBean, requestParameters.index)"/>
+			<render fragments="[//div[@id='dummyDiv']],[//div[@id='copyPasteNoteEvidenzeDiv']],[//div[@id='copyPasteNoteVerifDiv']]"></render> <!-- serve unicamente per fare refresh di una porzione piccola. Infatti se non si mette un fragment, viene restituita tutta la pagina -->
+		</transition>		
+		<transition on="applicaValutazioneAll">
+			<evaluate expression="autovalutazioneService.applicaValutazioneAll(pageBean)"/>
+			<render fragments="[//form[@id='form']]"></render>
+		</transition>
+
+		<transition on="applicaVerificaAll">
+			<evaluate expression="autovalutazioneService.applicaValutazioneVerificaAll(userBean, pageBean)"/>
+			<render fragments="[//form[@id='form']]"></render>
+		</transition>
+
+		<transition on="applicaValutazioneSogliaAll">
+			<evaluate expression="autovalutazioneService.applicaValutazioneSogliaAll(pageBean)"/>
+			<render fragments="[//form[@id='form']]"></render>
+		</transition>
+
+		<transition on="applicaVerificaSogliaAll">
+			<evaluate expression="autovalutazioneService.applicaValutazioneVerificaSogliaAll(userBean, pageBean)"/>
+			<render fragments="[//form[@id='form']]"></render>
+		</transition>
+
+		<transition on="updatePersonaL">
+			<evaluate expression="autovalutazioneService.updatePersonaL(pageBean)"/>
+			<render fragments="[//form[@id='form']]"></render>
+		</transition>		
+		<transition on="assegnaRequisitoAll">
+			<evaluate expression="autovalutazioneService.assegnaRequisitoAll(pageBean)"/>
+			<render fragments="[//form[@id='form']]"></render>
+		</transition>
+		<transition on="assegnaVerificaRequisitoAll">
+			<evaluate expression="autovalutazioneService.assegnaVerificaRequisitoAll(pageBean)"/>
+			<render fragments="[//form[@id='form']]"></render>
+		</transition>
+		<transition on="showStoriaRequisito" to="showStoriaRequisito">
+		</transition>
+		<transition on="showUdoInst" to="showUdoInst">
+		</transition>
+		<transition on="filtraRequisiti">
+			<set name="flashScope.skipOnRender" value="false"/>
+			<evaluate expression="autovalutazioneService.filtraRequisiti(userBean, pageBean, skipOnRender)"/>
+			<set name="flashScope.skipOnRender" value="true"/>
+			<render fragments="[//form[@id='form']]"></render>
+		</transition>
+		<transition on="rimuoviFiltroRequisiti">
+			<set name="flashScope.skipOnRender" value="false"/>
+			<evaluate expression="autovalutazioneService.rimuoviFiltroRequisiti(userBean, pageBean, skipOnRender)"/>
+			<set name="flashScope.skipOnRender" value="true"/>
+			<render fragments="[//form[@id='form']]"></render>
+		</transition>
+		<transition on="esportaRequisitiToCsv" to="esportaRequisitiToCsv">
+			<set name="flashScope.autovalutazionePageBean" value="pageBean"/>
+		</transition>
+		<transition on="esportaVerificaRequisitiToCsv" to="esportaVerificaRequisitiToCsv">
+			<set name="flashScope.autovalutazionePageBean" value="pageBean"/>
+		</transition>
+		<transition on="pageFirst">
+			<evaluate expression="autovalutazioneService.pageFirst(pageBean)"/>
+			<render fragments="[//form[@id='form']]"></render>
+		</transition>
+		<transition on="pagePrev">
+			<evaluate expression="autovalutazioneService.pagePrev(pageBean)"/>
+			<render fragments="[//form[@id='form']]"></render>
+		</transition>
+		<transition on="pageNext">
+			<evaluate expression="autovalutazioneService.pageNext(pageBean)"/>
+			<render fragments="[//form[@id='form']]"></render>
+		</transition>
+		<transition on="pageLast">
+			<evaluate expression="autovalutazioneService.pageLast(pageBean)"/>
+			<render fragments="[//form[@id='form']]"></render>
+		</transition>								
+		<transition on="copyNoteEvidenzeRequisito">
+			<evaluate expression="autovalutazioneService.copyNoteEvidenzeRequisito(pageBean, requestParameters.index)"/>
+			<render fragments="[//div[@id='copyPasteNoteEvidenzeDiv']]"></render>
+		</transition>		
+		<transition on="pasteNoteEvidenze" to="assegnazioneMassivaNoteEvidenze">
+			<set name="flashScope.idUnit" value="idUnit"/>
+			<set name="flashScope.autovalutazionePageBean" value="pageBean"/>
+		</transition>		
+		<transition on="refreshCopyPasteNoteEvidenzeDiv">
+			<render fragments="[//div[@id='copyPasteNoteEvidenzeDiv']]"></render>
+		</transition>		
+		
+		<transition on="copyNoteVerifRequisito">
+			<evaluate expression="autovalutazioneService.copyNoteVerifRequisito(pageBean, requestParameters.index)"/>
+			<render fragments="[//div[@id='copyPasteNoteVerifDiv']]"></render>
+		</transition>		
+		<transition on="pasteNoteVerif" to="assegnazioneMassivaNoteVerif">
+			<set name="flashScope.idUnit" value="idUnit"/>
+			<set name="flashScope.autovalutazionePageBean" value="pageBean"/>
+		</transition>		
+		<transition on="refreshCopyPasteNoteVerifDiv">
+			<render fragments="[//div[@id='copyPasteNoteVerifDiv']]"></render>
+		</transition>		
+
+		<!-- gestione errore tramite popup senza action ajax -->
+        <transition on-exception="java.lang.Exception" to="autovalutazione">
+        	<set name="flashScope.idUnit" value="idUnit"/>
+        	<set name="flashScope.udoUoInst" value="udoUoInst"/>
+        	<evaluate expression="commonService.printExceptionMessage(flowExecutionException)" result="flashScope.exceptionMessage"/>
+        	<evaluate expression="commonService.printExceptionStackTrace(flowExecutionException)" result="flashScope.exceptionStackTrace"/>
+        </transition>
+	</view-state>    
+	
+	<view-state id="assegnazioneMassivaNoteEvidenze" view="assegnazioneMassivaNoteEvidenze" model="pageBean" popup="true">
+		<on-entry>
+			<set name="viewScope.idUnit" value="idUnit"/>
+			<set name="viewScope.pageBean" value="autovalutazionePageBean"/>			
+			<evaluate expression="autovalutazioneService.startAssegnazioneMassivaNoteEvidenze(userBean, pageBean, _xwService, externalContext, idUnit)"/>			
+		</on-entry> 	
+		<on-render>
+			<set name="viewScope.pageBean" value="externalContext.sessionMap.pageBean"/>	<!-- refresh serialized pageBean -->	
+		</on-render>
+		<transition on="close" to="autovalutazione">
+			<set name="flashScope.idUnit" value="idUnit"/>
+			<evaluate expression="autovalutazioneService.refreshAutovalutazionePageBean(userBean, pageBean)"/>
+			<evaluate expression="autovalutazioneService.resetAssegnazioneMassivaNoteEvidenze(pageBean)"/>		
+			<set name="flashScope.autovalutazionePageBean" value="pageBean"/>
+		</transition>
+		<transition on="refresh">
+			<render fragments="[//form[@id='neamForm']]"></render>
+		</transition>
+	</view-state> 	
+	
+	<view-state id="assegnazioneMassivaNoteVerif" view="assegnazioneMassivaNoteEvidenze" model="pageBean" popup="true">
+		<on-entry>
+			<set name="viewScope.idUnit" value="idUnit"/>
+			<set name="viewScope.pageBean" value="autovalutazionePageBean"/>			
+			<evaluate expression="autovalutazioneService.startAssegnazioneMassivaNoteVerif(userBean, pageBean, _xwService, externalContext, idUnit)"/>			
+		</on-entry> 	
+		<on-render>
+			<set name="viewScope.pageBean" value="externalContext.sessionMap.pageBean"/>	<!-- refresh serialized pageBean -->	
+		</on-render>
+		<transition on="close" to="autovalutazione">
+			<set name="flashScope.idUnit" value="idUnit"/>
+			<evaluate expression="autovalutazioneService.refreshAutovalutazionePageBean(userBean, pageBean)"/>
+			<evaluate expression="autovalutazioneService.resetAssegnazioneMassivaNoteEvidenze(pageBean)"/>		
+			<set name="flashScope.autovalutazionePageBean" value="pageBean"/>
+		</transition>
+		<transition on="refresh">
+			<render fragments="[//form[@id='neamForm']]"></render>
+		</transition>
+	</view-state> 	
+
+	<view-state id="esportaRequisitiToCsv" view="esportaRequisitiToCsvViewResolver" model="pageBean">
+		<on-entry>
+			<set name="viewScope.pageBean" value="autovalutazionePageBean"/>
+			<set name="viewScope.csvData" value="autovalutazionePageBean.filteredRequisitoInstL"/>
+		</on-entry> 	
+	    <transition on="success" to="autovalutazione"/>
+	</view-state>
+
+	<view-state id="esportaVerificaRequisitiToCsv" view="esportaVerificaRequisitiToCsvViewResolver" model="pageBean">
+		<on-entry>
+			<set name="viewScope.pageBean" value="autovalutazionePageBean"/>
+			<set name="viewScope.csvData" value="autovalutazionePageBean.filteredRequisitoInstL"/>
+		</on-entry> 	
+	    <transition on="success" to="autovalutazione"/>
+	</view-state>
+
+	<view-state id="editNote" view="editNote" model="editNotePageBean" popup="true">
+		<on-entry>
+			<set name="viewScope.idUnit" value="idUnit"/>
+			<set name="viewScope.autovalutazionePageBean" value="autovalutazionePageBean"/>
+			<set name="viewScope.readonly" value="readonly"/>
+			<set name="viewScope.editNoteVerifica" value="editNoteVerifica"/>
+			<set name="viewScope.index" value="requestParameters.index"/>
+			<evaluate expression="autovalutazioneService.createEditNotePageBean(requestParameters.requisitoInstClientId, readonly, editNoteVerifica)" result="viewScope.editNotePageBean"/>
+		</on-entry>
+		<transition on="saveNote">
+			<set name="flashScope.idUnit" value="idUnit"/>
+			<set name="flashScope.autovalutazionePageBean" value="autovalutazionePageBean"/>
+			<evaluate expression="autovalutazioneService.saveNote(userBean, editNotePageBean, autovalutazionePageBean)"/>
+			<set name="flashScope.close" value="true"></set>
+			<set name="flashScope.jsCloseFunction" value="autovalutazioneService.jsCloseFunction(editNotePageBean, index)"></set>
+			<!-- set name="flashScope.jsCloseFunction" value="autovalutazioneService.jsCloseFunction('showNoteLink', index, editNotePageBean.note eq '')"></set -->
+			<render fragments="[//script[@id='closeScript']]"/>
+		</transition>
+<!-- 		
+        <transition on-exception="java.lang.Exception" to="editNote">
+			<set name="flashScope.idUnit" value="idUnit"/>
+			<set name="flashScope.udoUoInst" value="udoUoInst"/>
+			<set name="flashScope.readonly" value="readonly"/>
+        	<evaluate expression="commonService.printExceptionMessage(flowExecutionException)" result="flashScope.exceptionMessage"/>
+        	<evaluate expression="commonService.printExceptionStackTrace(flowExecutionException)" result="flashScope.exceptionStackTrace"/>
+        </transition>
+-->
+	</view-state>
+	
+	<!--  evaluate expression="showFolderService.prendiTask(requestParameters.index, pageBean, userBean, externalContext, messageContext)"/ -->
+	<view-state id="eseguiTask" view="eseguiTask" model="workflowExecuteTaskPageBean" popup="true">
+		<on-entry>
+			<set name="viewScope.idUnit" value="idUnit"/>
+			<set name="viewScope.showFolderPageBean" value="showFolderPageBean"/>
+			<!-- set name="viewScope.index" value="requestParameters.index"/ -->
+			<evaluate expression="workflowService.setCookie(externalContext, userBean.WorkflowBean.restCookie)"/>
+			<evaluate expression="showFolderService.createWorkflowExecuteTaskPageBean(requestParameters.index, showFolderPageBean, userBean, externalContext, messageContext)" result="viewScope.workflowExecuteTaskPageBean"/>
+		</on-entry>
+		<transition on="savedTask" to="showFolder">
+			<set name="flashScope.idUnit" value="idUnit"/>
+			<set name="flashScope.showFolderPageBean" value="showFolderPageBean"/>
+			<evaluate expression="showFolderService.aggiornaWorkflow(showFolderPageBean, userBean, externalContext, messageContext, _xwService)"/>
+			<render fragments="[//form[@id='form']]"></render>
+			<!-- render fragments="[//div[@id='workflowDiv']]"></render -->
+		</transition>
+		
+	</view-state>
+
+	<view-state id="modificaUdoModel" view="modificaUdoModel" model="updateUdoModelPageBean" popup="true">
+		<on-entry>
+			<set name="viewScope.idUnit" value="idUnit"/>
+			<set name="viewScope.showFolderPageBean" value="showFolderPageBean"/>
+			<!-- set name="viewScope.index" value="requestParameters.index"/ -->
+			<evaluate expression="showFolderService.createUpdateUdoModelPageBean(requestParameters.index, showFolderPageBean, userBean, externalContext, messageContext)" result="viewScope.updateUdoModelPageBean"/>
+		</on-entry>
+		<transition on="savedUdo" to="showFolder">
+			<set name="flashScope.idUnit" value="idUnit"/>
+			<set name="flashScope.showFolderPageBean" value="showFolderPageBean"/>
+			<!-- La modifica alla UdoModel non aggiorna la UdoInst quindi non occorre ricaricare dei dati della domanda -->
+			<!-- evaluate expression="showFolderService.aggiornaUdoInst(updateUdoModelPageBean, showFolderPageBean, userBean, externalContext, messageContext)"/ -->
+			<!-- render fragments="[//form[@id='form']]"></render -->
+			<!-- render fragments="[//div[@id='workflowDiv']]"></render -->
+		</transition>
+		
+	</view-state>
+
+	<view-state id="showWorkflow" view="showWorkflow" model="workflowProcessInstance" popup="true">
+		<on-entry>
+			<set name="viewScope.idUnit" value="idUnit"/>
+			<set name="viewScope.showFolderPageBean" value="showFolderPageBean"/>
+			<set name="viewScope.workflowProcessInstance" value="showFolderPageBean.workflowProcessInstance"/>
+			<evaluate expression="workflowService.setCookie(externalContext, userBean.WorkflowBean.adminRestCookie)"/>
+			<!--  evaluate expression="showFolderService.createWorkflowExecuteTaskPageBean(requestParameters.index, showFolderPageBean, userBean, externalContext, messageContext)" result="viewScope.workflowProcessInstance"/ -->
+		</on-entry>
+	</view-state>
+
+	<view-state id="showWorkflowImage" view="showWorkflowImage" model="workflowProcessInstance" popup="true">
+		<on-entry>
+			<set name="viewScope.idUnit" value="idUnit"/>
+			<set name="viewScope.showFolderPageBean" value="showFolderPageBean"/>
+			<set name="viewScope.workflowProcessInstance" value="showFolderPageBean.workflowProcessInstance"/>
+		</on-entry>
+	</view-state>
+
+	<view-state id="editEvidenze" view="editEvidenze" model="editEvidenzePageBean" popup="true">
+		<on-entry>
+			<set name="viewScope.idUnit" value="idUnit"/>
+			<set name="viewScope.autovalutazionePageBean" value="autovalutazionePageBean"/>
+			<set name="viewScope.readonly" value="readonly"/>
+			<set name="viewScope.index" value="requestParameters.index"/>
+			<evaluate expression="autovalutazioneService.createEditEvidenzePageBean(requestParameters.requisitoInstClientId, readonly, idUnit, _xwService, externalContext, userBean)" result="viewScope.editEvidenzePageBean"/>
+		</on-entry>
+		<transition on="saveEvidenze">
+			<set name="flashScope.idUnit" value="idUnit"/>
+			<set name="flashScope.autovalutazionePageBean" value="autovalutazionePageBean"/>
+			<evaluate expression="autovalutazioneService.saveEvidenze(userBean, editEvidenzePageBean, autovalutazionePageBean)"/>
+			<set name="flashScope.close" value="true"></set>
+			<set name="flashScope.jsCloseFunction" value="autovalutazioneService.jsCloseFunction('showEvidenzeLink', index, editEvidenzePageBean.evidenze eq '' and editEvidenzePageBean.documentsL eq null)"></set>
+			<render fragments="[//script[@id='closeScript']]"/>			
+		</transition>
+		<transition on="refreshLinks">
+	 		<evaluate expression="autovalutazioneService.refreshLinks(editEvidenzePageBean.requisitoInst.clientid, _xwService)"/>
+	 		<evaluate expression="autovalutazioneService.updateFascicoloEvidenzeDocumentsL(editEvidenzePageBean, externalContext, userBean, _xwService)"/>
+			<render fragments="[//form[@id='edit_evidenze_form']]"></render>
+		</transition>
+		<transition on="deleteDocument" bind="false">
+			<evaluate expression="autovalutazioneService.deleteDocument(requestParameters.idIUnit, _xwService)"/>
+			<evaluate expression="autovalutazioneService.refreshLinks(editEvidenzePageBean.requisitoInst.clientid, _xwService)"/>
+	 		<evaluate expression="autovalutazioneService.updateFascicoloEvidenzeDocumentsL(editEvidenzePageBean, externalContext, userBean, _xwService)"/>
+			<render fragments="[//form[@id='edit_evidenze_form']]"></render>
+		</transition>		
+        <transition on-exception="java.lang.Exception" to="editEvidenze">
+			<set name="flashScope.idUnit" value="idUnit"/>
+			<set name="flashScope.autovalutazionePageBean" value="autovalutazionePageBean"/>
+			<set name="flashScope.readonly" value="readonly"/>
+        	<evaluate expression="commonService.printExceptionMessage(flowExecutionException)" result="flashScope.exceptionMessage"/>
+        	<evaluate expression="commonService.printExceptionStackTrace(flowExecutionException)" result="flashScope.exceptionStackTrace"/>
+        </transition>
+	</view-state>	
+	
+	<view-state id="showStoriaRequisito" view="showStoriaRequisito" model="showStoriaRequisitoPageBean" popup="true">
+		<on-entry>
+			<evaluate expression="autovalutazioneService.createShowStoriaRequisito(requestParameters.requisitoInstClientId)" result="viewScope.showStoriaRequisitoPageBean"/>
+		</on-entry>
+	</view-state>
+	
+	<view-state id="showUdoInst" view="showUdoInstInfo" model="showUdoInstPageBean" popup="true">
+		<on-entry>
+			<evaluate expression="autovalutazioneService.createShowUdoInst(requestParameters.udoInstClientId)" result="viewScope.showUdoInstPageBean"/>
+		</on-entry>
+	</view-state>	
+	
+	<view-state id="editFolder" view="editFolder" model="editFolderPageBean">
+		<on-entry>
+			<set name="viewScope.showFolderPageBean" value="showFolderPageBean"/>
+			<set name="viewScope.idUnit" value="idUnit"/>
+			<set name="viewScope.isModify" value="idUnit ne null"/> 
+			<set name="viewScope.skipOnRender" value="false"/>
+			<evaluate expression="mainService.createHomePageBean(userBean)" result="viewScope.editFolderPageBean"/>
+			<evaluate expression="mainService.runAggProcInCorsoUdoUoTit(editFolderPageBean)"/>
+			<evaluate expression="mainService.loadTipoProcTempl(userBean, editFolderPageBean, tipoProcTemplDao)"/>
+			<evaluate expression="mainService.loadProcedimenti(messageContext, userBean, editFolderPageBean, xwService)"/>	
+		</on-entry>
+		<on-render>
+			<evaluate expression="mainService.loadTitolareUdosSenzaProcedimentiInCorso(userBean, udoModelDao, editFolderPageBean, skipOnRender)"/>
+		</on-render>
+		<transition on="filtraUdoTitolare">
+			<set name="flashScope.skipOnRender" value="false"/>
+			<evaluate expression="mainService.loadTitolareUdosSenzaProcedimentiInCorso(userBean, udoModelDao, editFolderPageBean, skipOnRender)"/>
+			<set name="flashScope.skipOnRender" value="true"/>
+			<render fragments="[//div[@id='listaUdoDiv']],[//div[@id='listaUDOPanelDiv']]"></render>
+		</transition>	
+		<transition on="svuotaCampiRicercaTitolare">
+			<evaluate expression="mainService.svuotaCampiRicercaTitolare(editFolderPageBean,)"/>	
+			<render fragments="[//div[@id='listaUdoDiv']],[//div[@id='listaUDOPanelDiv']],[//table[@id='tblRicercaUdo']]"></render>
+		</transition>	
+		<transition on="checkAllUdo">
+			<set name="flashScope.skipOnRender" value="true"/>
+			<evaluate expression="mainService.checkAllUdo(editFolderPageBean)"/>
+			<render fragments="[//table[@id='listaUdoTable']],[//div[@id='checkedUdoListAnchor']]"></render>
+		</transition>
+		<transition on="setActiveRowIndex">
+			<set name="flashScope.skipOnRender" value="true"/>
+			<evaluate expression="mainService.setActiveRowIndex(editFolderPageBean, requestParameters.index, requestParameters.changeCheck, requestParameters.checked)"/>
+			<render fragments="[//div[@id='listaUDOPanelDiv']],[//div[@id='checkedUdoListAnchor']]"></render>
+		</transition>		
+		<transition on="creaDomaTit" to="showFolder">
+			<set name="flashScope.skipOnRender" value="true"/>
+			<render fragments="[//table[@id='titolareToolsTable']],[//div[@id='messages']]"></render>
+			<evaluate expression="mainService.validateFormFormCreazioneDomandaTitolare(messageContext, editFolderPageBean, isModify)"/>
+			<evaluate expression="mainService.creaDomandaTitolare(messageContext, editFolderPageBean,  xwService, userBean)" result="flashScope.idUnit"/>
+		</transition>		
+		<transition on="showCheckedUdoList">
+			<set name="flashScope.skipOnRender" value="true"/>
+			<evaluate expression="mainService.loadCheckedUdoList(editFolderPageBean, udoModelDao)"/>
+			<render fragments="[//table[@id='listaUdoTable']],[//div[@id='listaUDOPanelDiv']]"></render>
+		</transition>
+		<transition on="showAllUdoList">
+			<set name="flashScope.skipOnRender" value="false"/>
+			<evaluate expression="mainService.svuotaCampiRicercaTitolare(editFolderPageBean)"/>	
+			<evaluate expression="mainService.loadTitolareUdosSenzaProcedimentiInCorso(userBean, udoModelDao, editFolderPageBean, skipOnRender)"/>
+			<set name="flashScope.skipOnRender" value="true"/>
+			<render fragments="[//div[@id='listaUdoDiv']],[//div[@id='listaUDOPanelDiv']]"></render>
+		</transition>
+		<transition on="updateDomaTit" to="showFolder">
+			<set name="flashScope.idUnit" value="idUnit"/>
+			<render fragments="[//table[@id='titolareToolsTable']],[//div[@id='messages']]"></render>
+			<evaluate expression="mainService.validateFormFormCreazioneDomandaTitolare(messageContext, editFolderPageBean, isModify)"/>		
+			<evaluate expression="mainService.updateDomaTit(messageContext, editFolderPageBean,  xwService, userBean, showFolderPageBean)" result="flashScope.idUnit"/>
+		</transition>				
+		<transition on="cancelDomaTit" to="showFolder">
+			<set name="flashScope.idUnit" value="idUnit"/>
+		</transition>
+	</view-state>	
+	
+	<view-state id="alertTipoUdo22MancantiTipoTitolare" view="alertTipoUdo22MancantiTipoTitolare" model="pageBean" popup="true">
+		<on-entry>
+			<set name="viewScope.pageBean" value="showFolderPageBean"/>
+		</on-entry>
+	</view-state>
+	
+	<view-state id="alertEseguiTaskTipoUdo22MancantiTipoTitolare" view="alertTipoUdo22MancantiTipoTitolare" model="pageBean" popup="true">
+		<on-entry>
+			<set name="viewScope.idUnit" value="idUnit"/>
+			<set name="viewScope.pageBean" value="showFolderPageBean"/>
+			<set name="viewScope.taskIndex" value="requestParameters.index"/>
+		</on-entry>
+	</view-state>
+
+	<view-state id="checkTipoUdo22Domanda" view="checkTipoUdo22Domanda" model="pageBean" popup="true">
+		<on-entry>
+			<set name="viewScope.showFolderPageBean" value="showFolderPageBean"/>
+			<evaluate expression="showFolderService.checkTipoUdo22Domanda(showFolderPageBean)" result="viewScope.pageBean"/>
+		</on-entry>
+	</view-state>
+	
+	<view-state id="checkPostiLettoDomanda" view="checkPostiLettoDomanda" model="pageBean" popup="true">
+		<on-entry>
+			<set name="viewScope.showFolderPageBean" value="showFolderPageBean"/>
+			<evaluate expression="showFolderService.checkPostiLettoDomanda(showFolderPageBean)" result="viewScope.pageBean"/>
+		</on-entry>
+	</view-state>
+	
+	<!-- TESTING -->
+	<view-state id="esportPostiLettoDomanda" view="checkControlloPostiLettoExportCsvViewResolver" model="pageBean">
+		<on-entry>
+			<set name="viewScope.showFolderPageBean" value="showFolderPageBean"/>
+			<evaluate expression="showFolderService.checkPostiLettoDomanda(showFolderPageBean)" result="viewScope.pageBean"/>
+			<set name="viewScope.csvData" value="pageBean"/>
+		</on-entry>
+		<transition on="success" to="showFolder"/>
+	</view-state>
+	
+	<!--esport report requisiti generali inizio -->
+	<view-state id="esportreportValutazioneRG" view="checkReportValutazioneRGViewResolver" model="pageBean">
+		<on-entry>
+			<set name="viewScope.showFolderPageBean" value="showFolderPageBean"/>
+			<evaluate expression="showFolderService.reportValutazioneRG(showFolderPageBean)" result="viewScope.pageBean"/>
+			<set name="viewScope.csvData" value="pageBean"/>
+		</on-entry>
+		<transition on="success" to="showFolder"/>
+	</view-state>
+	
+	<view-state id="esportaReportVerificaRG" view="checkReportVerificaRGViewResolver" model="pageBean">
+		<on-entry>
+			<set name="viewScope.showFolderPageBean" value="showFolderPageBean"/>
+			<evaluate expression="showFolderService.reportVerificaRG(showFolderPageBean)" result="viewScope.pageBean"/>
+			<set name="viewScope.csvData" value="pageBean"/>
+		</on-entry> 	
+	    <transition on="success" to="autovalutazione"/>
+	</view-state>
+	
+	<view-state id="esportaReportValutazioneUdo" view="checkReportValutazioneUdoViewResolver" model="pageBean">
+		<on-entry>
+			<set name="viewScope.showFolderPageBean" value="showFolderPageBean"/>
+			<evaluate expression="showFolderService.reportValutazioneUdo(showFolderPageBean)" result="viewScope.pageBean"/>
+			<set name="viewScope.csvData" value="pageBean"/>
+		</on-entry> 	
+	    <transition on="success" to="autovalutazione"/>
+	</view-state>
+	
+	<view-state id="esportaReportVerificaUdo" view="reportVerificaUdoExportCsvViewResolver" model="pageBean">
+		  <on-entry>
+			   <set name="viewScope.showFolderPageBean" value="showFolderPageBean"/>
+			   <evaluate expression="showFolderService.reportVerificaUdo(showFolderPageBean)" result="viewScope.pageBean"/>
+			   <set name="viewScope.csvData" value="pageBean"/>
+		  </on-entry>
+		  <transition on="success" to="showFolder"/>
+ 	</view-state>
+ 	
+ 	<view-state id="esportreportValutazioneArea" view="reportValutazioneAreaCsvViewResolver" model="pageBean">
+		  <on-entry>
+			   <set name="viewScope.showFolderPageBean" value="showFolderPageBean"/>
+			   <evaluate expression="showFolderService.reportValutazioneRGArea(showFolderPageBean)" result="viewScope.pageBean"/>
+			   <set name="viewScope.csvData" value="pageBean"/>
+		  </on-entry>
+		  <transition on="success" to="showFolder"/>
+ 	</view-state>
+ 	
+ 	<view-state id="esportreportVerificaArea" view="reportVerificaAreaCsvViewResolver" model="pageBean">
+		  <on-entry>
+			   <set name="viewScope.showFolderPageBean" value="showFolderPageBean"/>
+			   <evaluate expression="showFolderService.reportVerificaRGArea(showFolderPageBean)" result="viewScope.pageBean"/>
+			   <set name="viewScope.csvData" value="pageBean"/>
+		  </on-entry>
+		  <transition on="success" to="showFolder"/>
+ 	</view-state>
+ 	
+ 	<view-state id="esportreportValutazioneComplessiva" view="reportValutazioneComplessivaCsvViewResolver" model="pageBean">
+		  <on-entry>
+			   <set name="viewScope.showFolderPageBean" value="showFolderPageBean"/>
+			   <evaluate expression="showFolderService.reportValutazioneComplessiva(showFolderPageBean)" result="viewScope.pageBean"/>
+			   <set name="viewScope.csvData" value="pageBean"/>
+		  </on-entry>
+		  <transition on="success" to="showFolder"/>
+ 	</view-state>
+	
+	<view-state id="esportreportVerificaComplessiva" view="reportVerificaComplessivaCsvViewResolver" model="pageBean">
+		  <on-entry>
+			   <set name="viewScope.showFolderPageBean" value="showFolderPageBean"/>
+			   <evaluate expression="showFolderService.reportVerificaComplessiva(showFolderPageBean)" result="viewScope.pageBean"/>
+			   <set name="viewScope.csvData" value="pageBean"/>
+		  </on-entry>
+		  <transition on="success" to="showFolder"/>
+ 	</view-state>
+
+<!-- report requisiti generali inizio -->
+	<view-state id="reportValutazioneRG" view="reportValutazioneRG" model="pageBean" popup="true">
+		<on-entry>
+			<set name="viewScope.showFolderPageBean" value="showFolderPageBean"/>
+			<evaluate expression="showFolderService.reportValutazioneRG(showFolderPageBean)" result="viewScope.pageBean"/>
+		</on-entry>
+	</view-state>
+	<view-state id="reportVerificaRG" view="reportVerificaRG" model="pageBean" popup="true">
+		<on-entry>
+			<set name="viewScope.showFolderPageBean" value="showFolderPageBean"/>
+			<evaluate expression="showFolderService.reportVerificaRG(showFolderPageBean)" result="viewScope.pageBean"/>
+		</on-entry>
+	</view-state>
+	<view-state id="reportValutazioneRGArea" view="reportValutazioneRGArea" model="pageBean" popup="true">
+		<on-entry>
+			<set name="viewScope.showFolderPageBean" value="showFolderPageBean"/>
+			<evaluate expression="showFolderService.reportValutazioneRGArea(showFolderPageBean)" result="viewScope.pageBean"/>
+		</on-entry>
+	</view-state>
+	<view-state id="reportVerificaRGArea" view="reportVerificaRGArea" model="pageBean" popup="true">
+		<on-entry>
+			<set name="viewScope.showFolderPageBean" value="showFolderPageBean"/>
+			<evaluate expression="showFolderService.reportVerificaRGArea(showFolderPageBean)" result="viewScope.pageBean"/>
+		</on-entry>
+	</view-state>
+	<view-state id="reportValutazioneUdo" view="reportValutazioneUdo" model="pageBean" popup="true">
+		<on-entry>
+			<set name="viewScope.showFolderPageBean" value="showFolderPageBean"/>
+			<evaluate expression="showFolderService.reportValutazioneUdo(showFolderPageBean)" result="viewScope.pageBean"/>
+		</on-entry>
+	</view-state>
+	<view-state id="reportVerificaUdo" view="reportVerificaUdo" model="pageBean" popup="true">
+		<on-entry>
+			<set name="viewScope.showFolderPageBean" value="showFolderPageBean"/>
+			<evaluate expression="showFolderService.reportVerificaUdo(showFolderPageBean)" result="viewScope.pageBean"/>
+		</on-entry>
+	</view-state>
+	<view-state id="reportValutazioneComplessiva" view="reportValutazioneComplessiva" model="pageBean" popup="true">
+		<on-entry>
+			<set name="viewScope.showFolderPageBean" value="showFolderPageBean"/>
+			<evaluate expression="showFolderService.reportValutazioneComplessiva(showFolderPageBean)" result="viewScope.pageBean"/>
+		</on-entry>
+	</view-state>
+	<view-state id="reportVerificaComplessiva" view="reportVerificaComplessiva" model="pageBean" popup="true">
+		<on-entry>
+			<set name="viewScope.showFolderPageBean" value="showFolderPageBean"/>
+			<evaluate expression="showFolderService.reportVerificaComplessiva(showFolderPageBean)" result="viewScope.pageBean"/>
+		</on-entry>
+	</view-state>
+<!-- report requisiti generali fine -->
+
+	<view-state id="checkTipoUdo22DomandaToCsv" view="checkTipoUdo22DomandaToCsvViewResolver" model="pageBean">
+		<on-entry>
+			<set name="viewScope.showFolderPageBean" value="showFolderPageBean"/>
+			<evaluate expression="showFolderService.checkTipoUdo22Domanda(showFolderPageBean)" result="viewScope.pageBean"/>
+			<set name="viewScope.csvData" value="pageBean.tipoUdoTemplL"/>
+		</on-entry> 	
+	    <transition on="success" to="showFolder"/>
+	</view-state>
+		
+	<view-state id="esportaUdoCsv" view="esportaUdoDomandaToCsvViewResolver" model="pageBean">
+		<on-entry>
+			<set name="viewScope.pageBean" value="showFolderPageBean"/>
+			<set name="viewScope.csvData" value="showFolderPageBean.fascicolo.udoUoInstForL"/>
+		</on-entry> 	
+	    <transition on="success" to="showFolder"/>
+	</view-state>
+
+	<view-state id="esportaCsvReportIstruttoriaUdo" view="esportaCsvReportIstruttoriaUdoViewResolver" model="pageBean">
+		<on-entry>
+			<set name="viewScope.pageBean" value="showFolderPageBean"/>
+			<evaluate expression="showFolderService.exportCsvReportIstruttoriaUdo(showFolderPageBean)" result="viewScope.csvData"/>
+		</on-entry> 	
+	    <transition on="success" to="showFolder"/>
+	</view-state>
+
+	<view-state id="esportaRelazioneConclusiva" view="esportaRelazioneConclusivaViewResolver" model="pageBean">
+		<on-entry>
+			<set name="viewScope.pageBean" value="showFolderPageBean"/>
+			<evaluate expression="showFolderService.exportaRelazioneConclusiva(externalContext, messageContext, showFolderPageBean, userBean)" result="viewScope.data"/>
+		</on-entry> 	
+	    <transition on="success" to="showFolder"/>
+	</view-state>
+
+		
+	<view-state id="esportaConfrontoUdoCsv" view="esportaUdoDomandaCompareToCsvViewResolver" model="pageBean">
+		<on-entry>
+			<set name="viewScope.pageBean" value="showFolderPageBean"/>
+			<evaluate expression="showFolderService.exportUdoDomandaCompare(showFolderPageBean)" result="viewScope.csvData"/>
+		</on-entry> 	
+	    <transition on="success" to="showFolder"/>
+	</view-state>
+
+	<view-state id="editNoteMancanzaTipiUdo" view="editNoteMancanzaTipiUdo" model="editNoteMancanzaTipiUdoPageBean" popup="true">
+		<on-entry>
+			<set name="viewScope.idUnit" value="idUnit"/>
+			<set name="viewScope.showFolderPageBean" value="showFolderPageBean"/>
+			<evaluate expression="showFolderService.editNoteMancanzaTipiUdo()" result="viewScope.editNoteMancanzaTipiUdoPageBean"/>
+		</on-entry>
+		<transition on="saveNoteMancanzaTipiUdo" to="showFolder">
+			<set name="flashScope.idUnit" value="idUnit"/>
+			<set name="flashScope.showFolderPageBean" value="showFolderPageBean"/>
+			<!-- evaluate expression="showFolderService.validateFormNoteMancanzaTipiUdo(messageContext, editNoteMancanzaTipiUdoPageBean)"/ -->
+			<evaluate expression="showFolderService.saveNoteMancanzaTipiUdo(showFolderPageBean, userBean, editNoteMancanzaTipiUdoPageBean, xwService)"/>
+			<set name="flashScope.close" value="true"></set>
+			<render fragments="[//div[@id='noteMancazaTipiUdo']]"/>
+		</transition>
+	</view-state>
+
+	<view-state id="editNoteVerifica" view="editNoteVerifica" model="editNoteVerificaPageBean" popup="true">
+		<on-entry>
+			<set name="viewScope.idUnit" value="idUnit"/>
+			<set name="viewScope.showFolderPageBean" value="showFolderPageBean"/>
+			<evaluate expression="showFolderService.editNoteVerifica(showFolderPageBean)" result="viewScope.editNoteVerificaPageBean"/>
+		</on-entry>
+		<transition on="saveNoteVerifica" to="showFolder">
+			<set name="flashScope.idUnit" value="idUnit"/>
+			<set name="flashScope.showFolderPageBean" value="showFolderPageBean"/>
+			<!-- evaluate expression="showFolderService.validateFormNoteMancanzaTipiUdo(messageContext, editNoteMancanzaTipiUdoPageBean)"/ -->
+			<evaluate expression="showFolderService.saveNoteVerifica(showFolderPageBean, userBean, editNoteVerificaPageBean, xwService)"/>
+			<set name="flashScope.close" value="true"></set>
+			<render fragments="[//div[@id='noteVerifica']]"/>
+		</transition>
+	</view-state>
+
+	<view-state id="listeVerifica" view="listeVerifica" model="listeVerificaPageBean">
+		<on-entry>
+			<evaluate expression="listeVerificaService.createListaVerificaPageBean(userBean)" result="viewScope.listeVerificaPageBean"/>
+		</on-entry> 
+		<transition on="esportaListaVerificaUdoToPdf" to="esportaListaVerificaUdoToPdf">
+			<set name="flashScope.listeVerificaPageBean" value="listeVerificaPageBean"/>
+			<!-- evaluate expression="listeVerificaService.validateFormListeVerificaUdo(messageContext, listeVerificaPageBean)"/>
+			<render fragments="[//table[@id='udoUoListVer']],[//div[@id='messages']]"></render -->
+		</transition>
+		<transition on="esportaListaVerificaUoToPdf" to="esportaListaVerificaUoToPdf">
+			<set name="flashScope.listeVerificaPageBean" value="listeVerificaPageBean"/>
+		</transition>
+    </view-state>
+    
+	<view-state id="esportaListaVerificaUdoToPdf" view="esportaListaVerificaToPdfViewResolver" model="pageBean">
+		<on-entry>
+			<evaluate expression="listeVerificaService.getListeVerificheUdoPdfPageBean(listeVerificaPageBean)" result="flashScope.pdfPageBean"/>
+			<set name="viewScope.pageBean" value="listeVerificaPageBean"/>
+		</on-entry> 	
+	    <transition on="success" to="listeVerifica"/>
+	</view-state>
+    
+	<view-state id="esportaListaVerificaUoToPdf" view="esportaListaVerificaToPdfViewResolver" model="pageBean">
+		<on-entry>
+			<evaluate expression="listeVerificaService.getListeVerificheUoPdfPageBean(listeVerificaPageBean)" result="flashScope.pdfPageBean"/>
+			<set name="viewScope.pageBean" value="listeVerificaPageBean"/>
+		</on-entry> 	
+	    <transition on="success" to="listeVerifica"/>
+	</view-state>
+
+	<view-state id="mra" view="mra" model="pageBean">
+		<on-entry>
+			<set name="viewScope.skipOnRender" value="false"/>
+			<evaluate expression="mainService.createMraPageBean(externalContext, userBean)" result="viewScope.pageBean"/>
+		</on-entry>
+	</view-state>
+    
+	<view-state id="titolari" view="titolari" model="pageBean">
+		<on-entry>
+			<set name="viewScope.skipOnRender" value="false"/>
+			<evaluate expression="mainService.createTitolariPageBean(userBean)" result="viewScope.pageBean"/>
+			<!-- evaluate expression="mainService.loadProcedimenti(messageContext, userBean, homePageBean, xwService)"/ -->	
+		</on-entry>
+		<transition on="svuotaCampiRicercaTitolare">
+			<set name="flashScope.skipOnRender" value="true"/>
+			<evaluate expression="mainService.svuotaCampiRicercaTitolareAtti(userBean, pageBean)"/>
+			<render fragments="[//div[@id='listaTitolariPanel']]"></render>
+		</transition>
+		<transition on="filtraTitolari">
+			<set name="flashScope.skipOnRender" value="true"/>
+			<evaluate expression="mainService.filtraTitolariAtti(userBean, pageBean)"/>
+			<render fragments="[//div[@id='listaTitolariPanel']]"></render>
+		</transition>
+		
+		<transition on="orderTitolari">
+			<set name="flashScope.skipOnRender" value="false"/>
+			<evaluate expression="mainService.orderTitolari(messageContext, userBean, pageBean, requestParameters.tipoOrder)"/>
+			<set name="flashScope.skipOnRender" value="true"/>
+			<render fragments="[//div[@id='listaTitolariPanel']]"></render>
+		</transition>
+		
+
+		<transition on="titolFirstPage">
+			<set name="flashScope.skipOnRender" value="true"/>
+			<evaluate expression="mainService.firstPageTitolareAtti(userBean, pageBean)"/>
+			<render fragments="[//div[@id='listaTitolariPanel']]"></render>
+		</transition>
+		<transition on="titolPrevPage">
+			<set name="flashScope.skipOnRender" value="true"/>
+			<evaluate expression="mainService.prevPageTitolareAtti(userBean, pageBean)"/>
+			<render fragments="[//div[@id='listaTitolariPanel']]"></render>
+		</transition>		
+		<transition on="titolNextPage">
+			<set name="flashScope.skipOnRender" value="true"/>
+			<evaluate expression="mainService.nextPageTitolareAtti(userBean, pageBean)"/>
+			<render fragments="[//div[@id='listaTitolariPanel']]"></render>
+		</transition>
+		<transition on="titolLastPage">
+			<set name="flashScope.skipOnRender" value="true"/>
+			<evaluate expression="mainService.lastPageTitolareAtti(userBean, pageBean)"/>
+			<render fragments="[//div[@id='listaTitolariPanel']]"></render>
+		</transition>		
+		<transition on="showFolderAtti" to="showFolderAtti">
+			<set name="flashScope.titolariPageBean" value="pageBean"/>
+			<set name="flashScope.readonly" value="requestParameters.clientid"/>
+			<set name="flashScope.index" value="requestParameters.index"/>
+		</transition>		
+	</view-state>
+
+	<view-state id="showFolderAtti" view="showFolderAtti" model="pageBean">
+		<on-entry>
+			<set name="viewScope.skipOnRender" value="false"/>
+			<!-- se si proviene da richiesta è valorizzato idUnit, se si proviene da transition è valorizzato flashScope -->
+			<set name="viewScope.titolariPageBean" value="titolariPageBean"/>
+			<!-- set name="viewScope.idUnit" value="''"/ --> <!-- serve per non generare errore nel caso in cui il flashScope non contenga il parametro -->
+			<evaluate expression="showFolderService.createShowFolderAttiPageBean(externalContext, messageContext, userBean, xwService, _xwService, titolariPageBean, requestParameters.clientid, requestParameters.index)" result="viewScope.pageBean"/>
+		</on-entry> 
+		<transition on="procAttiFirst" bind="false">
+			<set name="flashScope.skipOnRender" value="true"/>
+			<evaluate expression="showFolderService.firstProcTitolareAtti(externalContext, messageContext, userBean, xwService, pageBean)"/>
+			<render fragments="[//form[@id='form']]"></render>
+		</transition>
+		<transition on="procAttiPrev" bind="false">
+			<set name="flashScope.skipOnRender" value="true"/>
+			<evaluate expression="showFolderService.prevProcTitolareAtti(externalContext, messageContext, userBean, xwService, pageBean)"/>
+			<render fragments="[//form[@id='form']]"></render>
+		</transition>		
+		<transition on="procAttiNext" bind="false">
+			<set name="flashScope.skipOnRender" value="true"/>
+			<evaluate expression="showFolderService.nextProcTitolareAtti(externalContext, messageContext, userBean, xwService, pageBean)"/>
+			<render fragments="[//form[@id='form']]"></render>
+		</transition>
+		<transition on="procAttiLast" bind="false">
+			<set name="flashScope.skipOnRender" value="true"/>
+			<evaluate expression="showFolderService.lastProcTitolareAtti(externalContext, messageContext, userBean, xwService, pageBean)"/>
+			<render fragments="[//form[@id='form']]"></render>
+		</transition>		
+	</view-state>
+
+	<view-state id="showWorkflowImageStateOnSeparateWindow" view="showWorkflowImageWin" model="workflowProcessInstanceImageOnWindow">
+		<on-entry>
+			<evaluate expression="showFolderService.showWorkflowState(externalContext, messageContext, userBean, requestParameters.wfprocid)" result="viewScope.workflowProcessInstanceImageOnWindow"/>
+		</on-entry>
+	</view-state>
+
+	<view-state id="showWorkflowImageOnSeparateWindow" view="showWorkflowImageWin" model="workflowProcessInstanceImageOnWindow">
+		<on-entry>
+			<evaluate expression="showFolderService.showWorkflow(externalContext, messageContext, userBean, requestParameters.wfname, requestParameters.wfversion)" result="viewScope.workflowProcessInstanceImageOnWindow"/>
+		</on-entry>
+	</view-state>
+	
+	<view-state id= "editDelibera" view="editDelibera" model="deliberaBean" popup="true">
+		<on-entry>
+			<set name="viewScope.showFolderPageBean" value="showFolderPageBean"/>
+			<evaluate expression="showFolderService.createDeliberaBean(showFolderPageBean)" result="viewScope.deliberaBean"/>
+		</on-entry>
+		<transition on="saveDelibera" to="showFolder">
+			<set name="flashScope.showFolderPageBean" value="showFolderPageBean"/>
+			<evaluate expression="showFolderService.saveDelibera(showFolderPageBean, deliberaBean)"></evaluate>
+		</transition>
+	</view-state>
+
+	<view-state id= "editFileDelibera" view="editFileDelibera" model="deliberaBean" popup="true">
+		<on-entry>
+			<set name="viewScope.showFolderPageBean" value="showFolderPageBean"/>
+			<evaluate expression="showFolderService.createDeliberaBean(showFolderPageBean)" result="viewScope.deliberaBean"/>
+		</on-entry>
+		<transition on="refreshDelibera" to="showFolder">
+			<set name="flashScope.showFolderPageBean" value="showFolderPageBean"/>
+			<!-- evaluate expression="showFolderService.refreshFileDelibera(showFolderPageBean, deliberaBean)"></evaluate -->
+		</transition>
+	</view-state>
+
+	<view-state id="editAttoInst" view="editAttoInst" model="attoInstBean" popup="true">
+		<on-entry>
+			<set name="viewScope.showFolderPageBean" value="showFolderPageBean"/>
+			<evaluate expression="showFolderService.createAttoInstBean(showFolderPageBean, attoInstClientId)" result="viewScope.attoInstBean"/>
+		</on-entry>
+		<transition on="saveAttoInst" to="showFolder">
+			<set name="flashScope.showFolderPageBean" value="showFolderPageBean"/>
+			<evaluate expression="showFolderService.saveAttoInst(showFolderPageBean, attoInstBean)"></evaluate>
+		</transition>
+	</view-state>
+
+	<view-state id= "editFileAttoInst" view="editFileBinaryAttachmentsAppl" model="fileBinaryAttachmentsApplBean" popup="true">
+		<on-entry>
+			<set name="viewScope.showFolderPageBean" value="showFolderPageBean"/>
+			<evaluate expression="showFolderService.createFileBinaryAttachmentsApplBean('File Delibera', 'File Delibera', binaryAttachmentsApplClientId)" result="viewScope.fileBinaryAttachmentsApplBean"/>
+		</on-entry>
+		<transition on="refreshFolder" to="showFolder">
+			<set name="flashScope.showFolderPageBean" value="showFolderPageBean"/>
+
+			<set name="flashScope.skipOnRender" value="false"/>
+			<evaluate expression="showFolderService.fileAttoSaved(showFolderPageBean, fileBinaryAttachmentsApplBean, requestParameters.fileName)"></evaluate>
+			<set name="flashScope.skipOnRender" value="true"/>
+			<render fragments="[//form[@id='form']]"></render>
+
+			<!-- render fragments="[//div[@id='attiDelibere']]"></render -->
+		</transition>
+	</view-state>
+
+	<view-state id="esportaSpecchiettoToPdfView" view="esportaSpecchiettoPdfViewResolver" model="pageBean">
+		<on-entry>
+			<set name="viewScope.showFolderPageBean" value="showFolderPageBean"/>
+		</on-entry> 	
+	    <transition on="success" to="home"/>
+	</view-state>
+	
+	<view-state id="esportaSpecchiettoCsv" view="esportaSpecchiettoCsvViewResolver" model="pageBean">
+		<on-entry>
+			<set name="viewScope.showFolderPageBean" value="showFolderPageBean"/>
+		</on-entry> 	
+	    <transition on="success" to="home"/>
+	</view-state>
+	
+	<global-transitions>
+        <transition on="insertFolder" to="editFolder">
+			<set name="flashScope.idUnit" value="null"/>
+			<set name="flashScope.showFolderPageBean" value="null"/>        
+        </transition>        	
+        <transition on="listeVerifica" to="listeVerifica">
+        </transition>        	
+        <transition on="titolari" to="titolari">
+        </transition>        	
+        <transition on="mra" to="mra">
+        </transition>        	
+        <transition on="showWorkflowImageStateOnSeparateWindow" to="showWorkflowImageStateOnSeparateWindow">
+        </transition>        	
+        <transition on="showWorkflowImageOnSeparateWindow" to="showWorkflowImageOnSeparateWindow">
+        </transition>        	
+	</global-transitions>
+	
+</flow>

@@ -1,0 +1,103 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:js="http://www.3di.it/thymeleaf/springJsDecorator">
+
+	<head>
+		<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+	    <title>Evidenze</title>
+	   
+	   	<link th:substituteby="common :: dojo"/>
+	   	<link th:substituteby="common :: spring-js"/>
+	   	<link th:substituteby="common :: spring-js-decorator"/>
+
+		<!-- Page custom CSS -->
+		<link type="text/css" rel="stylesheet" th:href="@{/resources/css/index.css}"/>
+		
+	</head>
+	
+  	<body class="claro">
+  
+	  	<div style="width:600px;">			  	
+
+			<form method="POST" id="edit_attoinst_form" th:object="${attoInstBean}" th:action="${flowExecutionUrl}">
+				
+				<!-- header videata -->
+				<div class="form-caption-container">
+					<span class="form-caption-text">Delibera</span>
+				</div>					
+					<!-- form-frames-container -->
+
+			<!-- lista holder -->
+				<table style="width:100%">
+					<tbody>
+						<tr>
+							<td>Anno delibera</td>
+							<td>
+								<input th:field="*{attoInst.anno}" style="width: 100%;"
+										id="anno" js:widget="widgetType:'dijit.form.TextBox'" type="number"/>
+							</td>
+						</tr>
+						<tr>
+							<td>Numero delibera</td>
+							<td>
+								<input th:field="*{attoInst.numero}" style="width: 100%;"
+										id="numero" js:widget="widgetType:'dijit.form.TextBox'" type="text" />
+							</td>
+						</tr>
+						<tr>
+							<td>Tipo atto</td>
+							<td>
+								<select id="tipoAtto" th:field="*{attoInst.tipoAtto.clientid}" js:widget="widgetType:'dijit.form.Select'" js:errors="true">
+									<option th:each="tipoAtto:*{tipiAtto}"
+										th:value="${tipoAtto.clientid}" th:text="${tipoAtto.descr}">Tipo atto</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td>Data inizio validita delibera</td>
+							<td>
+								<input
+								id="inizioValidita"
+								js:widget="widgetType:'dijit.form.DateTextBox',widgetAttrs:{datePattern:'dd/MM/yyyy',required:false}"
+								type="text"
+								th:field="*{attoInst.inizioValidita}"
+								value=""
+								js:errors="true" />
+							</td>
+						</tr>
+						<tr>
+							<td>Data fine validita delibera</td>
+							<td>
+								<input
+								id="fineValidita"
+								js:widget="widgetType:'dijit.form.DateTextBox',widgetAttrs:{datePattern:'dd/MM/yyyy',required:false}"
+								type="text"
+								th:field="*{attoInst.fineValidita}"
+								value=""
+								js:errors="true" />
+							</td>
+						</tr>
+						<tr>
+							<td>Oggetto delibera</td>
+							<td>
+								<textarea style="width:100%;"
+								th:field="*{attoInst.binaryAttachmentsAppl.descr}"
+								js:widget="widgetType:'dijit.form.SimpleTextarea',widgetAttrs:{class:'dijitReset',rows:10}"
+								js:errors="true">&#160;</textarea>
+							</td>
+						</tr>
+						
+					</tbody>
+				</table>
+
+				<div style="width:100%;text-align:center;margin-top:10px;">
+					<input
+						js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Salva'}"
+						js:ajax="formId:'edit_attoinst_form',event:'onClick',params:{_eventId:'saveAttoInst'}"
+						id="saveAttoInstButton" name="_eventId_saveAttoInst" value="Salva" type="submit" />
+				</div>					
+					
+
+			</form>
+	  	</div>
+	</body>
+</html>

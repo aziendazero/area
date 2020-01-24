@@ -1,0 +1,70 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:js="http://www.3di.it/thymeleaf/springJsDecorator">
+
+	<head>
+		<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+	    <title>Note</title>
+	   
+	   	<link th:substituteby="common :: dojo"/>
+	   	<link th:substituteby="common :: spring-js"/>
+	   	<link th:substituteby="common :: spring-js-decorator"/>
+
+		<!-- Page custom CSS -->
+		<link type="text/css" rel="stylesheet" th:href="@{/resources/css/index.css}"/>
+		
+		<script th:inline="javascript" th:if="${close}" id="closeScript">
+		/*<![CDATA[*/
+			/*[+
+			var closeDialog=function() {dijit.byId(topDialogId).hide();}
+			dojo.ready(closeDialog);
+			var jsCloseFunction = [[${jsCloseFunction}]];
+			if (jsCloseFunction != '') dojo.ready(eval(jsCloseFunction));
+		  	+]*/	 
+		/*]]>*/
+		</script>		
+		
+	</head>
+	
+  	<body class="claro">
+  
+	  	<div style="width:500px;">			  	
+
+			<form method="POST" id="edit_note_form" th:object="${editNotePageBean}" th:action="${flowExecutionUrl}">
+		
+				<!-- header videata -->
+				<div class="form-caption-container">
+					<span class="form-caption-text">Note</span>
+				</div>
+				
+				<div id="messages">
+					<div style="border:1px solid red;padding:10px;margin:10px 0px 10px 0px" th:if="${#fields.hasErrors('messages')}">
+						<div th:each="error:${#fields.errors('messages')}" style="margin-top:1px;"><img style="vertical-align:bottom;" border="0" src="images/mstop_sm.gif" /> <span th:text="${error}"/></div>
+					</div>
+				</div>			
+			
+				<th:block th:if="*{readonly}">
+					<textarea style="width:494px;" th:readonly="*{readonly}"
+						th:field="*{autoValutazioneNote}"
+						js:widget="widgetType:'dijit.form.SimpleTextarea',widgetAttrs:{class:'dijitReset',rows:10}"
+						js:errors="true">&#160;</textarea>
+				</th:block>
+				<th:block th:if="*{not readonly}">
+					<textarea style="width:494px;" th:readonly="*{readonly}"
+						th:field="*{note}"
+						js:widget="widgetType:'dijit.form.SimpleTextarea',widgetAttrs:{class:'dijitReset',rows:10}"
+						js:errors="true">&#160;</textarea>
+				</th:block>
+					
+				<div style="width:100%;text-align:center;margin-top:10px;">
+					<input th:if="*{!readonly}"
+						js:widget="widgetType:'dijit.form.Button',widgetAttrs:{type:'button',label:'Salva'}"
+						js:ajax="formId:'edit_note_form',event:'onClick',params:{_eventId:'saveNote'}"
+						id="saveNoteButton" name="_eventId_saveNote" value="Salva" type="submit" />
+				</div>					
+					
+			</form>
+
+	  	</div>
+  
+	</body>
+</html>

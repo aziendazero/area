@@ -1,0 +1,46 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:js="http://www.3di.it/thymeleaf/springJsDecorator">
+
+	<head>
+		<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+	    <title>AuAc - Errore</title>
+	   
+	   	<link th:substituteby="common :: dojo"/>
+	   	<link th:substituteby="common :: spring-js"/>
+	   	<link th:substituteby="common :: spring-js-decorator"/>
+
+		<!-- Page custom CSS -->
+		<link type="text/css" rel="stylesheet" th:href="@{/resources/css/index.css}"/>
+	</head>
+	
+  	<body class="claro">
+  
+	  	<div th:fragment="errorDialog" id="errorDialog" style="width:500px;">
+			<script>
+			
+			attachedWidget = dijit.byId("errorDialog");
+			if (attachedWidget) {			
+				attachedWidget.destroy();
+				attachedWidget = null;
+			}
+				require(["dijit/Dialog", "dojo/domReady!"], function(Dialog){
+				
+					errorDialog = new Dialog({
+						style: "width: 500px"
+				    }, "errorDialog");
+				});
+			</script>  		
+	   		<script th:if="${!#strings.isEmpty(exceptionMessage)}">
+   				dojo.ready(function(){errorDialog.show()});
+   			</script>				  	
+	  	
+		  	<b>Messaggio:<br/></b>
+		  	<span th:text="${exceptionMessage}"></span>
+		  	
+		  	<br/><br/>
+			<b>Stack:<br/></b>
+			<span style="display:none;" th:text="${exceptionStackTrace}"></span>
+	  	</div>
+  
+	</body>
+</html>

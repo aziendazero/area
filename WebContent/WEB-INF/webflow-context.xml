@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:webflow="http://www.springframework.org/schema/webflow-config"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/webflow-config
+                        http://www.springframework.org/schema/webflow-config/spring-webflow-config-2.0.xsd">
+	
+	<!--
+		The FlowHanlderAdapter integrates SpringWebFlow into the Spring MVC framework enabling request mapping to flow executors.
+		
+		When a valid flow mapping is found, the FlowHandlerAdapter figures out
+		whether to start a new execution of that flow or resume an existing execution
+		based on information present in the HTTP request
+	 -->
+	<bean id="flowHandlerAdapter" class="org.springframework.webflow.mvc.servlet.FlowHandlerAdapter" p:flowExecutor-ref="flowExecutor" />
+	
+	<!-- 
+		Configures Web Flow to use Tiles to create views for rendering; Tiles allows for applying consistent layouts to your views.
+		The tilesViewResolver is defined in the application context (spring-servlet). 
+		
+		viewResolvers refers the Tiles one, to use Thymeleaf it should be p:viewResolvers-ref="thymeleafViewResolver"
+	-->
+	<!-- bean id="mvcViewFactoryCreator" class="org.springframework.webflow.mvc.builder.MvcViewFactoryCreator" p:viewResolvers-ref="thymeleafViewResolver" / --> <!-- sstagni - tilesViewResolver -->
+	
+ 	<bean id="mvcViewFactoryCreator" class="org.springframework.webflow.mvc.builder.MvcViewFactoryCreator">
+        <property name="viewResolvers">
+			<list>
+				<ref bean="xmlViewResolver" />
+				<ref bean="thymeleafViewResolver" />
+			</list>
+		</property>
+    </bean>	
+	
+	
+	<!-- Plugs in our custom creator for Web Flow views -->
+	<webflow:flow-builder-services id="flowBuilderServices" view-factory-creator="mvcViewFactoryCreator" conversion-service="conversionService"/>
+
+	<!-- Custom Conversion Service -->
+	<bean id="conversionService" class="it.tredi.auac.service.ApplicationConversionService" />
+	
+	<!--
+		The registry of executable flow definitions 
+		Here we register any ".flow" file inside the /WEB-INF/flow subtree.
+	-->
+	<webflow:flow-registry id="flowRegistry" flow-builder-services="flowBuilderServices">
+		<webflow:flow-location-pattern value="/WEB-INF/webflow/**/*.xml" />
+	</webflow:flow-registry>
+	
+	<!-- Installs a listener to apply Spring Security authorities --> <!-- DISABLED -->
+<!-- 	<bean id="securityFlowExecutionListener" class="org.springframework.webflow.security.SecurityFlowExecutionListener" /> -->
+	
+	<!-- Executes flows: the entry point into the Spring Web Flow system -->
+	<webflow:flow-executor id="flowExecutor" flow-registry="flowRegistry">
+		<!-- 
+			Requests for the flow executor are mediated by the security listener
+		 -->
+<!-- 		<webflow:flow-execution-listeners> -->
+<!-- 			<webflow:listener ref="securityFlowExecutionListener"/> -->
+<!-- 		</webflow:flow-execution-listeners> -->
+	</webflow:flow-executor>
+	
+	<!--
+		Maps request paths to flows in the flowRegistry; e.g. a path of /hotels/booking looks for a flow with id "hotels/booking".
+		If no flow is found, the next handler mapping in the Dispatcher's ordered chain will be queried or a "noHandlerFound" response will be returned.
+		
+		We set the priority (order) to "-1" since the default RequestMappingHandlerMapping associated to annotated controller (@Contoller) has its default to "0".
+		The RequestMappingHandlerMapping is instantiated and configured automatically through the mvc:annotation-driven, to change the default "0" value we should
+		add explicit configuration... but we are too lazy, so we use this "-1" trick :) 
+	-->
+	<bean id="flowHandlerMapping" class="org.springframework.webflow.mvc.servlet.FlowHandlerMapping" 
+		p:order="-1" 
+		p:flowRegistry-ref="flowRegistry" />
+	
+</beans>

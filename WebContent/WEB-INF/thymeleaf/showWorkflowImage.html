@@ -1,0 +1,37 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:js="http://www.3di.it/thymeleaf/springJsDecorator">
+
+	<head>
+		<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+	    <title>Workflow</title>
+	   
+	   	<link th:substituteby="common :: dojo"/>
+	   	<link th:substituteby="common :: spring-js"/>
+	   	<link th:substituteby="common :: spring-js-decorator"/>
+
+		<!-- Page custom CSS -->
+		<link type="text/css" rel="stylesheet" th:href="@{/resources/css/index.css}"/>
+		<script type="text/javascript">
+			$(function(){
+			    $('#bonitaiframe').on('load', function(){
+			        //alert('caricato iframe');
+			        hideOpenwaitmsg()
+			    });
+			});
+			
+			setBonitaPopupSize();
+			displayOpenwaitmsg();
+		</script>
+	</head>
+	
+  	<body class="claro">
+		<!-- header videata -->
+		<div id="bonitaheader" class="form-caption-container">
+			<span class="form-caption-text">Visualizzazione workflow</span>
+		</div>
+		<iframe th:if="${workflowProcessInstance.isState()}" id="bonitaiframe" class="bonitaiframe" th:src="${workflowProcessInstance.imageWorkflowUrl}"></iframe> 
+		
+		<img style="vertical-align:bottom;height:16px;" border="0" id="bonitaiframe" class="bonitaiframe" th:src="${'images/' + workflowProcessInstance.imageWorkflowUrl}" /> 
+  
+	</body>
+</html>

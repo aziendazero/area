@@ -1,0 +1,206 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:js="http://www.3di.it/thymeleaf/springJsDecorator"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="templateFHMBWithForm">
+
+<head>
+<title>Dettaglio Fascicolo Atti</title>
+
+<!-- CSS per layout con menu -->
+<link th:substituteby="common :: menuCSS" />
+
+<style type="text/css">
+.claro .overrideSelectWidth .dijitSelectLabel {
+    width: 110px;
+    overflow: hidden;
+}
+.claro .overrideSelectWidthTipReq .dijitSelectLabel {
+    width: 60px;
+    overflow: hidden;
+}
+</style>
+
+</head>
+
+<body class="claro">
+
+	<div layout:fragment="header" th:remove="tag">
+		<div th:substituteby="common :: defaultHeader"></div>
+	</div>
+
+	<div layout:fragment="menu" th:remove="tag">
+		<div th:substituteby="common :: defaultMenu"></div>
+	</div>
+
+	<div layout:fragment="body" th:remove="tag">
+
+			<div class="fieldset_holder">
+
+				<!-- header videata -->
+				<div class="form-caption-container">
+					<span class="form-caption-text"
+						th:text="'Fascicolo Atti del titolare: ' + *{titolariPageBean.currentTitolare.ragSoc}">Fascicolo Atti del titolare</span>
+				</div>
+				
+				<div id="messages">
+					<div style="border:1px solid red;padding:10px;margin:10px 0px 10px 0px" th:if="${#fields.hasErrors('messages')}">
+						<div th:each="error:${#fields.errors('messages')}" style="margin-top:1px;"><img style="vertical-align:bottom;" border="0" src="images/mstop_sm.gif" /> <span th:text="${error}"/></div>
+					</div>
+				</div>					
+				
+				<div class="form-frames-container">
+					<div class="frame-container">
+						<div class="frame-toolbar-container">
+							<span class="panel-toolbar-zone"> <span
+								style="float: right; margin-right: 20px;"
+								class="frame-toolbar-caption"> <input
+									style="border: 0px solid white; vertical-align: middle; margin-bottom: 2px;"
+									th:src="'images/pagination/first_' + *{titolariPageBean.titolareCanFirst} + '.gif'"
+									js:ajax="formId:'form',event:'onclick',params:{_eventId:'procAttiFirst'}"
+									id="procFirst" type="image" /> <input
+									style="border: 0px solid white; vertical-align: middle; margin-bottom: 2px;"
+									th:src="'images/pagination/prev_' + *{titolariPageBean.titolareCanPrev} + '.gif'"
+									js:ajax="formId:'form',event:'onclick',params:{_eventId:'procAttiPrev'}"
+									id="procPrev" type="image" /> <span
+									style="margin: 0px 5px 0px 5px;"
+									th:text="'Titolare ' + *{titolariPageBean.currentTitolareIndex} + ' di ' + *{titolariPageBean.totalRecords}">Pag
+										0 di 0</span> <input
+									style="border: 0px solid white; vertical-align: middle; margin-bottom: 2px;"
+									th:src="'images/pagination/next_' + *{titolariPageBean.titolareCanNext} + '.gif'"
+									js:ajax="formId:'form',event:'onclick',params:{_eventId:'procAttiNext'}"
+									id="procNext" type="image" /> <input
+									style="border: 0px solid white; vertical-align: middle; margin-bottom: 2px;"
+									th:src="'images/pagination/last_' + *{titolariPageBean.titolareCanLast} + '.gif'"
+									js:ajax="formId:'form',event:'onclick',params:{_eventId:'procAttiLast'}"
+									id="procLast" type="image" />
+							</span> <span class="frame-toolbar-caption"> <img
+									title="Fascicolo degli Atti" border="0"
+									src="resources/images/folder24_atti.png" /> <span
+									style="vertical-align: top;" th:text="*{titolariPageBean.currentTitolare.ragSoc}"></span>
+							</span>
+							</span>
+						</div>
+					</div>
+				</div>
+				<!-- form-frames-container -->
+
+				<table class="fieldset row" style="width: 850px" th:if="*{fascicolo != null and fascicolo.dataCreazione != null}">
+					<tbody>
+						<tr>
+							<td>
+								<table class="row">
+									<tbody>
+										<tr>
+											<td style="width: 15%;" class="label">Data creazione</td>
+											<td style="width: 85%;"><input style="width: 100px;"
+												id="dataCreazione"
+												js:widget="widgetType:'dijit.form.TextBox'" type="text"
+												th:value="*{fascicolo.dataCreazione}" readonly="readonly" />
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				
+				<div th:remove="tag" th:if="*{fascicolo != null}">
+					
+					<!-- tabella delle annotazioni -->
+					<div style="margin-left: 0px;" class="lista_holder"
+						th:if="*{fascicolo.postitL} and *{!#lists.isEmpty(fascicolo.postitL)}">
+						<div class="form-frames-container">
+							<div class="frame-container">
+								<div class="frame-toolbar-container">
+									<span class="panel-toolbar-zone"> <span
+										class="frame-toolbar-caption">Annotazioni</span>
+									</span>
+								</div>
+							</div>
+						</div>
+						<!-- form-frames-container -->
+	
+						<!-- lista holder -->
+						<div class="fixed_height_scrollable_table">
+							<table class="lista" id="postit">
+								<tbody>
+									<tr>
+										<td class="listTableHeader">Testo</td>
+										<td class="listTableHeader" style="width: 120px"><a class="anchor" js:ajax="formId:'form',event:'onclick',params:{_eventId:'orderOperatorePostIt'}" 
+				  							id="orderOpPostIt" th:href="${flowExecutionUrl} + '&amp;_eventId=orderOperatorePostIt'">Operatore</a> <img
+											title="Ordinamento decrescente"
+											th:if="*{fascicolo.postItOrderTypeEnum==T(it.tredi.auac.PostItOrderTypeEnum).OperatoreDecrescente}"
+											border="0" src="images/scrdn.gif" /><img
+											title="Ordinamento crescente"
+											th:if="*{fascicolo.postItOrderTypeEnum==T(it.tredi.auac.PostItOrderTypeEnum).OperatoreCrescente}"
+											border="0" src="images/scrup.gif" /></td>
+										<td class="listTableHeader" style="width: 110px"><a class="anchor" js:ajax="formId:'form',event:'onclick',params:{_eventId:'orderDataPostIt'}" 
+				  							id="orderDtPostIt" th:href="${flowExecutionUrl} + '&amp;_eventId=orderDataPostIt'">Data</a> <img
+											title="Ordinamento decrescente"
+											th:if="*{fascicolo.postItOrderTypeEnum==T(it.tredi.auac.PostItOrderTypeEnum).DataDecrescente}"
+											border="0" src="images/scrdn.gif" /><img
+											title="Ordinamento crescente"
+											th:if="*{fascicolo.postItOrderTypeEnum==T(it.tredi.auac.PostItOrderTypeEnum).DataCrescente}"
+											border="0" src="images/scrup.gif" /></td>
+										<td class="listTableHeader" style="width: 40px">Azioni</td>
+									</tr>
+									<tr th:each="postit:*{fascicolo.orderedPostitL}" style="height: 25px;">
+										<td>
+											<textarea readonly="readonly" th:id="${#ids.seq('testoPostit')}" js:widget="widgetType:'dijit.form.Textarea',widgetAttrs:{class:'dijitReset'}"
+												th:text="${postit.testo}">&nbsp;
+											</textarea>
+										</td>
+										<td th:text="${postit.operatore} + ' (' + ${postit.ruolo} + ')'">&nbsp;</td>
+										<td th:text="${postit.data} + ' - ' + ${postit.ora}">&nbsp;</td>
+										<td><input
+											th:if="${theAclService.userCanEditNoteDomanda(postit,userBean.ruolo,pageBean.fascicolo.folderStatus)}"
+											title="Rimuovi l'annotazione"
+											js:confirm="event:'onclick',message:'#{crud.confirm}'"
+											js:ajax="formId:'form',event:'onclick',params:{_eventId:'deletePostitGen',tipo:'${postit.tipo}',index:'${postit.xmlIndex}'}"
+											th:id="${#ids.seq('deletePostitButton')}" type="image"
+											src="images/delete_sm.gif" />
+											<input
+											th:if="${theAclService.userCanCheckNoteDomanda(postit,userBean.ruolo,pageBean.fascicolo.folderStatus)}"
+											title="Imposta l'annotazione come controllata"
+											js:confirm="event:'onclick',message:'#{crud.confirm}'"
+											js:ajax="formId:'form',event:'onclick',params:{_eventId:'checkPostitGen',tipo:'${postit.tipo}',index:'${postit.xmlIndex}'}"
+											th:id="${#ids.seq('checkPostitButton')}" type="image"
+											src="images/nmtuexecchk.gif" />
+											<img th:if="${theAclService.notaDomandaChecked(postit)}" 
+											title="Controllata" border="0" src="images/nmtuchk.gif" />
+											<img th:if="${theAclService.notaDomandaToCheck(postit)}" 
+											title="Da Controllare" border="0" src="images/nmtutochk.gif" /></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<!-- tabella delle annotazioni -->				
+					
+					<!-- tabella degli atti -->
+					<div th:if="*{attiML} and *{fascicolo.folderType}=='atti_titolare'" th:remove="tag"> 
+						<div th:substituteby="attiTitolare :: attiTitolare"></div>
+					</div>
+					<!-- tabella degli atti -->
+
+				</div>					
+
+			</div>
+
+			<!-- fieldset_holder -->
+			
+	</div>
+
+	<div layout:fragment="footer" th:remove="tag">
+		<div th:substituteby="common :: defaultFooter"></div>
+	</div>
+
+</body>
+
+</html>
+
+
+

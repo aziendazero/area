@@ -1,0 +1,45 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring3-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:js="http://www.3di.it/thymeleaf/springJsDecorator">
+
+	<head>
+		<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+	    <title>Esecuzione Task</title>
+	   
+	   	<link th:substituteby="common :: dojo"/>
+	   	<link th:substituteby="common :: spring-js"/>
+	   	<link th:substituteby="common :: spring-js-decorator"/>
+
+		<!-- Page custom CSS -->
+		<link type="text/css" rel="stylesheet" th:href="@{/resources/css/index.css}"/>
+		<script type="text/javascript">
+			function savedTask() {
+				//alert('stoptimer ');
+				//Spring.remoting.submitForm('','esegui_task_form',{_eventId:'savedTask'});
+			}
+		
+			function TaskSaved() {
+				displayOpenwaitmsg();
+			    setTimeout(savedTask,5000);
+				//alert('eseguiTask.html TASK SALVATO');
+				//var closeDialog=function() {dijit.byId(topDialogId).hide();}
+				//dojo.ready(closeDialog);
+
+				//Spring.remoting.submitForm('','esegui_task_form',{_eventId:'savedTask'});
+			}
+			
+			setBonitaPopupSize();
+			
+		</script>
+	</head>
+	
+  	<body class="claro">
+		<form method="POST" id="esegui_task_form" th:object="${workflowProcessInstance}" th:action="${flowExecutionUrl}">
+		</form>
+		<!-- header videata -->
+		<div id="bonitaheader" class="form-caption-container">
+			<span class="form-caption-text">Visualizzazione workflow</span>
+		</div>
+		<iframe id="bonitaiframe" class="bonitaiframe" th:src="${workflowProcessInstance.overviewFormUrl}"></iframe> 
+  
+	</body>
+</html>
