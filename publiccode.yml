@@ -21,7 +21,6 @@ dependsOn:
     - name: eXtraWay
     - name: eXtraWay Platform (3diws)
     - name: Oracle RDBMS
-  open:
 maintenance:
   type: contract
   contractors:
