@@ -4,7 +4,7 @@
 
 publiccodeYmlVersion: '0.2'
 name: Sistema di Autorizzazione e Accreditamento delle Strutture Sanitarie, Socio-Sanitarie e Sociali
-url: 'https://github.com'
+url: 'https://github.com/aziendazero/area'
 logo: logo.png
 releaseDate: '2020-01-23'
 developmentStatus: stable
@@ -25,28 +25,29 @@ maintenance:
   type: contract
   contractors:
     - name: 3D Informatica srl
-      website: 'https://www.3di.it'
+      website: 'http://www.3di.it'
       until: '2021-01-01'
 legal:
   license: AGPL-3.0-or-later
   mainCopyrightOwner: Regione del Veneto
   repoOwner: 3D Informatica srl
-  authorsFile: 3D Informatica srl
+  authorsFile: AUTHORS.txt 
 localisation:
   localisationReady: true
   availableLanguages:
     - it
 it:
+  countryExtensionVersion: '0.2'
   conforme:
     misureMinimeSicurezza: true
     gdpr: true
-  piattaforme:
-    cas: true
+  riuso:
+    codiceIPA: azero
 description:
   it:
     genericName: A.re.A.
     documentation: 'https://github.com'
-    shortDescription: Applicativo per la gestione dei procedimenti di autorizzazione e accreditamento delle strutture sanitarie, socio-sanitarie e sociali della Regione del Veneto (A.re.A.)
+    shortDescription: Applicativo per la gestione dei procedimenti di autorizzazione e accreditamento delle strutture sanitarie, socio-sanitarie e sociali di Regione Veneto 
     longDescription: >
       A.re.A è il sistema che ha completamente informatizzato i procedimenti di Autorizzazione e di Accreditamento delle Strutture Sanitarie, Socio-Sanitarie e Sociali che operano a livello regionale.
       Il software permette di monitorare costantemente il livello qualitativo offerto dalle strutture pubbliche e private che erogano servizi al Cittadino.
